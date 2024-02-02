@@ -1,10 +1,10 @@
 import Navbar from "../../components/navbar";
 
-export default function Leaderboard() {
+export default function Payment() {
     return (
         <>
+            <p>payment</p>
             <Navbar />
-
         </>
     );
 }

@@ -1,3 +1,5 @@
+import Navbar from "../../components/navbar";
+
 export default function DetailAccount() {
     return (
         <>
@@ -89,6 +91,8 @@ export default function DetailAccount() {
                     </button>
                 </div>
             </div>
+
+            <Navbar />
         </>
     );
 }

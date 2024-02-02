@@ -1,9 +1,10 @@
 import Login from './pages/customer/login';
 import Home from './pages/customer/home';
+import Journal from './pages/customer/journal';
 import ListGor from './pages/customer/list-gor';
 import DetailGor from './pages/customer/detail-gor';
 import DetailLapangan from './pages/customer/detail-lapangan';
-import ListOrder from './pages/customer/list-order';
+import Payment from './pages/customer/payment';
 import DetailAccount from './pages/customer/detail-account';
 import Leaderboard from './pages/customer/leaderboard';
 import Challange from './pages/customer/challange';
@@ -24,11 +25,12 @@ function App() {
       <Routes>
         {/* customer */}
         <Route path="/login" element={<Login />} />
+        <Route path="/journal" element={<Journal />} />
         <Route path="/home" element={<Home />} />
         <Route path="/list-gor" element={<ListGor />} />
         <Route path="/detail-gor" element={<DetailGor />} />
         <Route path="/detail-lapangan" element={<DetailLapangan />} />
-        <Route path="/list-order" element={<ListOrder />} />
+        <Route path="/list-order" element={<Payment />} />
         <Route path="/detail-account" element={<DetailAccount />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/challange" element={<Challange />} />

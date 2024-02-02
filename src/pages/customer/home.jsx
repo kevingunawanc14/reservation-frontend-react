@@ -12,6 +12,7 @@ import { GiSoccerKick } from "react-icons/gi";
 import { FaSwimmer } from "react-icons/fa";
 import { CgGym } from "react-icons/cg";
 import { MdOutlineSportsMartialArts } from "react-icons/md";
+import Navbar from '../../components/navbar.jsx';
 
 export default function Home() {
 
@@ -287,7 +288,7 @@ export default function Home() {
                     </div>
                 </div>
             </div> */}
-            <div className="btm-nav">
+            {/* <div className="btm-nav">
                 <button>
                     <IoCompassOutline />
 
@@ -313,7 +314,8 @@ export default function Home() {
 
                     <span className="btm-nav-label">Account</span>
                 </button>
-            </div>
+            </div> */}
+            <Navbar />
         </>
     );
 }
