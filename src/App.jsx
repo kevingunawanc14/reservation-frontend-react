@@ -1,48 +1,72 @@
 import Login from './pages/customer/login';
 import Home from './pages/customer/home';
 import Journal from './pages/customer/journal';
-import ListGor from './pages/customer/list-gor';
-import DetailGor from './pages/customer/detail-gor';
+import ListLapangan from './pages/customer/list-gor';
 import DetailLapangan from './pages/customer/detail-lapangan';
 import Payment from './pages/customer/payment';
 import DetailAccount from './pages/customer/detail-account';
 import Leaderboard from './pages/customer/leaderboard';
-import Challange from './pages/customer/challange';
 import Shop from './pages/customer/shop';
 
-import ActiveOrder from './pages/admin/active-order';
 import Dashboard from './pages/admin/dashboard';
-import ListUser from './pages/admin/list-user';
-import MoneyManagement from './pages/admin/money-management';
+import Report from './pages/admin/report';
+import User from './pages/admin/user';
+import Challange from './pages/admin/challange';
+import Court from './pages/admin/court';
 
 import './index.css';
 import { Routes, Route } from "react-router-dom"
 
+import Unauthorized from './components/unauthorized'
+import Missing from './components/missing'
+
+import Layout from './components/layout';
+
+import RequireAuth from './components/RequireAuth';
+import PersistLogin from './components/PersistLogin';
+
+
+const ROLES = {
+  'User': 2001,
+  'Editor': 1984,
+  'Admin': 5150
+}
 
 function App() {
+
   return (
-    <div className="App">
-      <Routes>
-        {/* customer */}
+    <Routes>
+      <Route path='/' element={<Layout />} >
+        {/* public routes */}
         <Route path="/login" element={<Login />} />
-        <Route path="/journal" element={<Journal />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/list-gor" element={<ListGor />} />
-        <Route path="/detail-gor" element={<DetailGor />} />
-        <Route path="/detail-lapangan" element={<DetailLapangan />} />
-        <Route path="/list-order" element={<Payment />} />
-        <Route path="/detail-account" element={<DetailAccount />} />
-        <Route path="/leaderboard" element={<Leaderboard />} />
-        <Route path="/challange" element={<Challange />} />
-        <Route path="/shop" element={<Shop />} />
-        {/* admin */}
-        <Route path="/active-order" element={<ActiveOrder />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/list-user" element={<ListUser />} />
-        <Route path="/money-management" element={<MoneyManagement />} />
-        <Route path="*" element={<Home />} />/
-      </Routes>
-    </div>
+        <Route path="/unauthorized" element={<Unauthorized />} />
+
+        {/* protected routes */}
+        <Route element={<PersistLogin />}>
+          <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/journal" element={<Journal />} />
+            <Route path="/lapangan/:namaLapangan" element={<ListLapangan />} />
+            <Route path="/lapangan/:namaLapangan/detail/:nomorLapangan" element={<DetailLapangan />} />
+            <Route path="/payment" element={<Payment />} />
+            <Route path="/setting" element={<DetailAccount />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
+            <Route path="/shop" element={<Shop />} />
+          </Route>
+
+          <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/report" element={<Report />} />
+            <Route path="/user" element={<User />} />
+            <Route path="/challange" element={<Challange />} />
+            <Route path="/court" element={<Court />} />
+          </Route>
+        </Route>
+        {/* catch all */}
+        <Route path="*" element={<Missing />} />/
+      </Route>
+
+    </Routes>
   )
 }
 

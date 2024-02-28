@@ -4,7 +4,7 @@ export default function DetailAccount() {
     return (
         <>
 
-            <div className=" ">
+            {/* <div className=" ">
                 <div className="avatar flex justify-center">
                     <div className="w-24 rounded-full">
                         <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
@@ -89,6 +89,52 @@ export default function DetailAccount() {
                         Gym Addict
                         <div className="badge badge-accent"></div>
                     </button>
+                </div>
+            </div> */}
+
+            <div className="collapse collapse-arrow bg-base-200">
+                <input type="radio" name="my-accordion-2" />
+                <div className="collapse-title text-xl font-medium">
+                    Detail Account
+                </div>
+                <div className="collapse-content">
+                    <p>hello</p>
+                </div>
+            </div>
+            <div className="collapse collapse-arrow bg-base-200">
+                <input type="radio" name="my-accordion-2" />
+                <div className="collapse-title text-xl font-medium">
+                    Statistic
+                </div>
+                <div className="collapse-content">
+                    <p>hello</p>
+                </div>
+            </div>
+            <div className="collapse collapse-arrow bg-base-200">
+                <input type="radio" name="my-accordion-2" />
+                <div className="collapse-title text-xl font-medium">
+                    Achivment
+                </div>
+                <div className="collapse-content">
+                    <p>hello</p>
+                </div>
+            </div>
+            <div className="collapse collapse-arrow bg-base-200">
+                <input type="radio" name="my-accordion-2" />
+                <div className="collapse-title text-xl font-medium">
+                    Shop
+                </div>
+                <div className="collapse-content">
+                    <button className="btn">Log Out</button>
+                </div>
+            </div>
+            <div className="collapse collapse-arrow bg-base-200 mb-20">
+                <input type="radio" name="my-accordion-2" />
+                <div className="collapse-title text-xl font-medium">
+                    Setting
+                </div>
+                <div className="collapse-content">
+                    <button className="btn">Log Out</button>
                 </div>
             </div>
 

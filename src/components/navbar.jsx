@@ -15,16 +15,15 @@ export default function Navbar() {
     };
 
     useEffect(() => {
-        console.log(window.location.pathname)
-        console.log(window.location.href)
+        // console.log(window.location.pathname)
+        // console.log(window.location.href)
 
     }, []);
     const [isActive, setIsActive] = useState(false);
 
 
     return (
-        <div className="btm-nav">
-
+        <div className="btm-nav mt-10">
             <button className={window.location.pathname === '/' ? 'active' : ''} onClick={() => handleNavigate('/')}>
                 <IoCompassOutline />
                 <span className="btm-nav-label">Home</span>
@@ -39,11 +38,13 @@ export default function Navbar() {
                 <RiMoneyDollarCircleLine />
                 <span className="btm-nav-label">Payment</span>
             </button>
+
             <button className={window.location.pathname === '/leaderboard' ? 'active' : ''} onClick={() => handleNavigate('/leaderboard')}>
                 <IoTrophyOutline />
                 <span className="btm-nav-label">Leaderboard</span>
             </button>
-            <button className={window.location.pathname === '/detail-account' ? 'active' : ''} onClick={() => handleNavigate('/detail-account')}>
+
+            <button className={window.location.pathname === '/setting' ? 'active' : ''} onClick={() => handleNavigate('/setting')}>
                 <RiAccountCircleLine />
                 <span className="btm-nav-label">Account</span>
             </button>
