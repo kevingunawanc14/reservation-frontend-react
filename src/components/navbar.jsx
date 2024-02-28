@@ -24,27 +24,27 @@ export default function Navbar() {
 
     return (
         <div className="btm-nav mt-10">
-            <button className={window.location.pathname === '/' ? 'active' : ''} onClick={() => handleNavigate('/')}>
+            <button className={window.location.pathname === '/' ? 'active text-primary' : ''} onClick={() => handleNavigate('/')}>
                 <IoCompassOutline />
                 <span className="btm-nav-label">Home</span>
             </button>
 
-            <button className={window.location.pathname === '/journal' ? 'active' : ''} onClick={() => handleNavigate('/journal')}>
+            <button className={window.location.pathname === '/journal' ? 'active text-primary' : ''} onClick={() => handleNavigate('/journal')}>
                 <LiaHeartbeatSolid />
                 <span className="btm-nav-label">Journal</span>
             </button>
 
-            <button className={window.location.pathname === '/payment' ? 'active' : ''} onClick={() => handleNavigate('/payment')}>
+            <button className={window.location.pathname === '/payment' ? 'active text-primary' : ''} onClick={() => handleNavigate('/payment')}>
                 <RiMoneyDollarCircleLine />
                 <span className="btm-nav-label">Payment</span>
             </button>
 
-            <button className={window.location.pathname === '/leaderboard' ? 'active' : ''} onClick={() => handleNavigate('/leaderboard')}>
+            <button className={window.location.pathname === '/leaderboard' ? 'active text-primary' : ''} onClick={() => handleNavigate('/leaderboard')}>
                 <IoTrophyOutline />
                 <span className="btm-nav-label">Leaderboard</span>
             </button>
 
-            <button className={window.location.pathname === '/setting' ? 'active' : ''} onClick={() => handleNavigate('/setting')}>
+            <button className={window.location.pathname === '/setting' ? 'active text-primary' : ''} onClick={() => handleNavigate('/setting')}>
                 <RiAccountCircleLine />
                 <span className="btm-nav-label">Account</span>
             </button>

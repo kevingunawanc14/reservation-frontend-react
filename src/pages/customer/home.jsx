@@ -92,7 +92,7 @@ export default function Home() {
     return (
         <>
 
-            <div className="mb-10">
+            <div className="mb-2">
 
                 <div className='grid justify-items-center mt-5'>
                     <div className="dropdown">
@@ -181,13 +181,13 @@ export default function Home() {
                 <div className="grid grid-rows-3 grid-flow-col gap-4 justify-items-center mt-3">
                     <div className="card w-80 h-96 bg-neutral shadow-xl">
                         <div className="card-body">
-                            <h2 className="card-title mt-3">Tantangan Mingguan</h2>
+                            <h2 className="card-title mt-3 text-neutral-content">Tantangan Mingguan</h2>
                             <div className="grid grid-cols-4">
                                 <div className='col-span-1 justify-self-center'>
-                                    <p>0/2</p>
+                                    <p className='text-neutral-content'>0/2</p>
                                 </div>
                                 <div className=''>
-                                    <progress className="progress progress-success w-48 " value="0" max="100"></progress>
+                                    <progress className="progress progress-success w-48 bg-neutral-content" value="10" max="100"></progress>
                                 </div>
                             </div>
                             <div className="grid grid-cols-4">
@@ -199,18 +199,18 @@ export default function Home() {
 
                                 </div>
                             </div>
-                            <button className="btn btn-primary text-neutral-content">Claim Reward</button>
+                            <button className="btn btn-primary text-neutral-content mt-5">Claim Reward</button>
                         </div>
                     </div>
                     <div className="card w-80 h-96 bg-neutral shadow-xl mt-2">
                         <div className="card-body">
-                            <h2 className="card-title mt-3">Tantangan Bulanan</h2>
+                            <h2 className="card-title mt-3 text-neutral-content">Tantangan Bulanan</h2>
                             <div className="grid grid-cols-4">
                                 <div className='col-span-1 justify-self-center'>
-                                    <p>0/10</p>
+                                    <p className='text-neutral-content'>0/10</p>
                                 </div>
                                 <div className=''>
-                                    <progress className="progress progress-success w-48 " value="0" max="100"></progress>
+                                    <progress className="progress progress-success w-48 bg-neutral-content" value="0" max="100"></progress>
                                 </div>
                             </div>
                             <div className="grid grid-cols-4">
@@ -222,7 +222,7 @@ export default function Home() {
 
                                 </div>
                             </div>
-                            <button className="btn btn-primary text-neutral-content">Claim Reward</button>
+                            <button className="btn btn-primary text-neutral-content mt-5">Claim Reward</button>
                         </div>
                     </div>
                     <div className="card w-80 h-60 bg-neutral shadow-xl mt-2">
@@ -230,10 +230,10 @@ export default function Home() {
                             <h2 className="card-title mt-3 text-neutral-content">Tantangan 6 Bulan</h2>
                             <div className="grid grid-cols-4">
                                 <div className='col-span-1 justify-self-center'>
-                                    <p>0/50</p>
+                                    <p className='text-neutral-content'>0/50</p>
                                 </div>
                                 <div className=''>
-                                    <progress className="progress progress-success w-48 " value="0" max="100"></progress>
+                                    <progress className="progress progress-success w-48 bg-neutral-content" value="0" max="100"></progress>
                                 </div>
                             </div>
                             <div className="grid">
@@ -241,126 +241,12 @@ export default function Home() {
                                     <p className='text-sm text-neutral-content'>Selesaikan berolahraga selama 50 jam dan dapatkan hadiah </p>
                                 </div>
                             </div>
-                            <button className="btn btn-primary text-neutral-content">Claim Reward</button>
+                            <button className="btn btn-primary text-neutral-content mt-1">Claim Reward</button>
                         </div>
                     </div>
                 </div>
-
-                {/* <div className="card w-96 bg-white text-primary-content">
-                    <div className=''>
-                        <button className="btn btn-circle btn-outline btn-success">
-                            <GiShuttlecock />
-
-                        </button>
-                        <p>Badminton</p>
-                    </div>
-                    <div className="card-body">
-                        <p>weekly challange</p>
-                        <h2 className="card-title">0 / 2 hour</h2>
-                        <p>swimming 1 times  / play badminton 2 hour / play basketball 2 hour  / play futsal 2 hour  / gym 1 times</p>
-                        <div className="card-actions justify-end">
-                            <button className="btn btn-success text-white">Claim Reward</button>
-                        </div>
-                    </div>
-                </div> */}
-                {/* <div className="card w-96 bg-green-100 shadow-xl">
-                    <progress className="progress w-56" value={0} max="100"></progress>
-
-                    <div className="card-body items-center text-center">
-                        <h2 className="card-title">Tantangan Mingguan!</h2>
-                        <p>If a dog chews shoes whose shoes does he choose?</p>
-                        <div className="card-actions">
-                            <button className="btn btn-primary">Claim Reward</button>
-                        </div>
-                    </div>
-                </div> */}
-                {/* <p>Monthly Challange</p>
-                <div className="card w-96 bg-base-100 shadow-xl">
-                    <figure className="px-10 pt-10">
-                        <img src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Shoes" className="rounded-xl" />
-                    </figure>
-                    <div className="card-body items-center text-center">
-                        <h2 className="card-title">Shoes!</h2>
-                        <p>If a dog chews shoes whose shoes does he choose?</p>
-                        <div className="card-actions">
-                            <button className="btn btn-primary">Buy Now</button>
-                        </div>
-                    </div>
-                </div>
-                <p>6 Month Challange</p>
-                <div className="card w-96 bg-base-100 shadow-xl">
-                    <figure className="px-10 pt-10">
-                        <img src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Shoes" className="rounded-xl" />
-                    </figure>
-                    <div className="card-body items-center text-center">
-                        <h2 className="card-title">Shoes!</h2>
-                        <p>If a dog chews shoes whose shoes does he choose?</p>
-                        <div className="card-actions">
-                            <button className="btn btn-primary">Buy Now</button>
-                        </div>
-                    </div>
-                </div> */}
-                {/* <div className="grid grid-cols-2">
-                    <div>
-                        <ul className="steps steps-vertical lg:steps-horizontal">
-                            <li className="step step-primary">Mulai Challange</li>
-                            <li className="step step-primary">Selesaikan 1 jam pemesanan xyz</li>
-                            <li className="step step-primary">Selesaikan 1 jam pemesanan xyz</li>
-                            <li className="step">Get Reward</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <ul className="steps steps-vertical lg:steps-horizontal">
-                            <li className="step step-primary">Tantangan dimulai</li>
-                            <li className="step step-primary">Selesaikan 5 jam pemesanan xyz</li>
-                            <li className="step">Selesaikan 5 jam pemesanan xyz</li>
-                            <li className="step">Receive Product</li>
-                        </ul>
-                    </div>
-                </div> */}
-
-
-
-
             </div >
 
-            {/* <div className="hero min-h-screen" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1518409274682-1cb2fe2955a8?q=80&w=1975&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)' }}>
-                <div className="hero-overlay bg-opacity-50"></div>
-                <div className="hero-content text-center text-neutral-content">
-                    <div className="max-w-md">
-                        <h1 className="mb-5 text-4xl font-bold text-white">Krakatau Sport Centre Jombang</h1>
-                        <p className="mb-5">Reservation And Gamification App</p>
-                        <button className="btn btn-primary" onClick={handleBook}>Book Now</button>
-                    </div>
-                </div>
-            </div> */}
-            {/* <div className="btm-nav">
-                <button>
-                    <IoCompassOutline />
-
-                    <span className="btm-nav-label">Home</span>
-                </button>
-                <button className="active">
-                    <LiaHeartbeatSolid />
-
-                    <span className="btm-nav-label">Journal</span>
-                </button>
-                <button>
-                    <RiMoneyDollarCircleLine />
-
-                    <span className="btm-nav-label">Payment</span>
-                </button>
-                <button>
-                    <IoTrophyOutline />
-
-                    <span className="btm-nav-label">Leaderboard</span>
-                </button>
-                <button>
-                    <RiAccountCircleLine />
-
-                    <span className="btm-nav-label">Account</span>
-                </button>
-            </div> */}
             <Navbar />
         </>
     );

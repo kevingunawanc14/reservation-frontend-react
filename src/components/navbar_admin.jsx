@@ -31,27 +31,27 @@ export default function Navbar() {
 
     return (
         <div className="btm-nav">
-            <button className={window.location.pathname === '/dashboard' ? 'active' : ''} onClick={() => handleNavigate('/dashboard')}>
+            <button className={window.location.pathname === '/dashboard' ? 'active text-primary ' : ''} onClick={() => handleNavigate('/dashboard')}>
                 <TbPresentationAnalytics />
                 <span className="btm-nav-label">Dashboard</span>
             </button>
 
-            <button className={window.location.pathname === '/report' ? 'active' : ''} onClick={() => handleNavigate('/report')}>
+            <button className={window.location.pathname === '/report' ? 'active text-primary' : ''} onClick={() => handleNavigate('/report')}>
                 <TbReportMoney />
                 <span className="btm-nav-label">Report</span>
             </button>
 
-            <button className={window.location.pathname === '/user' ? 'active' : ''} onClick={() => handleNavigate('/user')}>
+            <button className={window.location.pathname === '/user' ? 'active text-primary' : ''} onClick={() => handleNavigate('/user')}>
                 <FiUsers />
                 <span className="btm-nav-label">User</span>
             </button>
 
-            <button className={window.location.pathname === '/challange' ? 'active' : ''} onClick={() => handleNavigate('/challange')}>
+            <button className={window.location.pathname === '/challange' ? 'active text-primary' : ''} onClick={() => handleNavigate('/challange')}>
                 <BiTask />
                 <span className="btm-nav-label">Challange</span>
             </button>
 
-            <button className={window.location.pathname === '/court' ? 'active' : ''} onClick={() => handleNavigate('/court')}>
+            <button className={window.location.pathname === '/court' ? 'active text-primary' : ''} onClick={() => handleNavigate('/court')}>
                 <PiWarehouse />
                 <span className="btm-nav-label">Court</span>
             </button>

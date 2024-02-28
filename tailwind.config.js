@@ -8,7 +8,7 @@ export default {
     extend: {},
   },
   daisyui: {
-    themes: ["emerald", "forest", "light"],
+    themes: ["forest", "lemonade", "valentine", "synthwave", "lofi"],
   },
   // eslint-disable-next-line no-undef
   plugins: [require("daisyui")],
