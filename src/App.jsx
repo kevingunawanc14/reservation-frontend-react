@@ -1,10 +1,10 @@
 import Login from './pages/customer/login';
 import Home from './pages/customer/home';
 import Journal from './pages/customer/journal';
-import ListLapangan from './pages/customer/list-gor';
+import ListLapangan from './pages/customer/list-lapangan';
 import DetailLapangan from './pages/customer/detail-lapangan';
 import Payment from './pages/customer/payment';
-import DetailAccount from './pages/customer/detail-account';
+import Setting from './pages/customer/setting';
 import Leaderboard from './pages/customer/leaderboard';
 import Shop from './pages/customer/shop';
 
@@ -49,7 +49,7 @@ function App() {
             <Route path="/lapangan/:namaLapangan" element={<ListLapangan />} />
             <Route path="/lapangan/:namaLapangan/detail/:nomorLapangan" element={<DetailLapangan />} />
             <Route path="/payment" element={<Payment />} />
-            <Route path="/setting" element={<DetailAccount />} />
+            <Route path="/setting" element={<Setting />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/shop" element={<Shop />} />
           </Route>

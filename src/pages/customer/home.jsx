@@ -77,26 +77,15 @@ export default function Home() {
         navigate('/list-gedung');
     };
 
-    // const detailPage = (product) => {
-    //     console.log('product', product)
-    // };
-
-
     const detailPage = (productName) => {
         navigate(`/lapangan/${productName}`);
-
     };
-
-
 
     return (
         <>
-
             <div className="mb-2">
-
                 <div className='grid justify-items-center mt-5'>
                     <div className="dropdown">
-                        {/* <div className='grid justify-items-center m-5'> */}
                         <input
                             type="text"
                             placeholder="Cari tempat olahraga"
@@ -104,34 +93,23 @@ export default function Home() {
                             onChange={handleChange}
                             value={searchQuery}
                         />
-                        {/* </div> */}
-                        {/* <div tabIndex={0} role="button" className="btn m-1">Click</div> */}
                         <ul className="dropdown-content  menu p-2 shadow bg-base-100 rounded-box w-80">
                             {searchResults.map(item => (
                                 <p key={item.id}>{item.name}</p>
                             ))}
-                            {/* <li><a>Badminton - Lapangan 1</a></li>
-                            <li><a>Badminton - Lapangan 1</a></li>
-                            <li><a>Badminton - Lapangan 1</a></li>
-                            <li><a>Badminton - Lapangan 1</a></li> */}
                         </ul>
                     </div>
                 </div>
-
-
                 <div className="grid grid-cols-3 m-5">
                     <div className='grid justify-items-center'>
                         <button className="btn btn-circle btn-neutral" onClick={() => detailPage('badminton')}>
                             <GiShuttlecock />
-
                         </button>
                         <p className='font-mono'>Badminton</p>
                     </div>
                     <div className='grid justify-items-center'>
                         <button className="btn btn-circle btn-neutral" onClick={() => detailPage('futsal')}>
                             <GiSoccerKick />
-
-
                         </button>
                         <p className='font-mono'>Futsal</p>
                     </div>
@@ -145,13 +123,10 @@ export default function Home() {
                     </div>
 
                 </div>
-
                 <div className="grid grid-cols-3 m-5">
-
                     <div className='grid justify-items-center'>
                         <button className="btn btn-circle  btn-neutral" onClick={() => detailPage('gym')}>
                             <CgGym />
-
                         </button>
                         <p className='font-mono'>Gym</p>
                     </div>
@@ -172,11 +147,8 @@ export default function Home() {
                         <p className='font-mono'>Membership</p>
                     </div>
                 </div>
-
                 <div className="mx-10 mt-5">
-
                     <Header title={'Selesaikan Tantanganmu Sekarang'} />
-
                 </div>
                 <div className="grid grid-rows-3 grid-flow-col gap-4 justify-items-center mt-3">
                     <div className="card w-80 h-96 bg-neutral shadow-xl">
