@@ -4,15 +4,15 @@ import Journal from './pages/customer/journal';
 import ListLapangan from './pages/customer/list-lapangan';
 import DetailLapangan from './pages/customer/detail-lapangan';
 import Payment from './pages/customer/payment';
+import Rate from './pages/customer/rate';
 import Setting from './pages/customer/setting';
 import Leaderboard from './pages/customer/leaderboard';
-import Shop from './pages/customer/shop';
 
 import Dashboard from './pages/admin/dashboard';
 import Report from './pages/admin/report';
 import User from './pages/admin/user';
 import Challange from './pages/admin/challange';
-import Court from './pages/admin/court';
+import Product from './pages/admin/product';
 
 import './index.css';
 import { Routes, Route } from "react-router-dom"
@@ -39,6 +39,7 @@ function App() {
       <Route path='/' element={<Layout />} >
         {/* public routes */}
         <Route path="/login" element={<Login />} />
+        <Route path="/rate" element={<Rate />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
 
         {/* protected routes */}
@@ -51,7 +52,6 @@ function App() {
             <Route path="/payment" element={<Payment />} />
             <Route path="/setting" element={<Setting />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
-            <Route path="/shop" element={<Shop />} />
           </Route>
 
           <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
@@ -59,7 +59,7 @@ function App() {
             <Route path="/report" element={<Report />} />
             <Route path="/user" element={<User />} />
             <Route path="/challange" element={<Challange />} />
-            <Route path="/court" element={<Court />} />
+            <Route path="/product" element={<Product />} />
           </Route>
         </Route>
         {/* catch all */}

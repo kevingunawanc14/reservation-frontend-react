@@ -3,6 +3,12 @@ import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Button from '@mui/material/Button';
 import { useEffect, useState } from 'react';
 import Header from '../../components/header';
+import { GiRank2 } from "react-icons/gi";
+import { FaHeart } from "react-icons/fa";
+import { BiSolidShieldAlt2 } from "react-icons/bi";
+import { LuSwords } from "react-icons/lu";
+import Avatar1 from '../../assets/avatar/avatar1.webp';
+import { LuSword } from "react-icons/lu";
 
 
 
@@ -68,7 +74,8 @@ export default function Leaderboard() {
             sortable: false
         },
         {
-            field: 'Total Reservation',
+            field: <LuSwords fontSize="20px" />
+            ,
             flex: 1,
             minWidth: 50,
             headerAlign: 'center',
@@ -77,6 +84,7 @@ export default function Leaderboard() {
         },
     ];
 
+    // const style = { border: "20px" }
 
     return (
         <>
@@ -84,9 +92,7 @@ export default function Leaderboard() {
                 <Header title={'Leaderboard'} />
             </div>
 
-            {/* <Button variant="contained">Contained</Button> */}
-
-            <div className="mb-20">
+            <div className="mx-10 mt-5 mb-20">
                 <DataGrid
                     initialState={{
                         pagination: { paginationModel: { pageSize: 9 } },
@@ -94,32 +100,68 @@ export default function Leaderboard() {
                     pageSizeOptions={[5, 10, 25]}
                     columns={columns}
                     rows={[
-                        { id: 1, Rank: 'Gold', Rating: 'React', 'Total Reservation': 1 },
-                        { id: 2, Rank: 'Gold', Rating: 'MUI', 'Total Reservation': 1 },
-                        { id: 3, Rank: 'Silver', Rating: 'Vue', 'Total Reservation': 2 },
-                        { id: 4, Rank: 'Silver', Rating: 'Angular', 'Total Reservation': 3 },
-                        { id: 5, Rank: 'Bronze', Rating: 'Svelte', 'Total Reservation': 1 },
-                        { id: 6, Rank: 'Bronze', Rating: 'Ember', 'Total Reservation': 2 },
-                        { id: 7, Rank: 'Gold', Rating: 'Next.js', 'Total Reservation': 2 },
-                        { id: 8, Rank: 'Gold', Rating: 'Gatsby', 'Total Reservation': 3 },
-                        { id: 9, Rank: 'Silver', Rating: 'Backbone', 'Total Reservation': 1 },
-                        { id: 10, Rank: 'Silver', Rating: 'Express.js', 'Total Reservation': 2 },
-                        { id: 11, Rank: 'Bronze', Rating: 'Meteor', 'Total Reservation': 1 },
-                        { id: 12, Rank: 'Bronze', Rating: 'Polymer', 'Total Reservation': 2 },
-                        { id: 13, Rank: 'Gold', Rating: 'Redux', 'Total Reservation': 2 },
-                        { id: 14, Rank: 'Gold', Rating: 'Apollo', 'Total Reservation': 3 },
-                        // { id: 15, Rank: 'Silver', Rating: 'Knockout.js', 'Total Reservation': 1 },
-                        // { id: 16, Rank: 'Silver', Rating: 'Socket.io', 'Total Reservation': 2 },
-                        // { id: 17, Rank: 'Bronze', Rating: 'Electron', 'Total Reservation': 1 },
-                        // { id: 18, Rank: 'Bronze', Rating: 'D3.js', 'Total Reservation': 2 },
-                        // { id: 19, Rank: 'Gold', Rating: 'GraphQL', 'Total Reservation': 2 },
-                        // { id: 20, Rank: 'Gold', Rating: 'Webpack', 'Total Reservation': 3 },
-                        // { id: 21, Rank: 'Silver', Rating: 'Nuxt.js', 'Total Reservation': 1 },
-                        // { id: 22, Rank: 'Silver', Rating: 'Fastify', 'Total Reservation': 2 }
-
+                        { id: 1, Rank: 'Gold', Rating: '', 'Total Reservation': 1 },
                     ]}
                     disableColumnMenu
                 />
+
+                <GiRank2
+                    color="#3ba8ba"
+                    fontSize="30px"
+                />
+
+                <GiRank2
+                    color="#a46ced"
+                    fontSize="30px"
+                />
+
+                <GiRank2
+                    color="#9c2444"
+                    fontSize="30px"
+                />
+
+                <div className="flex justify-center ">
+                    <div className="grid grid-rows-2 grid-flow-col ">
+                        <div className="avatar justify-self-center ">
+                            <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
+                                <img src={Avatar1} />
+                            </div>
+                        </div>
+                        <div className="text-center">username ?</div>
+
+
+                    </div>
+                    <div className="grid grid-rows-2 grid-flow-col ">
+                        <div className="place-self-center">
+                            <FaHeart color="red" fontSize="20px" />
+                        </div>
+                        <div className="text-center font-bold">123</div>
+                    </div>
+                    <div className="grid grid-rows-2 grid-flow-col ">
+                        <div className="place-self-center">
+                            <BiSolidShieldAlt2 color="#c2cccd" fontSize="22px" className="" />
+                        </div>
+                        <div className="text-center font-bold">10</div>
+
+                    </div>
+
+                </div>
+
+                <div>
+                    <button className="btn btn-primary">
+                        <LuSword fontSize="20px" />
+                    </button>
+
+                </div>
+
+                {/* <p>1<FaHeart color="red" />
+                </p>
+                <p>1 <BiSolidShieldAlt2 color="#c2cccd" />
+                </p>
+                <p>username ?</p> */}
+
+
+
             </div>
 
 

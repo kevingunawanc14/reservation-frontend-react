@@ -43,7 +43,7 @@ export default function ActiveOrder() {
 
     const fetchData = async () => {
         try {
-            const response = await axiosPrivate.get('/user')
+            const response = await axiosPrivate.get('/product')
             setTableData(response.data);
 
         } catch (error) {
@@ -55,7 +55,7 @@ export default function ActiveOrder() {
 
     const handleDeleteProduct = async (id) => {
         try {
-            await axiosPrivate.delete(`/user/${id}`)
+            await axiosPrivate.delete(`/product/${id}`)
             fetchData();
             setDeleteStatus('success');
             setTimeout(() => {
@@ -73,10 +73,10 @@ export default function ActiveOrder() {
 
     const handleUpdateChallenge = async (data) => {
         try {
-            await axiosPrivate.post(`/user/${data.id}/update`, {
-                username: data.username,
-                password: data.password,
-                phoneNumber: data.phoneNumber
+            await axiosPrivate.post(`/product/${data.id}/update`, {
+                name: data.name,
+                gor: data.gor,
+                price: data.price,
             });
             fetchData();
             setUpdateStatus('success');
@@ -94,7 +94,7 @@ export default function ActiveOrder() {
 
     const handleDetailChallenge = async (id) => {
         try {
-            const response = await axiosPrivate.get(`/user/${id}`);
+            const response = await axiosPrivate.get(`/product/${id}`);
             setChallangeData(response)
 
         } catch (error) {
@@ -111,16 +111,16 @@ export default function ActiveOrder() {
     const form1 = useForm({
         defaultValues: {
             id: '',
-            username: '',
-            password: '',
-            phoneNumber: '',
+            name: '',
+            gor: '',
+            price: '',
         },
     });
     const form2 = useForm({
         defaultValues: {
-            usernameAdd: '',
-            passwordAdd: '',
-            phoneNumberAdd: '',
+            nameAdd: '',
+            gorAdd: '',
+            priceAdd: '',
         },
     });
 
@@ -131,17 +131,17 @@ export default function ActiveOrder() {
 
     const handleAddChallenge = async () => {
         document.getElementById('addChallange').showModal()
-        setValue2("usernameAdd", '')
-        setValue2("passwordAdd", '')
-        setValue2("phoneNumberAdd", '')
+        setValue2("nameAdd", '')
+        setValue2("gorAdd", '')
+        setValue2("priceAdd", '')
     }
 
     const handleAddSubmitChallenge = async (data) => {
         try {
-            await axiosPrivate.post(`/user/add`, {
-                username: data.usernameAdd,
-                password: data.passwordAdd,
-                phoneNumber: data.phoneNumberAdd,
+            await axiosPrivate.post(`/product/add`, {
+                name: data.nameAdd,
+                gor: data.gorAdd,
+                price: data.priceAdd,
             });
             fetchData();
             setAddStatus('success');
@@ -167,9 +167,9 @@ export default function ActiveOrder() {
 
     useEffect(() => {
         if (challangeData) {
-            setValue1("username", challangeData.data.username)
-            setValue1("password", challangeData.data.password)
-            setValue1("phoneNumber", challangeData.data.phoneNumber)
+            setValue1("name", challangeData.data.name)
+            setValue1("gor", challangeData.data.gor)
+            setValue1("price", challangeData.data.price)
             setValue1("id", challangeData.data.id)
             document.getElementById('detailChallange').showModal()
 
@@ -192,18 +192,18 @@ export default function ActiveOrder() {
             flex: 1,
         },
         {
-            field: 'username',
-            headerName: 'Username',
+            field: 'name',
+            headerName: 'Name',
             flex: 1,
         },
         {
-            field: 'password',
-            headerName: 'Password',
+            field: 'gor',
+            headerName: 'Gor',
             flex: 1,
         },
         {
-            field: 'phoneNumber',
-            headerName: 'Phone Number',
+            field: 'price',
+            headerName: 'Price',
             flex: 1,
         },
         {
@@ -233,27 +233,27 @@ export default function ActiveOrder() {
 
                 <div className="grid grid-cols-2 gap-4">
                     <div>
-                        <Header title={'User'} />
+                        <Header title={'Product'} />
                     </div>
                     <div>
                         <div className="flex justify-end">
                             {deleteStatus === 'success' && (
-                                <Alert severity="success" onClose={() => setDeleteStatus(null)}>User deleted successfully</Alert>
+                                <Alert severity="success" onClose={() => setDeleteStatus(null)}>Product deleted successfully</Alert>
                             )}
                             {deleteStatus === 'error' && (
-                                <Alert severity="error" onClose={() => setDeleteStatus(null)}>Failed to delete user</Alert>
+                                <Alert severity="error" onClose={() => setDeleteStatus(null)}>Failed to delete product</Alert>
                             )}
                             {updateStatus === 'success' && (
-                                <Alert severity="success" onClose={() => setDeleteStatus(null)}>User updated successfully</Alert>
+                                <Alert severity="success" onClose={() => setDeleteStatus(null)}>Product updated successfully</Alert>
                             )}
                             {updateStatus === 'error' && (
-                                <Alert severity="error" onClose={() => setDeleteStatus(null)}>Failed to update user</Alert>
+                                <Alert severity="error" onClose={() => setDeleteStatus(null)}>Failed to update product</Alert>
                             )}
                             {addStatus === 'success' && (
-                                <Alert severity="success" onClose={() => setDeleteStatus(null)}>User added successfully</Alert>
+                                <Alert severity="success" onClose={() => setDeleteStatus(null)}>Product added successfully</Alert>
                             )}
                             {addStatus === 'error' && (
-                                <Alert severity="error" onClose={() => setDeleteStatus(null)}>Failed to add user</Alert>
+                                <Alert severity="error" onClose={() => setDeleteStatus(null)}>Failed to add product</Alert>
                             )}
                         </div>
                     </div>
@@ -294,51 +294,52 @@ export default function ActiveOrder() {
             <dialog id="detailChallange" className="modal">
                 <div className="modal-box">
 
-                    <h3 className="font-bold text-lg">Update User</h3>
+                    <h3 className="font-bold text-lg">Update Product</h3>
                     <div className="label">
-                        <span className="label-text">Username</span>
+                        <span className="label-text">Name</span>
                     </div>
                     {challangeData && (
                         <form className="" onSubmit={handleSubmit1(handleUpdateChallenge)}>
                             <textarea
                                 className="textarea textarea-bordered w-full"
-                                {...register1("username",
-                                    { required: 'Username harus diisi' }
+                                {...register1("name",
+                                    { required: 'Name harus diisi' }
                                 )}
                             />
 
-                            {errors1.username && <p className="text-error mt-2">{errors1.username.message}</p>}
+                            {errors1.name && <p className="text-error mt-2">{errors1.name.message}</p>}
 
                             <div className="label">
-                                <span className="label-text">Password</span>
+                                <span className="label-text">Gor</span>
                             </div>
                             <input
                                 type="text"
                                 className="input input-bordered w-full"
-                                {...register1("password",
-                                    { required: 'Password harus diisi' }
+                                {...register1("gor",
+                                    { required: 'Gor harus diisi' }
                                 )}
                             />
+
+                            {errors1.gor && <p className="text-error mt-2">{errors1.gor.message}</p>}
+
+                            <div className="label">
+                                <span className="label-text">Price</span>
+                            </div>
+                            <input
+                                type="text"
+                                className="input input-bordered w-full"
+                                {...register1("price",
+                                    { required: 'Price harus diisi' }
+                                )}
+                            />
+
+                            {errors1.price && <p className="text-error mt-2">{errors1.price.message}</p>}
 
                             <input
                                 type="text"
                                 className="input input-bordered w-full hidden"
                                 {...register1("id")}
                             />
-
-                            {errors1.password && <p className="text-error mt-2">{errors1.password.message}</p>}
-
-                            <div className="label">
-                                <span className="label-text">Phone Number</span>
-                            </div>
-                            <input
-                                type="text"
-                                className="input input-bordered w-full"
-                                {...register1("phoneNumber",
-                                    { required: 'Phone number harus diisi' }
-                                )}
-                            />
-                            {errors1.phoneNumber && <p className="text-error mt-2">{errors1.phoneNumber.message}</p>}
 
                             <div className="modal-action">
                                 <button
@@ -358,47 +359,47 @@ export default function ActiveOrder() {
             <dialog id="addChallange" className="modal">
                 <div className="modal-box">
 
-                    <h3 className="font-bold text-lg">Add User</h3>
+                    <h3 className="font-bold text-lg">Add Product</h3>
                     <div className="label">
-                        <span className="label-text">Username</span>
+                        <span className="label-text">Name</span>
                     </div>
 
                     <form className="" onSubmit={handleSubmit2(handleAddSubmitChallenge)}>
 
                         <textarea
                             className="textarea textarea-bordered w-full"
-                            {...register2("usernameAdd",
-                                { required: 'Username harus diisi' }
+                            {...register2("nameAdd",
+                                { required: 'Name harus diisi' }
                             )}
                         />
 
-                        {errors2.usernameAdd && <p className="text-error mt-2">{errors2.usernameAdd.message}</p>}
+                        {errors2.nameAdd && <p className="text-error mt-2">{errors2.nameAdd.message}</p>}
 
                         <div className="label">
-                            <span className="label-text">Password</span>
+                            <span className="label-text">Gor</span>
                         </div>
                         <input
                             type="text"
                             className="input input-bordered w-full"
-                            {...register2("passwordAdd",
-                                { required: 'Password harus diisi' }
+                            {...register2("gorAdd",
+                                { required: 'Gor harus diisi' }
                             )}
                         />
 
-                        {errors2.passwordAdd && <p className="text-error mt-2">{errors2.passwordAdd.message}</p>}
+                        {errors2.gorAdd && <p className="text-error mt-2">{errors2.gorAdd.message}</p>}
 
                         <div className="label">
-                            <span className="label-text">Phone Number</span>
+                            <span className="label-text">Price</span>
                         </div>
                         <input
                             type="text"
                             className="input input-bordered w-full"
-                            {...register2("phoneNumberAdd",
-                                { required: 'Phone Number harus diisi' }
+                            {...register2("priceAdd",
+                                { required: 'Price harus diisi' }
                             )}
                         />
 
-                        {errors2.phoneNumberAdd && <p className="text-error mt-2">{errors2.phoneNumberAdd.message}</p>}
+                        {errors2.priceAdd && <p className="text-error mt-2">{errors2.priceAdd.message}</p>}
 
                         <div className="modal-action">
                             <button

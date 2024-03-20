@@ -13,6 +13,7 @@ import { FiUsers } from "react-icons/fi";
 import { PiWarehouse } from "react-icons/pi";
 import { BiTask } from "react-icons/bi";
 import { TbReportMoney } from "react-icons/tb";
+import { TbClipboardList } from "react-icons/tb";
 
 export default function Navbar() {
     const navigate = useNavigate();
@@ -46,16 +47,15 @@ export default function Navbar() {
                 <span className="btm-nav-label">User</span>
             </button>
 
+            <button className={window.location.pathname === '/product' ? 'active text-primary' : ''} onClick={() => handleNavigate('/product')}>
+                <TbClipboardList />
+                <span className="btm-nav-label">Product</span>
+            </button>
+
             <button className={window.location.pathname === '/challange' ? 'active text-primary' : ''} onClick={() => handleNavigate('/challange')}>
                 <BiTask />
                 <span className="btm-nav-label">Challange</span>
             </button>
-
-            <button className={window.location.pathname === '/court' ? 'active text-primary' : ''} onClick={() => handleNavigate('/court')}>
-                <PiWarehouse />
-                <span className="btm-nav-label">Court</span>
-            </button>
-
 
         </div >
     );

@@ -51,10 +51,10 @@ export default function DetailLapangan() {
             <div className="mx-5 mt-[-15px]">
                 <div className="grid grid-cols-3 gap-4">
                     <div className='grid'>
-                        <button className="btn btn-xs">6.00-7.00</button>
+                        <button className="btn btn-xs btn-success">6.00-7.00</button>
                     </div>
                     <div className='grid'>
-                        <button className="btn btn-xs">7.00-8.00</button>
+                        <button className="btn btn-xs btn-error">7.00-8.00</button>
                     </div>
                     <div className='grid'>
                         <button className="btn btn-xs">9.00-10.00</button>
@@ -168,7 +168,7 @@ export default function DetailLapangan() {
             </div>
 
             <div className="flex justify-center mb-20 mx-5 mt-5">
-                <button className="btn btn-success btn-block">Place Order</button>
+                <button className="btn btn-primary btn-block">Place Order</button>
             </div>
 
             <Navbar />

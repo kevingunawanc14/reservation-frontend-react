@@ -102,19 +102,19 @@ export default function Home() {
                 </div>
                 <div className="grid grid-cols-3 m-5">
                     <div className='grid justify-items-center'>
-                        <button className="btn btn-circle btn-neutral" onClick={() => detailPage('badminton')}>
+                        <button className="btn btn-circle btn-neutral text-neutral-content" onClick={() => detailPage('badminton')}>
                             <GiShuttlecock />
                         </button>
                         <p className='font-mono'>Badminton</p>
                     </div>
                     <div className='grid justify-items-center'>
-                        <button className="btn btn-circle btn-neutral" onClick={() => detailPage('futsal')}>
+                        <button className="btn btn-circle btn-neutral text-neutral-content" onClick={() => detailPage('futsal')}>
                             <GiSoccerKick />
                         </button>
                         <p className='font-mono'>Futsal</p>
                     </div>
                     <div className='grid justify-items-center'>
-                        <button className="btn btn-circle btn-neutral" onClick={() => detailPage('basket')}>
+                        <button className="btn btn-circle btn-neutral text-neutral-content" onClick={() => detailPage('basket')}>
                             <TbPlayBasketball />
 
 
@@ -125,13 +125,13 @@ export default function Home() {
                 </div>
                 <div className="grid grid-cols-3 m-5">
                     <div className='grid justify-items-center'>
-                        <button className="btn btn-circle  btn-neutral" onClick={() => detailPage('gym')}>
+                        <button className="btn btn-circle  btn-neutral text-neutral-content" onClick={() => detailPage('gym')}>
                             <CgGym />
                         </button>
                         <p className='font-mono'>Gym</p>
                     </div>
                     <div className='grid justify-items-center'>
-                        <button className="btn btn-circle  btn-neutral" onClick={() => detailPage('swim')}>
+                        <button className="btn btn-circle  btn-neutral text-neutral-content" onClick={() => detailPage('renang')}>
                             <FaSwimmer />
 
 
@@ -139,7 +139,7 @@ export default function Home() {
                         <p className='font-mono'>Renang</p>
                     </div>
                     <div className='grid justify-items-center'>
-                        <button className="btn btn-circle  btn-neutral" onClick={() => detailPage('martial-art')}>
+                        <button className="btn btn-circle  btn-neutral text-neutral-content" onClick={() => detailPage('membership')}>
                             <FaRegAddressCard />
 
 
@@ -171,7 +171,7 @@ export default function Home() {
 
                                 </div>
                             </div>
-                            <button className="btn btn-primary text-neutral-content mt-5">Claim Reward</button>
+                            <button className="btn btn-primary mt-5">Claim Reward</button>
                         </div>
                     </div>
                     <div className="card w-80 h-96 bg-neutral shadow-xl mt-2">
@@ -194,7 +194,7 @@ export default function Home() {
 
                                 </div>
                             </div>
-                            <button className="btn btn-primary text-neutral-content mt-5">Claim Reward</button>
+                            <button className="btn btn-primary mt-5">Claim Reward</button>
                         </div>
                     </div>
                     <div className="card w-80 h-60 bg-neutral shadow-xl mt-2">
@@ -213,7 +213,7 @@ export default function Home() {
                                     <p className='text-sm text-neutral-content'>Selesaikan berolahraga selama 50 jam dan dapatkan hadiah </p>
                                 </div>
                             </div>
-                            <button className="btn btn-primary text-neutral-content mt-1">Claim Reward</button>
+                            <button className="btn btn-primary  mt-1">Claim Reward</button>
                         </div>
                     </div>
                 </div>
