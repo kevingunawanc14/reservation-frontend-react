@@ -28,13 +28,22 @@ export default function DetailAccount() {
                     <div className="collapse-title text-xl font-medium text-neutral-content">
                         Detail Account
                     </div>
-                    <div className="collapse-content">
-                        <kbd className="kbd mx-2">Username: PRX</kbd>
-                        <kbd className="kbd mx-2">Rank: PRX</kbd>
-                        <kbd className="kbd mx-2">Xp: PRX</kbd>
-                        <kbd className="kbd mx-2">Hp: PRX</kbd>
-                        <kbd className="kbd mx-2">Coin: PRX</kbd>
-                        <kbd className="kbd mx-2">Total Money Spend: PRX</kbd>
+                    <div className="collapse-content grid place-items-center  ">
+                        <div className="mt-3 ">
+                            <kbd className="kbd mx-2 text-sm w-60	">Username: PRX</kbd>
+                        </div>
+                        <div className="mt-3">
+                            <kbd className="kbd mx-2 text-sm w-60	">Rank: PRX</kbd>
+                        </div>
+                        <div className="mt-3">
+                            <kbd className="kbd mx-2 text-sm w-60	">Xp: PRX</kbd>
+                        </div>
+                        <div className="mt-3">
+                            <kbd className="kbd mx-2 text-sm w-60	">Hp: PRX</kbd>
+                        </div>
+                        <div className="mt-3">
+                            <kbd className="kbd mx-2 text-sm w-60	">Coin: PRX</kbd>
+                        </div>
                     </div>
                 </div>
                 <div className="collapse collapse-arrow bg-neutral mt-3">
@@ -42,11 +51,18 @@ export default function DetailAccount() {
                     <div className="collapse-title text-xl font-medium text-neutral-content">
                         Statistic
                     </div>
-                    <div className="collapse-content">
-                        <kbd className="kbd mx-2">Total Minute Workout: PRX</kbd>
-                        <kbd className="kbd mx-2">Most Sport Played: PRX</kbd>
-                        <kbd className="kbd mx-2">Type Sport: PRX</kbd>
+                    <div className="collapse-content grid place-items-center  ">
+                        <div className="mt-3 ">
+                            <kbd className="kbd mx-2 text-sm w-60">Total Minute Workout: PRX</kbd>
+                        </div>
+                        <div className="mt-3">
+                            <kbd className="kbd mx-2 text-sm w-60">Most Sport Played: PRX</kbd>
+                        </div>
+                        <div className="mt-3">
+                            <kbd className="kbd mx-2 text-sm w-60">Type Sport: PRX</kbd>
+                        </div>
                     </div>
+
                 </div>
                 <div className="collapse collapse-arrow bg-neutral mt-3">
                     <input type="radio" name="my-accordion-2" />
@@ -55,34 +71,29 @@ export default function DetailAccount() {
                     </div>
                     <div className="collapse-content">
                         <div className="grid grid-cols-3">
-                            <button className="btn btn-active btn-sm btn-success me-2" onClick={() => document.getElementById('my_modal_2').showModal()}>Pro Gym</button>
-                            <button className="btn btn-active btn-error btn-sm me-2" onClick={() => document.getElementById('my_modal_2').showModal()}>Pro Gym</button>
-                            <button className="btn btn-active btn-error btn-sm me-2" onClick={() => document.getElementById('my_modal_2').showModal()}>Pro Gym</button>
+                            <button className="btn btn-active btn-sm btn-success me-2 text-xs" onClick={() => document.getElementById('my_modal_2').showModal()}>Reservation Noob</button>
+                            <button className="btn btn-active btn-error btn-sm me-2 text-xs" onClick={() => document.getElementById('my_modal_2').showModal()}>Reservation Pro</button>
+                            <button className="btn btn-active btn-error btn-sm me-2 text-xs" onClick={() => document.getElementById('my_modal_2').showModal()}>Reservation Expert</button>
                         </div>
                         <div className="grid grid-cols-3 mt-2">
-                            <button className="btn btn-active btn-sm btn-success me-2" onClick={() => document.getElementById('my_modal_2').showModal()}>Pro Gym</button>
-                            <button className="btn btn-active btn-error btn-sm me-2" onClick={() => document.getElementById('my_modal_2').showModal()}>Pro Gym</button>
-                            <button className="btn btn-active btn-error btn-sm me-2" onClick={() => document.getElementById('my_modal_2').showModal()}>Pro Gym</button>
+                            <button className="btn btn-active btn-sm btn-success me-2 text-xs" onClick={() => document.getElementById('my_modal_2').showModal()}>Badminton Beginner</button>
+                            <button className="btn btn-active btn-error btn-sm me-2 text-xs" onClick={() => document.getElementById('my_modal_2').showModal()}>Badminton Intermediate</button>
+                            <button className="btn btn-active btn-error btn-sm me-2 text-xs" onClick={() => document.getElementById('my_modal_2').showModal()}>Badminton Expert</button>
                         </div>
                         <div className="grid grid-cols-3 mt-2">
-                            <button className="btn btn-active btn-sm btn-success me-2" onClick={() => document.getElementById('my_modal_2').showModal()}>Pro Gym</button>
-                            <button className="btn btn-active btn-error btn-sm me-2" onClick={() => document.getElementById('my_modal_2').showModal()}>Pro Gym</button>
-                            <button className="btn btn-active btn-error btn-sm me-2" onClick={() => document.getElementById('my_modal_2').showModal()}>Pro Gym</button>
+                            <button className="btn btn-active btn-sm btn-success me-2 text-xs" onClick={() => document.getElementById('my_modal_2').showModal()}>Futsal Beginner</button>
+                            <button className="btn btn-active btn-error btn-sm me-2 text-xs" onClick={() => document.getElementById('my_modal_2').showModal()}>Futsal Intermediate</button>
+                            <button className="btn btn-active btn-error btn-sm me-2 text-xs" onClick={() => document.getElementById('my_modal_2').showModal()}>Futsal Expert</button>
                         </div>
                         <div className="grid grid-cols-3 mt-2">
-                            <button className="btn btn-active btn-sm btn-success me-2" onClick={() => document.getElementById('my_modal_2').showModal()}>Pro Gym</button>
-                            <button className="btn btn-active btn-error btn-sm me-2" onClick={() => document.getElementById('my_modal_2').showModal()}>Pro Gym</button>
-                            <button className="btn btn-active btn-error btn-sm me-2" onClick={() => document.getElementById('my_modal_2').showModal()}>Pro Gym</button>
+                            <button className="btn btn-active btn-sm btn-success me-2 text-xs" onClick={() => document.getElementById('my_modal_2').showModal()}>Basketball Beginner</button>
+                            <button className="btn btn-active btn-error btn-sm me-2 text-xs" onClick={() => document.getElementById('my_modal_2').showModal()}>Basketball Intermediate</button>
+                            <button className="btn btn-active btn-error btn-sm me-2 text-xs" onClick={() => document.getElementById('my_modal_2').showModal()}>Basketball Expert</button>
                         </div>
                         <div className="grid grid-cols-3 mt-2">
-                            <button className="btn btn-active btn-sm btn-success me-2" onClick={() => document.getElementById('my_modal_2').showModal()}>Pro Gym</button>
-                            <button className="btn btn-active btn-error btn-sm me-2" onClick={() => document.getElementById('my_modal_2').showModal()}>Pro Gym</button>
-                            <button className="btn btn-active btn-error btn-sm me-2" onClick={() => document.getElementById('my_modal_2').showModal()}>Pro Gym</button>
-                        </div>
-                        <div className="grid grid-cols-3 mt-2">
-                            <button className="btn btn-active btn-sm btn-success me-2" onClick={() => document.getElementById('my_modal_2').showModal()}>Pro Gym</button>
-                            <button className="btn btn-active btn-error btn-sm me-2" onClick={() => document.getElementById('my_modal_2').showModal()}>Pro Gym</button>
-                            <button className="btn btn-active btn-error btn-sm me-2" onClick={() => document.getElementById('my_modal_2').showModal()}>Pro Gym</button>
+                            <button className="btn btn-active btn-sm btn-success me-2 text-xs" onClick={() => document.getElementById('my_modal_2').showModal()}>Gym Beginner</button>
+                            <button className="btn btn-active btn-error btn-sm me-2 text-xs" onClick={() => document.getElementById('my_modal_2').showModal()}>Gym Intermediate</button>
+                            <button className="btn btn-active btn-error btn-sm me-2 text-xs" onClick={() => document.getElementById('my_modal_2').showModal()}>Gym Expert</button>
                         </div>
                         <dialog id="my_modal_2" className="modal">
                             <div className="modal-box">
@@ -101,17 +112,7 @@ export default function DetailAccount() {
                         Shop
                     </div>
                     <div className="collapse-content">
-                    </div>
-                </div>
-                <div className="collapse collapse-arrow bg-neutral mt-3">
-                    <input type="radio" name="my-accordion-2" />
-                    <div className="collapse-title text-xl font-medium text-neutral-content">
-                        Setting
-                    </div>
-                    <div className="collapse-content">
-                        <button className="btn me-3">Log Out</button>
-                        {/* Open the modal using document.getElementById('ID').showModal() method */}
-                        <button className="btn me-3" onClick={() => document.getElementById('my_modal_3').showModal()}>Avatar</button>
+                        <button className="btn btn-primary me-3" onClick={() => document.getElementById('my_modal_3').showModal()}>Avatar</button>
                         <dialog id="my_modal_3" className="modal">
                             <div className="modal-box">
                                 <h3 className="font-bold text-lg">Pick ur avatar!</h3>
@@ -188,7 +189,110 @@ export default function DetailAccount() {
                             </form>
                         </dialog>
                         {/* Open the modal using document.getElementById('ID').showModal() method */}
-                        <button className="btn" onClick={() => document.getElementById('my_modal_2').showModal()}>Theme</button>
+                        <button className="btn btn-primary" onClick={() => document.getElementById('my_modal_2').showModal()}>Theme</button>
+                        <dialog id="my_modal_2" className="modal">
+                            <div className="modal-box">
+                                <h3 className="font-bold text-lg">Pick ur theme!</h3>
+                                <div className="bg-slate-50 border-4 rounded-full flex justify-center hover:border-black cursor-pointer" onClick={() => handleClick("light")}>☀️</div>
+                                <div className="bg-slate-900 border-4 rounded-full flex justify-center hover:border-black cursor-pointer" onClick={() => handleClick("dark")}>🐦‍⬛</div>
+                                <div className="bg-green-950 border-4 rounded-full flex justify-center hover:border-black cursor-pointer" onClick={() => handleClick("forest")}>🌳</div>
+                                <div className="bg-yellow-600 border-4 rounded-full flex justify-center mt-1 hover:border-black cursor-pointer" onClick={() => handleClick("cyberpunk")}>🤖</div>
+                                <div className="bg-pink-600 border-4 rounded-full flex justify-center mt-1 hover:border-black cursor-pointer" onClick={() => handleClick("dracula")}>🧛‍♂️</div>
+                                <div className="bg-lime-950 border-4 rounded-full flex justify-center mt-1 hover:border-black cursor-pointer" onClick={() => handleClick("lemonade")}>🐉</div>
+                                <div className="bg-indigo-950 border-4 rounded-full flex justify-center mt-1 hover:border-black cursor-pointer" onClick={() => handleClick("synthwave")}>🌑</div>
+                            </div>
+                            <form method="dialog" className="modal-backdrop">
+                                <button>close</button>
+                            </form>
+                        </dialog>
+                    </div>
+                </div>
+                <div className="collapse collapse-arrow bg-neutral mt-3 mb-40">
+                    <input type="radio" name="my-accordion-2" />
+                    <div className="collapse-title text-xl font-medium text-neutral-content">
+                        Setting
+                    </div>
+                    <div className="collapse-content">
+                        <button className="btn btn-primary me-3">Log Out</button>
+                        {/* Open the modal using document.getElementById('ID').showModal() method */}
+                        <button className="btn btn-primary me-3" onClick={() => document.getElementById('my_modal_3').showModal()}>Avatar</button>
+                        <dialog id="my_modal_3" className="modal">
+                            <div className="modal-box">
+                                <h3 className="font-bold text-lg">Pick ur avatar!</h3>
+                                <div className="grid grid-cols-4 gap-4 justify-items-center mt-3">
+                                    <div className="avatar">
+                                        <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
+                                            <img src={Avatar1} />
+                                        </div>
+                                    </div>
+                                    <div className="avatar">
+                                        <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
+                                            <img src={Avatar1} />
+                                        </div>
+                                    </div>
+                                    <div className="avatar">
+                                        <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
+                                            <img src={Avatar1} />
+                                        </div>
+                                    </div>
+                                    <div className="avatar">
+                                        <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
+                                            <img src={Avatar1} />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-4 gap-4 mt-3 justify-items-center">
+                                    <div className="avatar">
+                                        <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer ">
+                                            <img src={Avatar1} />
+                                        </div>
+                                    </div>
+                                    <div className="avatar">
+                                        <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
+                                            <img src={Avatar1} />
+                                        </div>
+                                    </div>
+                                    <div className="avatar">
+                                        <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
+                                            <img src={Avatar1} />
+                                        </div>
+                                    </div>
+                                    <div className="avatar">
+                                        <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
+                                            <img src={Avatar1} />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-4 gap-4 mt-3 justify-items-center">
+                                    <div className="avatar">
+                                        <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
+                                            <img src={Avatar1} />
+                                        </div>
+                                    </div>
+                                    <div className="avatar">
+                                        <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
+                                            <img src={Avatar1} />
+                                        </div>
+                                    </div>
+                                    <div className="avatar">
+                                        <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
+                                            <img src={Avatar1} />
+                                        </div>
+                                    </div>
+                                    <div className="avatar">
+                                        <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
+                                            <img src={Avatar1} />
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <form method="dialog" className="modal-backdrop">
+                                <button>close</button>
+                            </form>
+                        </dialog>
+                        {/* Open the modal using document.getElementById('ID').showModal() method */}
+                        <button className="btn btn-primary" onClick={() => document.getElementById('my_modal_2').showModal()}>Theme</button>
                         <dialog id="my_modal_2" className="modal">
                             <div className="modal-box">
                                 <h3 className="font-bold text-lg">Pick ur theme!</h3>

@@ -30,7 +30,7 @@ export default function Journal() {
             </div>
             <div className="mx-10 mt-5">
                 <div className="card shadow-xl image-full bg-neutral">
-                    <figure><img src={Dummy} className="w-full " alt="Shoes" /></figure>
+                    <figure><img src={Dummy} className="w-full sm:hidden" alt="Shoes" /></figure>
                     <div className="card-body">
                         <h2 className="card-title text-neutral-content">sport ?</h2>
                         <p className="text-neutral-content">date ?</p>
