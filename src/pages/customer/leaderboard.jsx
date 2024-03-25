@@ -9,82 +9,270 @@ import { BiSolidShieldAlt2 } from "react-icons/bi";
 import { LuSwords } from "react-icons/lu";
 import Avatar1 from '../../assets/avatar/avatar1.webp';
 import { LuSword } from "react-icons/lu";
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Alert from '@mui/material/Alert';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate.jsx';
+import { useNavigate, useLocation } from "react-router-dom";
+import { MdOutlineEdit } from "react-icons/md";
+import { MdDeleteOutline } from "react-icons/md";
+import {
+    GridToolbarContainer,
+    GridToolbarFilterButton,
+    GridToolbarExport,
+} from '@mui/x-data-grid';
+import { useForm } from "react-hook-form";
+import { IoMdAddCircleOutline } from "react-icons/io";
+
+function CustomToolbar() {
+    return (
+        <GridToolbarContainer>
+            <GridToolbarFilterButton />
+        </GridToolbarContainer>
+    );
+}
 
 
 
 
 export default function Leaderboard() {
 
+    const [tableData, setTableData] = useState([])
+    const [challangeData, setChallangeData] = useState(null)
+    const [deleteStatus, setDeleteStatus] = useState(null);
+    const [updateStatus, setUpdateStatus] = useState(null);
+    const [addStatus, setAddStatus] = useState(null);
+    const [deleteId, setDeleteId] = useState(null);
+    const [theme, setTheme] = useState(null);
+    const axiosPrivate = useAxiosPrivate();
+    const navigate = useNavigate();
+    const location = useLocation();
+
+
+
+    const fetchData = async () => {
+        try {
+            const response = await axiosPrivate.get('/user')
+            setTableData(response.data);
+
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            navigate('/login', { state: { from: location }, replace: true });
+
+        }
+    };
+
+    const handleDeleteProduct = async (id) => {
+        try {
+            await axiosPrivate.delete(`/user/${id}`)
+            fetchData();
+            setDeleteStatus('success');
+            setTimeout(() => {
+                setDeleteStatus(null);
+            }, 2000);
+
+        } catch (error) {
+            setDeleteStatus('error');
+            setTimeout(() => {
+                setDeleteStatus(null);
+            }, 2000);
+
+        }
+    };
+
+    const handleUpdateChallenge = async (data) => {
+        try {
+            await axiosPrivate.post(`/user/${data.id}/update`, {
+                username: data.username,
+                password: data.password,
+                phoneNumber: data.phoneNumber
+            });
+            fetchData();
+            setUpdateStatus('success');
+            setTimeout(() => {
+                setUpdateStatus(null);
+            }, 2000);
+            document.getElementById('detailChallange').close();
+        } catch (error) {
+            setUpdateStatus('error');
+            setTimeout(() => {
+                setUpdateStatus(null);
+            }, 2000);
+        }
+    }
+
+    const handleDetailChallenge = async (id) => {
+        try {
+            const response = await axiosPrivate.get(`/user/${id}`);
+            setChallangeData(response)
+
+        } catch (error) {
+            console.log('error:', error);
+        }
+    }
+
+    const handleDeleteModal = async (id) => {
+        document.getElementById('deleteModal').showModal();
+        setDeleteId(id);
+    }
+
+    // Create separate instances of useForm for each form
+    const form1 = useForm({
+        defaultValues: {
+            id: '',
+            username: '',
+            password: '',
+            phoneNumber: '',
+        },
+    });
+    const form2 = useForm({
+        defaultValues: {
+            usernameAdd: '',
+            passwordAdd: '',
+            phoneNumberAdd: '',
+        },
+    });
+
+    // Destructure register and handleSubmit functions from each form
+    const { register: register1, handleSubmit: handleSubmit1, watch: watch1, setValue: setValue1, formState: { errors: errors1 } } = form1;
+    const { register: register2, handleSubmit: handleSubmit2, watch: watch2, setValue: setValue2, formState: { errors: errors2 } } = form2;
+
+
+    const handleAddChallenge = async () => {
+        document.getElementById('addChallange').showModal()
+        setValue2("usernameAdd", '')
+        setValue2("passwordAdd", '')
+        setValue2("phoneNumberAdd", '')
+    }
+
+    const handleAddSubmitChallenge = async (data) => {
+        try {
+            await axiosPrivate.post(`/user/add`, {
+                username: data.usernameAdd,
+                password: data.passwordAdd,
+                phoneNumber: data.phoneNumberAdd,
+            });
+            fetchData();
+            setAddStatus('success');
+            setTimeout(() => {
+                setAddStatus(null);
+            }, 2000);
+            document.getElementById('addChallange').close();
+
+        } catch (error) {
+            setAddStatus('error');
+            setTimeout(() => {
+                setAddStatus(null);
+            }, 2000);
+
+        }
+
+    }
+
+    const handleCloseModal = async () => {
+        document.getElementById('detailChallange').close();
+        document.getElementById('addChallange').close();
+    }
+
     useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const response = await fetch(`http://localhost:3000/users/price/1`);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const data = await response.json();
-                setHeader(data[0].header);
-                setFontFamily(
-                    {
-                        headerPrice: data[0].fontTypeHeader,
-                        descriptionPrice: data[0].fontTypeBenefit,
-                    }
-                );
-                setPrice({
-                    price1:
-                    {
-                        title: data[0].newPrice,
-                        description: data[0].newDesc.split(",")
-                    },
-                    price2: {
-                        title: data[1].newPrice,
-                        description: data[1].newDesc.split(",")
-                    },
-                    price3: {
-                        title: data[2].newPrice,
-                        description: data[2].newDesc.split(",")
-                    },
-                });
-                // console.log('1', price);
-                // setPriceDescription([])
-                // console.log('1', data);
-            } catch (error) {
-                console.log(error)
-            }
+        if (challangeData) {
+            setValue1("username", challangeData.data.username)
+            setValue1("password", challangeData.data.password)
+            setValue1("phoneNumber", challangeData.data.phoneNumber)
+            setValue1("id", challangeData.data.id)
+            document.getElementById('detailChallange').showModal()
 
-        };
+        }
+    }, [challangeData]);
 
-        fetchUserData();
 
-    }, [])
+    useEffect(() => {
+        fetchData();
+
+    }, []);
+
+    const isDarkTheme = document.documentElement.getAttribute("data-theme") === 'dracula' || document.documentElement.getAttribute("data-theme") === 'dark'
+    console.log('isDarkTheme', isDarkTheme)
 
     const columns = [
         {
-            field: 'Rank',
-            flex: 1,
-            minWidth: 150,
-            headerAlign: 'center',
-            align: 'center',
-            sortable: false
+            field: 'id',
+            headerName: 'Rank',
+            flex: 0.5,
         },
         {
-            field: 'Rating',
+            field: 'username',
+            headerName: 'Rating',
+            renderCell: (params) => (
+                <div className="flex justify-center mt-3">
+                    <div className="grid grid-rows-1 grid-flow-col ">
+                        <div className="place-self-center mt-[-1em] ">
+                            <GiRank2
+                                color="#9c2444"
+                                fontSize="30px"
+                            />
+                            {/* {params} */}
+                        </div>
+
+
+
+                    </div>
+                    <div className="grid grid-rows-2 grid-flow-col ">
+                        <div className="avatar justify-self-center ">
+                            <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
+                                <img src={Avatar1} />
+                            </div>
+                        </div>
+                        <div className="text-center">{params.row.username}</div>
+
+
+                    </div>
+                    <div className="grid grid-rows-2 grid-flow-col ">
+                        <div className="place-self-center">
+                            <FaHeart color="red" fontSize="20px" />
+                        </div>
+                        <div className="text-center font-bold">123</div>
+                    </div>
+                    <div className="grid grid-rows-2 grid-flow-col ">
+                        <div className="place-self-center">
+                            <BiSolidShieldAlt2 color="#c2cccd" fontSize="22px" className="" />
+                        </div>
+                        <div className="text-center font-bold">10</div>
+
+                    </div>
+
+                </div>
+            ),
             flex: 1,
-            width: 200,
-            sortable: false
+            sortable: false,
         },
         {
-            field: <LuSwords fontSize="20px" />
-            ,
-            flex: 1,
-            minWidth: 50,
-            headerAlign: 'center',
-            align: 'center',
-            sortable: false
+            field: 'Action',
+            headerName: <LuSwords fontSize="20px" />,
+            renderCell: (params) => (
+                <div className="flex justify-around">
+                    <div>
+                        <button className="btn btn-error">
+                            <LuSword fontSize="20px" />
+                        </button>
+
+                    </div>
+                </div >
+            ),
+            flex: 0.5,
+            sortable: false,
         },
     ];
 
-    // const style = { border: "20px" }
+    const rows = [
+        {
+            id: 1,
+            username: '@MUI',
+            age: 20,
+        },
+    ];
+
+
 
     return (
         <>
@@ -92,19 +280,29 @@ export default function Leaderboard() {
                 <Header title={'Leaderboard'} />
             </div>
 
-            <div className="mx-10 mt-5 mb-20">
+            <div className="mx-3 mt-5 mb-20">
                 <DataGrid
-                    initialState={{
-                        pagination: { paginationModel: { pageSize: 9 } },
-                    }}
-                    pageSizeOptions={[5, 10, 25]}
+                    rows={tableData}
                     columns={columns}
-                    rows={[
-                        { id: 1, Rank: 'Gold', Rating: '', 'Total Reservation': 1 },
-                    ]}
+                    initialState={{
+                        pagination: {
+                            paginationModel: {
+                                pageSize: 8,
+                            },
+                        },
+                    }}
+                    pageSizeOptions={[8]}
+                    disableRowSelectionOnClick
                     disableColumnMenu
+                    slots={{ toolbar: CustomToolbar }}
+                    sx={{
+                        color: isDarkTheme ? 'white' : 'black', // Set the overall font color to white
+                        '& .MuiDataGrid-cell': { // Target individual cells for more granular control
+                            color: 'inherit', // Inherit the white color from the parent
+                        },
+                    }}
                 />
-
+                {/* 
                 <GiRank2
                     color="#3ba8ba"
                     fontSize="30px"
@@ -118,9 +316,17 @@ export default function Leaderboard() {
                 <GiRank2
                     color="#9c2444"
                     fontSize="30px"
-                />
+                /> */}
 
-                <div className="flex justify-center ">
+                {/* <div className="flex justify-center ">
+                    <div className="grid grid-rows-2 grid-flow-col ">
+                        <GiRank2
+                            color="#9c2444"
+                            fontSize="30px"
+                        />
+
+
+                    </div>
                     <div className="grid grid-rows-2 grid-flow-col ">
                         <div className="avatar justify-self-center ">
                             <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
@@ -145,14 +351,14 @@ export default function Leaderboard() {
 
                     </div>
 
-                </div>
+                </div> */}
 
-                <div>
+                {/* <div>
                     <button className="btn btn-primary">
                         <LuSword fontSize="20px" />
                     </button>
 
-                </div>
+                </div> */}
 
                 {/* <p>1<FaHeart color="red" />
                 </p>

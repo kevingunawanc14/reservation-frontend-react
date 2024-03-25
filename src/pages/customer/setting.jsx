@@ -109,6 +109,45 @@ export default function DetailAccount() {
                 <div className="collapse collapse-arrow bg-neutral mt-3">
                     <input type="radio" name="my-accordion-2" />
                     <div className="collapse-title text-xl font-medium text-neutral-content">
+                        Memberships
+                    </div>
+                    <div className="collapse-content">
+                        <div className="grid grid-rows-3 ">
+                            <div className="card bg-accent shadow-xl text-accent-content">
+                                <div className="card-body">
+                                    <h2 className="card-title">Member Gym</h2>
+                                    <p>start date end date</p>
+                                    <div className="card-actions justify-end">
+                                        <button className="btn btn-primary">Active</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="card bg-accent shadow-xl mt-2 text-accent-content">
+                                <div className="card-body">
+                                    <h2 className="card-title">Member Badminton</h2>
+                                    <p>start date end date</p>
+                                    <div className="card-actions justify-end">
+                                        <button className="btn btn-primary">Active</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="card bg-accent shadow-xl mt-2 text-accent-content">
+                                <div className="card-body">
+                                    <h2 className="card-title">Member Renang</h2>
+                                    <p>start date end date</p>
+                                    <div className="card-actions justify-end">
+                                        <button className="btn btn-primary">Non Active</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="collapse collapse-arrow bg-neutral mt-3">
+                    <input type="radio" name="my-accordion-2" />
+                    <div className="collapse-title text-xl font-medium text-neutral-content">
                         Shop
                     </div>
                     <div className="collapse-content">
