@@ -35,38 +35,30 @@ const ROLES = {
 function App() {
 
   return (
-    <Routes>
-      <Route path='/' element={<Layout />} >
-        {/* public routes */}
+    <div className="App">
+      <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/rate" element={<Rate />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
 
-        {/* protected routes */}
-        <Route element={<PersistLogin />}>
-          <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/journal" element={<Journal />} />
-            <Route path="/lapangan/:namaLapangan" element={<ListLapangan />} />
-            <Route path="/lapangan/:namaLapangan/detail/:nomorLapangan" element={<DetailLapangan />} />
-            <Route path="/payment" element={<Payment />} />
-            <Route path="/setting" element={<Setting />} />
-            <Route path="/leaderboard" element={<Leaderboard />} />
-          </Route>
+        <Route path="/" element={<Home />} />
+        <Route path="/journal" element={<Journal />} />
+        <Route path="/lapangan/:namaLapangan" element={<ListLapangan />} />
+        <Route path="/lapangan/:namaLapangan/detail/:nomorLapangan" element={<DetailLapangan />} />
+        <Route path="/payment" element={<Payment />} />
+        <Route path="/setting" element={<Setting />} />
+        <Route path="/leaderboard" element={<Leaderboard />} />
 
-          <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/report" element={<Report />} />
-            <Route path="/user" element={<User />} />
-            <Route path="/challange" element={<Challange />} />
-            <Route path="/product" element={<Product />} />
-          </Route>
-        </Route>
-        {/* catch all */}
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/report" element={<Report />} />
+        <Route path="/user" element={<User />} />
+        <Route path="/challange" element={<Challange />} />
+        <Route path="/product" element={<Product />} />
+
         <Route path="*" element={<Missing />} />/
-      </Route>
 
-    </Routes>
+      </Routes>
+    </div>
   )
 }
 
