@@ -1,18 +1,17 @@
 import { useForm } from "react-hook-form";
-import useAuth from '../../hooks/useAuth';
-import { useContext, useState } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Header from '../../components/header';
+import Alert from '@mui/material/Alert';
+import axios from 'axios';
+import { useState, useEffect } from 'react';
+
 
 export default function Login() {
-
-    const { setAuth } = useAuth();
-
+    const [registerStatus, setRegisterStatus] = useState(null);
+    const [loginStatus, setLoginStatus] = useState(null);
     const navigate = useNavigate();
-    const location = useLocation();
-    const from = location.state?.from?.pathname || "/";
-
-    const { register, handleSubmit, formState: { errors }, clearErrors,
+    const [mode, setMode] = useState('login');
+    const { register, handleSubmit, formState: { errors }, reset, clearErrors,
     } = useForm({
         defaultValues: {
             username: '',
@@ -21,75 +20,93 @@ export default function Login() {
         }
     });
 
-    const [user, setUser] = useState('');
-    const [pwd, setPwd] = useState('');
-    const [errMsg, setErrMsg] = useState('');
+    useEffect(() => {
+        const token = localStorage.getItem('token');
 
-    const [mode, setMode] = useState('login');
+        if (token) {
+            navigate('/')
+        }
+
+
+    }, [])
+
 
     const toggleMode = () => {
         setMode(prevMode => prevMode === 'login' ? 'register' : 'login');
         clearErrors(["username", "password", "phoneNumber"])
+        reset();
     };
 
     const login = async (data) => {
         const dataToSend = { username: data.username, password: data.password };
         try {
-            const response = await fetch(`http://localhost:2000/login`, {
-                method: 'Post',
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                credentials: 'include',
-                body: JSON.stringify(dataToSend)
-            });
+            const response = await axios.post('http://localhost:2000/login', dataToSend);
 
-            const data = await response.json();
-            const accessToken = data.accessToken;
-            const roles = data.roles;
-            setAuth({ user, pwd, roles, accessToken });
-            setUser('');
-            setPwd('');
-            navigate(from, { replace: true });
+            console.log('response', response);
+
+            const token = response.data.token; // Ambil token dari respons
+            localStorage.setItem('token', token); // Simpan token ke local storage
+
+            navigate('/');
+
+            setLoginStatus('success');
+            setTimeout(() => {
+                setLoginStatus(null);
+            }, 2000);
 
         } catch (error) {
             console.error('Error:', error);
+            setLoginStatus('error');
+            setTimeout(() => {
+                setLoginStatus(null);
+            }, 2000);
         }
     }
 
     const registerAccount = async (data) => {
         const dataToSend = { username: data.username, password: data.password, phoneNumber: data.phoneNumber };
-        console.log('dataToSend', dataToSend)
         try {
-            const response = await fetch(`http://localhost:2000/register`, {
-                method: 'Post',
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(dataToSend)
-            });
 
-            const data = await response.json();
-            console.log('data', data)
-            console.log('data1', JSON.stringify(data))
+            const response = await axios.post('http://localhost:2000/register', dataToSend);
 
-            // const accessToken = data.accessToken;
-            // const roles = data.role;
+            console.log('response', response);
 
-            // setAuth({ user, roles, accessToken });
-            // setUser('');
-            // navigate(from, { replace: true });
+            setRegisterStatus('success');
+            setTimeout(() => {
+                setRegisterStatus(null);
+            }, 2000);
+            setMode('login');
+
+            reset();
 
         } catch (error) {
             console.error('Error:', error);
+            setRegisterStatus('error');
+            setTimeout(() => {
+                setRegisterStatus(null);
+            }, 2000);
         }
     }
 
     return (
         <>
-            <div className="h-screen grid content-center ">
+            <div className="h-screen grid content-center mx-10">
                 <div className="flex justify-center">
                     <Header title={'Welcome'} />
+                </div>
+                <div className="flex justify-center">
+                    {registerStatus === 'success' && (
+                        <Alert severity="success" onClose={() => setRegisterStatus(null)}>Registration Success</Alert>
+                    )}
+                    {registerStatus === 'error' && (
+                        <Alert severity="error" onClose={() => setRegisterStatus(null)}>Registration Failed</Alert>
+                    )}
+                    {loginStatus === 'success' && (
+                        <Alert severity="success" onClose={() => setRegisterStatus(null)}>Login Success</Alert>
+                    )}
+                    {loginStatus === 'error' && (
+                        <Alert severity="error" onClose={() => setRegisterStatus(null)}>Login Failed</Alert>
+                    )}
                 </div>
                 {mode === 'login' ? (
                     <form className="" onSubmit={handleSubmit(login)}>

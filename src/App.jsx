@@ -24,6 +24,7 @@ import Layout from './components/layout';
 
 import RequireAuth from './components/RequireAuth';
 import PersistLogin from './components/PersistLogin';
+import AuthCheck from './components/AuthCheck';
 
 
 const ROLES = {
@@ -34,13 +35,17 @@ const ROLES = {
 
 function App() {
 
+
+
   return (
     <div className="App">
       <Routes>
+        {/* if tidak ada token can go to this page */}
+        {/* <Route element={AuthCheck} > */}
         <Route path="/login" element={<Login />} />
-        <Route path="/rate" element={<Rate />} />
-        <Route path="/unauthorized" element={<Unauthorized />} />
+        {/* </Route> */}
 
+        {/* if ada token & role user can go to this page */}
         <Route path="/" element={<Home />} />
         <Route path="/journal" element={<Journal />} />
         <Route path="/lapangan/:namaLapangan" element={<ListLapangan />} />
@@ -48,17 +53,25 @@ function App() {
         <Route path="/payment" element={<Payment />} />
         <Route path="/setting" element={<Setting />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
+        <Route path="/rate" element={<Rate />} />
 
+
+
+        {/* if ada token & role admin or user can go to this page */}
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/report" element={<Report />} />
         <Route path="/user" element={<User />} />
         <Route path="/challange" element={<Challange />} />
         <Route path="/product" element={<Product />} />
 
+
         <Route path="*" element={<Missing />} />/
 
+        <Route path="/unauthorized" element={<Unauthorized />} />
+
+
       </Routes>
-    </div>
+    </div >
   )
 }
 

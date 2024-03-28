@@ -16,16 +16,82 @@ import Navbar from '../../components/navbar.jsx';
 import aha from '../../assets/aha.png'; // Import the image file
 import Who from '../../assets/who.png'; // Import the image file
 import { MdOutlineHealthAndSafety } from "react-icons/md";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { FaRegAddressCard } from "react-icons/fa6";
 import useAxiosPrivate from '../../hooks/useAxiosPrivate.jsx';
 import Header from '../../components/header';
+import axios from 'axios';
+import AuthContext from "../../context/AuthProvider";
 
 export default function Home() {
 
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
+    const [challenges, setChallenges] = useState([]);
     const axiosPrivate = useAxiosPrivate();
+    const navigate = useNavigate();
+    const [valueTantanganMingguan, setValueTantanganMingguan] = useState(0);
+    const [valueTantanganBulanan, setValueTantanganBulanan] = useState(0);
+    const [valueTantangan6Bulanan, setValueTantangan6Bulanan] = useState(0);
+
+
+
+
+    const getData = async () => {
+        try {
+            const token = localStorage.getItem('token');
+
+            const response = await axios.get('http://localhost:2000/user', {
+                headers: {
+                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                }
+            });
+
+            console.log('responsex', response);
+
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    const getDataChallange = async () => {
+        try {
+            const token = localStorage.getItem('token');
+
+            const response = await axios.get('http://localhost:2000/challenge', {
+                headers: {
+                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                }
+            });
+
+            setChallenges(response.data); // Assuming your response contains challenge data
+
+
+        } catch (error) {
+            console.error('Error:', error);
+            localStorage.removeItem('token'); // Hapus token dari local storage
+            navigate('/login');
+        }
+    }
+
+    const detailPage = (productName) => {
+        navigate(`/lapangan/${productName}`);
+    };
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+
+        // Redirect if token is null or undefined on initial render
+        if (!token) {
+            navigate('/login'); // Replace '/login' with your actual login path
+        }
+
+        getDataChallange()
+
+
+
+    }, [])
+
 
     const handleSearch = async (searchQuery) => {
         try {
@@ -52,34 +118,7 @@ export default function Home() {
         handleSearch(searchQuery);
     };
 
-    const login = async (data) => {
-        const dataToSend = { username: data.username, password: data.password };
-        try {
-            const response = await fetch(`http://localhost:2000/login`, {
-                method: 'Post',
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(dataToSend)
-            });
-            const data = await response.json();
 
-            navigate('/home');
-
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
-
-    const navigate = useNavigate();
-
-    const handleBook = () => {
-        navigate('/list-gedung');
-    };
-
-    const detailPage = (productName) => {
-        navigate(`/lapangan/${productName}`);
-    };
 
     return (
         <>
@@ -159,19 +198,23 @@ export default function Home() {
                                     <p className='text-neutral-content'>0/2</p>
                                 </div>
                                 <div className=''>
-                                    <progress className="progress progress-success w-48 bg-neutral-content" value="10" max="100"></progress>
+                                    <progress className="progress progress-success w-48 bg-neutral-content" value={null} max="100"></progress>
                                 </div>
                             </div>
                             <div className="grid grid-cols-4">
                                 <div className='col-span-2'>
-                                    <p className='text-sm text-neutral-content'>Berolahraga selama 2 jam dalam seminggu dapat membantu anda hidup lebih lama, tidur lebih baik, dan meningkatkan mood anda</p>
+                                    {challenges.filter(challenge => challenge.id === 1).map((challenge) => (
+                                        <p key={challenge.id} className='text-sm text-neutral-content'>
+                                            {challenge.description}
+                                        </p>
+                                    ))}
                                 </div>
                                 <div className='self-center col-span-2'>
                                     <img src={aha} alt="who image logo" />
 
                                 </div>
                             </div>
-                            <button className="btn btn-primary mt-5">Claim Reward</button>
+                            <button className={`btn btn-primary mt-5 ${valueTantanganMingguan < 2 ? 'btn-error' : 'btn-success'}`}>Claim Reward</button>
                         </div>
                     </div>
                     <div className="card w-80 h-96 bg-neutral shadow-xl mt-2">
@@ -182,19 +225,23 @@ export default function Home() {
                                     <p className='text-neutral-content'>0/10</p>
                                 </div>
                                 <div className=''>
-                                    <progress className="progress progress-success w-48 bg-neutral-content" value="0" max="100"></progress>
+                                    <progress className="progress progress-success w-48 bg-neutral-content" value={null} max="100"></progress>
                                 </div>
                             </div>
                             <div className="grid grid-cols-4">
                                 <div className='col-span-2'>
-                                    <p className='text-sm text-neutral-content'>Berolahraga selama 10 jam dalam sebulan dapat membantu anda hidup lebih lama, tidur lebih baik, dan meningkatkan mood anda</p>
+                                    {challenges.filter(challenge => challenge.id === 2).map((challenge) => (
+                                        <p key={challenge.id} className='text-sm text-neutral-content'>
+                                            {challenge.description}
+                                        </p>
+                                    ))}
                                 </div>
                                 <div className='self-center col-span-2'>
                                     <img src={Who} alt="who image logo" className='w-28' />
 
                                 </div>
                             </div>
-                            <button className="btn btn-primary mt-5">Claim Reward</button>
+                            <button className={`btn btn-primary mt-5 ${valueTantanganBulanan < 2 ? 'btn-error' : 'btn-success'}`}>Claim Reward</button>
                         </div>
                     </div>
                     <div className="card w-80 h-60 bg-neutral shadow-xl mt-2">
@@ -205,15 +252,19 @@ export default function Home() {
                                     <p className='text-neutral-content'>0/50</p>
                                 </div>
                                 <div className=''>
-                                    <progress className="progress progress-success w-48 bg-neutral-content" value="0" max="100"></progress>
+                                    <progress className="progress progress-success w-48 bg-neutral-content" value={null} max="100"></progress>
                                 </div>
                             </div>
                             <div className="grid">
                                 <div className=''>
-                                    <p className='text-sm text-neutral-content'>Selesaikan berolahraga selama 50 jam dan dapatkan hadiah </p>
+                                    {challenges.filter(challenge => challenge.id === 3).map((challenge) => (
+                                        <p key={challenge.id} className='text-sm text-neutral-content'>
+                                            {challenge.description}
+                                        </p>
+                                    ))}
                                 </div>
                             </div>
-                            <button className="btn btn-primary  mt-1">Claim Reward</button>
+                            <button className={`btn btn-primary mt-1 `}>Claim Reward</button>
                         </div>
                     </div>
                 </div>

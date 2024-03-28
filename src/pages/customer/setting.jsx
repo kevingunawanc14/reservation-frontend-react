@@ -2,10 +2,13 @@ import Navbar from "../../components/navbar";
 import Header from '../../components/header.jsx';
 import Avatar1 from '../../assets/avatar/avatar1.webp';
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
 
 export default function DetailAccount() {
 
     const [theme, setTheme] = useState();
+    const navigate = useNavigate();
+
 
     const handleClick = (newTheme) => {
         document.documentElement.setAttribute('data-theme', newTheme);
@@ -13,6 +16,11 @@ export default function DetailAccount() {
     };
 
 
+    // Fungsi untuk logout
+    const handleLogout = () => {
+        localStorage.removeItem('token'); // Hapus token dari local storage
+        navigate('/login');
+    };
 
 
     return (
@@ -252,7 +260,7 @@ export default function DetailAccount() {
                         Setting
                     </div>
                     <div className="collapse-content">
-                        <button className="btn btn-primary me-3">Log Out</button>
+                        <button className="btn btn-primary me-3" onClick={handleLogout}>Log Out</button>
                         {/* Open the modal using document.getElementById('ID').showModal() method */}
                         <button className="btn btn-primary me-3" onClick={() => document.getElementById('my_modal_3').showModal()}>Avatar</button>
                         <dialog id="my_modal_3" className="modal">
