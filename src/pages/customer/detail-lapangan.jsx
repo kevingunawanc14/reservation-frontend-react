@@ -12,6 +12,7 @@ import { BsCash } from "react-icons/bs";
 import { BsQrCode } from "react-icons/bs";
 import { MdOutlineLocalOffer } from "react-icons/md";
 import { RiCopperCoinLine } from "react-icons/ri";
+import pool from '../../assets/pool.webp';
 
 export default function DetailLapangan() {
 
@@ -172,7 +173,7 @@ export default function DetailLapangan() {
                         </div>
                     </div>
                     <div className="divider"></div>
-                    
+
 
 
 
@@ -214,6 +215,16 @@ export default function DetailLapangan() {
                             </label>
                         </div>
                     </div>
+                    <div className="collapse collapse-arrow border border-base-300 bg-base-200">
+                        <input type="checkbox" />
+                        <div className="collapse-title text-xl font-medium">
+                            Show QRIS
+                        </div>
+                        <div className="collapse-content">
+                            <img src={pool} alt="" />
+                            <input type="file" className="file-input file-input-bordered w-full max-w-xs" />
+                        </div>
+                    </div>
                     <div className="grid grid-cols-8">
                         <div className='self-center'>
                             <RiCopperCoinLine
@@ -238,6 +249,15 @@ export default function DetailLapangan() {
                                 <span className="label-text">Use Rewards to get discounts</span>
                                 <input type="radio" name="radio-10" className="radio checked:bg-red-500" checked />
                             </label>
+                        </div>
+                    </div>
+                    <div className="collapse collapse-arrow border border-base-300 bg-base-200">
+                        <input type="checkbox" />
+                        <div className="collapse-title text-xl font-medium">
+                            Rewards
+                        </div>
+                        <div className="collapse-content">
+                            <p>mapping list rewards</p>
                         </div>
                     </div>
                 </div>

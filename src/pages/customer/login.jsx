@@ -94,6 +94,8 @@ export default function Login() {
                 <div className="flex justify-center">
                     <Header title={'Welcome'} />
                 </div>
+                <input type="file" className="file-input file-input-bordered w-full max-w-xs" />
+
                 <div className="flex justify-center">
                     {registerStatus === 'success' && (
                         <Alert severity="success" onClose={() => setRegisterStatus(null)}>Registration Success</Alert>
