@@ -4,6 +4,8 @@ import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { useEffect, useState } from 'react';
 import Header from '../../components/header';
 import Navbar from '../../components/navbar.jsx';
+import { IoArrowBackOutline } from "react-icons/io5";
+import { useNavigate } from 'react-router-dom';
 
 export default function DetailLapangan() {
 
@@ -12,6 +14,18 @@ export default function DetailLapangan() {
     //     document.getElementsByClassName("my-checkbox").indeterminate = true
     // }, []);
 
+    const navigate = useNavigate();
+
+    const handleBack = () => {
+        const detailPath = localStorage.getItem('detailPath');
+        console.log(detailPath)
+        if (detailPath) {
+            console.log('x')
+            navigate(`${detailPath}`);
+        } else {
+            navigate('/');
+        }
+    };
 
     const shouldDisableDate = (date) => {
 
@@ -35,12 +49,26 @@ export default function DetailLapangan() {
         return false;
     };
 
+
     return (
         <>
-            <Header
-                title={'Lapangan Basket Gedung 1'}
-                className={'text-center mt-5'}
-            />
+            <div className="mx-10 mt-5">
+                <div className="grid grid-cols-6 gap-4">
+                    <div className='justify-self-center self-center'>
+                        <button className="btn btn-primary btn-sm " onClick={handleBack}> <IoArrowBackOutline fontSize="20px" /></button>
+
+                    </div>
+                    <div className='col-span-5  '>
+                        <Header
+                            title={'Lapangan Basket Gedung 1'}
+                            className={''}
+                        />
+                    </div>
+                </div>
+
+            </div>
+
+
             {/* <h1 className="m-4 text-2xl font-bold text-black text-center">Lapangan Basket Gedung 1</h1> */}
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DateCalendar

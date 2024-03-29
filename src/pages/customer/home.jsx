@@ -75,7 +75,29 @@ export default function Home() {
     }
 
     const detailPage = (productName) => {
-        navigate(`/lapangan/${productName}`);
+        navigate(`/product/${productName}`);
+    };
+
+    const handleSearch = async (value) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.get(`http://localhost:2000/search?q=${value}`, {
+                headers: {
+                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                }
+            });
+
+            setSearchResults(response.data);
+
+        } catch (error) {
+            console.error('Error searching courts:', error);
+        }
+    };
+
+    const handleChange = (event) => {
+        const { value } = event.target;
+        setSearchQuery(value);
+        handleSearch(value);
     };
 
     useEffect(() => {
@@ -92,34 +114,6 @@ export default function Home() {
 
     }, [])
 
-
-    const handleSearch = async (searchQuery) => {
-        try {
-            const response = await axiosPrivate.get('/search', {
-                params: {
-                    query: searchQuery,
-                    // Add any other query parameters as needed
-                },
-            });
-            console.log(response.data);
-            setSearchResults(response.data);
-            if (searchQuery == "") {
-                setSearchQuery()
-            }
-        } catch (error) {
-            console.error('Error searching courts:', error);
-        }
-    };
-
-
-    const handleChange = (event) => {
-        const { value } = event.target;
-        setSearchQuery(value);
-        handleSearch(searchQuery);
-    };
-
-
-
     return (
         <>
             <div className="mb-2">
@@ -128,15 +122,31 @@ export default function Home() {
                         <input
                             type="text"
                             placeholder="Cari tempat olahraga"
-                            className="input input-bordered w-80 font-mono"
+                            className="input input-bordered w-80 font-mono "
                             onChange={handleChange}
                             value={searchQuery}
                         />
-                        <ul className="dropdown-content  menu p-2 shadow bg-base-100 rounded-box w-80">
-                            {searchResults.map(item => (
-                                <p key={item.id}>{item.name}</p>
-                            ))}
-                        </ul>
+                        {searchQuery != '' && (
+                            <ul className="dropdown-content menu shadow bg-base-100 rounded-box w-80 z-40">
+                                {searchResults.length === 0 ? (
+                                    <li className='hover:bg-neutral p-2 hover:text-neutral-content rounded-lg '>
+                                        Product not found...
+                                    </li>
+                                ) : (
+                                    searchResults.map(item => (
+                                        item.gor === 0 ? (
+                                            <li key={item.id} className='hover:bg-neutral p-2 hover:text-neutral-content rounded-lg cursor-default	'>
+                                                {item.name}
+                                            </li>
+                                        ) : (
+                                            <li key={item.id} className='hover:bg-neutral p-2 hover:text-neutral-content rounded-lg cursor-default	'>
+                                                {item.name} - Gor {item.gor} - {item.price} / Jam
+                                            </li>
+                                        )
+                                    ))
+                                )}
+                            </ul>
+                        )}
                     </div>
                 </div>
                 <div className="grid grid-cols-3 m-5">
@@ -214,7 +224,7 @@ export default function Home() {
 
                                 </div>
                             </div>
-                            <button className={`btn btn-primary mt-5 ${valueTantanganMingguan < 2 ? 'btn-error' : 'btn-success'}`}>Claim Reward</button>
+                            <button className={`btn btn-primary mt-5 ${valueTantanganMingguan < 2 ? 'btn-error cursor-not-allowed' : 'btn-success'}`}>Claim Reward</button>
                         </div>
                     </div>
                     <div className="card w-80 h-96 bg-neutral shadow-xl mt-2">
@@ -241,7 +251,7 @@ export default function Home() {
 
                                 </div>
                             </div>
-                            <button className={`btn btn-primary mt-5 ${valueTantanganBulanan < 2 ? 'btn-error' : 'btn-success'}`}>Claim Reward</button>
+                            <button className={`btn btn-primary mt-5 ${valueTantanganBulanan < 2 ? 'btn-error cursor-not-allowed' : 'btn-success'}`}>Claim Reward</button>
                         </div>
                     </div>
                     <div className="card w-80 h-60 bg-neutral shadow-xl mt-2">
@@ -264,7 +274,7 @@ export default function Home() {
                                     ))}
                                 </div>
                             </div>
-                            <button className={`btn btn-primary mt-1 `}>Claim Reward</button>
+                            <button className={`btn btn-primary mt-1 ${valueTantangan6Bulanan < 2 ? 'btn-error cursor-not-allowed' : 'btn-success'} `}>Claim Reward</button>
                         </div>
                     </div>
                 </div>

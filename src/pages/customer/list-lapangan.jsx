@@ -10,12 +10,14 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate.jsx';
 import badminton from '../../assets/badminton.webp';
 import basket from '../../assets/basketball.webp';
 import futsal from '../../assets/futsal.webp';
+import pool from '../../assets/pool.webp';
+import gym from '../../assets/gym.webp';
 import { IoMdLock } from "react-icons/io";
+import axios from 'axios';
+import { IoArrowBackOutline } from "react-icons/io5";
 
 
 export default function ListGor() {
-
-    const axiosPrivate = useAxiosPrivate();
 
     const currentUrl = window.location.href;
 
@@ -30,27 +32,43 @@ export default function ListGor() {
     const [lapangan, setLapangan] = useState('Lapangan')
 
     const getImageSrc = () => {
-        console.log(currentUrl.split('/').pop());
         if (currentUrl.split('/').pop() == 'badminton') {
             setCourtImage(badminton)
         } else if (currentUrl.split('/').pop() == 'basket') {
             setCourtImage(basket)
         } else if (currentUrl.split('/').pop() == 'futsal') {
             setCourtImage(futsal)
+        } else if (currentUrl.split('/').pop() == 'gym') {
+            setCourtImage(gym)
+        } else if (currentUrl.split('/').pop() == 'renang') {
+            setCourtImage(pool)
         }
 
+
     };
 
-    const handleDetailLapangan = () => {
-        navigate(`/lapangan/${'x'}/detail/${1}`);
+    const handleDetailLapangan = (id) => {
+        const path = `/product/${courtName.toLowerCase()}/${id}`;
+        localStorage.setItem('detailPath', `/product/${courtName.toLowerCase()}`);
+        navigate(path);
     };
 
-    const fetchData = async () => {
+    const handleBack = () => {
+        navigate('/');
+    };
+
+
+    const getDataProduct = async () => {
         try {
-            const response = await axiosPrivate.get('/courts')
+            const token = localStorage.getItem('token');
+
+            const response = await axios.get('http://localhost:2000/product', {
+                headers: {
+                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                }
+            });
             const filteredArray = response.data.filter(item => item.name.toLowerCase().includes(currentUrl.split('/').pop()));
             setCourtData(filteredArray)
-            console.log(filteredArray);
         } catch (error) {
             console.error('Error fetching data:', error);
             navigate('/login', { state: { from: location }, replace: true });
@@ -66,25 +84,44 @@ export default function ListGor() {
         } else if (currentUrl.split('/').pop() === 'membership' || currentUrl.split('/').pop() === 'gym') {
             setLapangan('')
         }
-        fetchData();
+        getDataProduct();
     }, []);
 
 
     return (
         <>
             <div className="mx-10 mt-5">
-                <Header title={'List ' + lapangan + " " + courtName} />
+                <div className="grid grid-cols-6 gap-4">
+                    <div className='justify-self-center self-center'>
+                        <button className="btn btn-primary btn-sm " onClick={handleBack}> <IoArrowBackOutline fontSize="20px" /></button>
+                    </div>
+                    <div className='col-span-5 self-center '>
+                        <Header title={'List ' + lapangan + " " + courtName} />
+
+                    </div>
+                </div>
+
             </div>
 
             <div className="mx-10 mt-5 mb-5">
                 {courtData.map(item => (
                     <div key={item.id} className="card lg:card-side bg-neutral shadow-xl mt-5">
-                        <figure><img src={courtImage} alt="" className="w-full h-[30vh]" /></figure>
+                        {item.name.includes('Membership') ? (
+                            item.name.includes('Membership Renang') ? (
+                                <figure><img src={pool} alt="" className="w-full h-[30vh] lg:h-fit" /></figure>
+                            ) : (
+                                <figure><img src={gym} alt="" className="w-full h-[30vh] lg:h-fit" /></figure>
+                            )
+                        ) : (
+                            <figure><img src={courtImage} alt="" className="w-full h-[30vh] lg:h-fit" /></figure>
+                        )}
                         <div className="card-body">
-                            <h2 className="card-title text-neutral-content">Gor {item.gor}</h2>
+                            {item.gor !== 0 && <h2 className="card-title text-neutral-content">Gor {item.gor}</h2>}
                             <p className='text-neutral-content'>{item.name} </p>
                             {item.name === '½ lapangan basket' ? (
                                 <p className='text-neutral-content'>Rp. {item.price} / Orang</p>
+                            ) : item.name.includes('Membership') ? (
+                                <p className='text-neutral-content'>Rp. {item.price} / Bulan</p>
                             ) : (
                                 <p className='text-neutral-content'>Rp. {item.price} / Jam</p>
                             )}
@@ -109,7 +146,7 @@ export default function ListGor() {
                             </div>
 
                             <div className="card-actions justify-end">
-                                <button className="btn btn-primary transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110  duration-150 " onClick={handleDetailLapangan}>Detail</button>
+                                <button className="btn btn-primary transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110  duration-150 " onClick={() => handleDetailLapangan(item.id)}>Detail</button>
                             </div>
                         </div>
                     </div>

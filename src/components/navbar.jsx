@@ -35,10 +35,10 @@ export default function Navbar() {
                 <span className={window.location.pathname === '/' ? 'btm-nav-label font-medium' : 'btm-nav-label'}>Home</span>
             </button>
 
-            <button className={window.location.pathname === '/journal' ? 'active text-primary' : ''} onClick={() => handleNavigate('/journal')}>
+            {/* <button className={window.location.pathname === '/journal' ? 'active text-primary' : ''} onClick={() => handleNavigate('/journal')}>
                 {window.location.pathname === '/journal' ? <PiHeartbeatFill /> : <PiHeartbeatLight />}
                 <span className={window.location.pathname === '/journal' ? 'btm-nav-label font-medium' : 'btm-nav-label'}>Journal</span>
-            </button>
+            </button> */}
 
             <button className={window.location.pathname === '/payment' ? 'active text-primary' : ''} onClick={() => handleNavigate('/payment')}>
                 {window.location.pathname === '/payment' ? <RiMoneyDollarCircleFill /> : <RiMoneyDollarCircleLine />}

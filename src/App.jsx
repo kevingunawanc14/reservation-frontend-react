@@ -48,8 +48,8 @@ function App() {
         {/* if ada token & role user can go to this page */}
         <Route path="/" element={<Home />} />
         <Route path="/journal" element={<Journal />} />
-        <Route path="/lapangan/:namaLapangan" element={<ListLapangan />} />
-        <Route path="/lapangan/:namaLapangan/detail/:nomorLapangan" element={<DetailLapangan />} />
+        <Route path="/product/:namaProduct" element={<ListLapangan />} />
+        <Route path="/product/:namaProduct/:idProduct" element={<DetailLapangan />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/setting" element={<Setting />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
