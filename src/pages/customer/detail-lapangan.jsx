@@ -6,21 +6,48 @@ import Header from '../../components/header';
 import Navbar from '../../components/navbar.jsx';
 import { IoArrowBackOutline } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
+import dayjs from 'dayjs';
+import axios from 'axios';
+import { BsCash } from "react-icons/bs";
+import { BsQrCode } from "react-icons/bs";
+import { MdOutlineLocalOffer } from "react-icons/md";
+import { RiCopperCoinLine } from "react-icons/ri";
 
 export default function DetailLapangan() {
 
-
-    // useEffect(() => {
-    //     document.getElementsByClassName("my-checkbox").indeterminate = true
-    // }, []);
-
+    const [valueCalendar, setValueCalendar] = useState(dayjs())
+    const [scheduleData, setScheduleData] = useState(null)
+    const [namaProduct, setNamaProduct] = useState(null)
+    const currentUrl = window.location.href;
+    const idProduct = currentUrl.split('/').pop()
     const navigate = useNavigate();
+
+    const hours = [
+        '6.00-7.00', '7.00-8.00', '8.00-9.00',
+        '9.00-10.00', '10.00-11.00', '11.00-12.00',
+        '12.00-13.00', '13.00-14.00', '14.00-15.00',
+        '15.00-16.00', '16.00-17.00', '17.00-18.00',
+        '18.00-19.00', '19.00-20.00', '20.00-21.00',
+        '21.00-22.00', '22.00-23.00', '23.00-24.00'
+    ];
+
+    const renderButtons = () => {
+        return hours.map(hour => {
+            const isReserved = scheduleData.some(data => data.hour === hour);
+
+            const buttonClass = isReserved ? 'btn btn-xs btn-error' : 'btn btn-xs btn-success';
+            return (
+                <div className="grid" key={hour}>
+                    <button className={buttonClass}>{hour}</button>
+                </div>
+            );
+        });
+    };
+
 
     const handleBack = () => {
         const detailPath = localStorage.getItem('detailPath');
-        console.log(detailPath)
         if (detailPath) {
-            console.log('x')
             navigate(`${detailPath}`);
         } else {
             navigate('/');
@@ -49,6 +76,41 @@ export default function DetailLapangan() {
         return false;
     };
 
+    const getDataOrder = async () => {
+        try {
+            const token = localStorage.getItem('token');
+
+            const response = await axios.get('http://localhost:2000/order', {
+                headers: {
+                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                }
+            });
+
+            const filteredArray = response.data.filter(item => {
+                const itemDate = dayjs(item.createdAt);  // Convert item.createdAt to dayjs object
+                console.log('item.idProduct', item.idProduct);
+                console.log('idProduct', idProduct);
+                return itemDate.isSame(valueCalendar, 'day') && item.idProduct === parseInt(idProduct);  // Check if day matches today
+            });
+            console.log('filteredArray', filteredArray);
+
+            setScheduleData(filteredArray)
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            navigate('/login', { state: { from: location }, replace: true });
+
+        }
+    };
+
+    useEffect(() => {
+        if (idProduct == 3) {
+            setNamaProduct('Lapangan Badminton 1')
+        }
+        getDataOrder();
+    }, [valueCalendar]);
+
+    console.log('valueCalendar', valueCalendar);
+
 
     return (
         <>
@@ -60,8 +122,8 @@ export default function DetailLapangan() {
                     </div>
                     <div className='col-span-5  '>
                         <Header
-                            title={'Lapangan Basket Gedung 1'}
-                            className={''}
+                            title={namaProduct}
+                            className={'text-xl font-semibold'}
                         />
                     </div>
                 </div>
@@ -69,135 +131,124 @@ export default function DetailLapangan() {
             </div>
 
 
-            {/* <h1 className="m-4 text-2xl font-bold text-black text-center">Lapangan Basket Gedung 1</h1> */}
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DateCalendar
+                    value={valueCalendar}
+                    onChange={(newValue) => setValueCalendar(newValue)}
                     shouldDisableDate={shouldDisableDate}
                 />
             </LocalizationProvider>
 
-            <div className="mx-5 mt-[-15px]">
-                <div className="grid grid-cols-3 gap-4">
-                    <div className='grid'>
-                        <button className="btn btn-xs btn-success">6.00-7.00</button>
-                    </div>
-                    <div className='grid'>
-                        <button className="btn btn-xs btn-error">7.00-8.00</button>
-                    </div>
-                    <div className='grid'>
-                        <button className="btn btn-xs">9.00-10.00</button>
-                    </div>
-                </div>
-                <div className="grid grid-cols-3 gap-4 mt-3">
-                    <div className='grid'>
-                        <button className="btn btn-xs">10.00-11.00</button>
-                    </div>
-                    <div className='grid'>
-                        <button className="btn btn-xs">11.00-12.00</button>
-                    </div>
-                    <div className='grid'>
-                        <button className="btn btn-xs">12.00-13.00</button>
-                    </div>
-                </div>
-                <div className="grid grid-cols-3 gap-4 mt-3">
-                    <div className='grid'>
-                        <button className="btn btn-xs">13.00-14.00</button>
-                    </div>
-                    <div className='grid'>
-                        <button className="btn btn-xs">14.00-15.00</button>
-                    </div>
-                    <div className='grid'>
-                        <button className="btn btn-xs">15.00-16.00</button>
-                    </div>
-                </div>
-                <div className="grid grid-cols-3 gap-4 mt-3">
-                    <div className='grid'>
-                        <button className="btn btn-xs">16.00-17.00</button>
-                    </div>
-                    <div className='grid'>
-                        <button className="btn btn-xs">17.00-18.00</button>
-                    </div>
-                    <div className='grid'>
-                        <button className="btn btn-xs">18.00-19.00</button>
-                    </div>
-                </div>
-                <div className="grid grid-cols-3 gap-4 mt-3">
-                    <div className='grid'>
-                        <button className="btn btn-xs">19.00-20.00</button>
-                    </div>
-                    <div className='grid'>
-                        <button className="btn btn-xs">20.00-21.00</button>
-                    </div>
-                    <div className='grid'>
-                        <button className="btn btn-xs">21.00-22.00</button>
+            <div className="mx-5 mt-[-10px]">
+                <div className="mx-5 mt-[-10px]">
+                    <div className="grid grid-cols-3 gap-4">
+                        {scheduleData && renderButtons()}
                     </div>
                 </div>
             </div>
 
-            <div className="mx-5">
+            {/* <div className='mx-5'>
+                <div className="divider"></div>
+            </div> */}
+
+            <div className="">
                 <Header
                     title={'Order Summary'}
-                    className={'text-center mt-5'}
+                    className={'text-center mt-5 text-xl font-semibold bg-primary-content py-2'}
                 />
-                <div>
-                    <p>? jam lapangan ?</p>
-                    <p>Rp. ?</p>
+                <div className='mx-5'>
+                    <div className="grid grid-cols-6 gap-4 mt-5 justify-items-center">
+                        <div className='col-span-3'>
+                            <p className='font-semibold'>18.00 - 19.00</p>
+
+                        </div>
+                        <div className='col-span-2'>
+                            <p>35.000</p>
+                        </div>
+                        <div className='col-span-1'>
+                            <button className="btn btn-error btn-circle btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div className="divider"></div>
+                    
+
+
+
                 </div>
             </div>
 
-            <div className="mx-5">
+            <div className="">
                 <Header
                     title={'Payment Details'}
-                    className={'text-center mt-5'}
+                    className={'text-center mt-5 text-xl font-semibold bg-primary-content py-2'}
                 />
-                <div>
+                <div className='mx-5'>
                     <div className="form-control">
-                        <label className="label cursor-pointer">
-                            <span className="label-text">Tunai</span>
-                            <input type="radio" name="radio-10" className="radio checked:bg-red-500" checked />
-                        </label>
+                        <div className="grid grid-cols-8">
+                            <div className='self-center'>
+                                <BsCash
+                                    fontSize="20px"
+                                />
+                            </div>
+                            <div className='col-span-7'>
+                                <label className="label cursor-pointer">
+                                    <span className="label-text">Cash</span>
+                                    <input type="radio" name="radio-10" className="radio checked:bg-red-500" checked />
+                                </label>
+                            </div>
+                        </div>
+
                     </div>
-                    <div className="form-control">
-                        <label className="label cursor-pointer">
-                            <span className="label-text">QRIS</span>
-                            <input type="radio" name="radio-10" className="radio checked:bg-blue-500" checked />
-                        </label>
+                    <div className="grid grid-cols-8">
+                        <div className='self-center'>
+                            <BsQrCode
+                                fontSize="20px"
+                            />
+                        </div>
+                        <div className='col-span-7'>
+                            <label className="label cursor-pointer">
+                                <span className="label-text">QRIS</span>
+                                <input type="radio" name="radio-10" className="radio checked:bg-red-500" checked />
+                            </label>
+                        </div>
                     </div>
-                    <div className="form-control">
-                        <label className="label cursor-pointer">
-                            <span className="label-text">Point</span>
-                            <input type="radio" name="radio-10" className="radio checked:bg-blue-500" checked />
-                        </label>
+                    <div className="grid grid-cols-8">
+                        <div className='self-center'>
+                            <RiCopperCoinLine
+                                fontSize="20px"
+                            />
+                        </div>
+                        <div className='col-span-7'>
+                            <label className="label cursor-pointer">
+                                <span className="label-text">Krakatau Coin</span>
+                                <input type="radio" name="radio-10" className="radio checked:bg-red-500" checked />
+                            </label>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-8">
+                        <div className='self-center'>
+                            <MdOutlineLocalOffer
+                                fontSize="20px"
+                            />
+                        </div>
+                        <div className='col-span-7'>
+                            <label className="label cursor-pointer">
+                                <span className="label-text">Use Rewards to get discounts</span>
+                                <input type="radio" name="radio-10" className="radio checked:bg-red-500" checked />
+                            </label>
+                        </div>
                     </div>
                 </div>
 
             </div>
 
-            <div className="mx-5">
-                <Header
-                    title={'Promo'}
-                    className={'text-center mt-5'}
-                />
-                <div>
-                    <div className="form-control">
-                        <label className="label cursor-pointer">
-                            <span className="label-text">Red pill</span>
-                            <input type="radio" name="radio-10" className="radio checked:bg-red-500" disabled />
-                        </label>
-                    </div>
-                    <div className="form-control">
-                        <label className="label cursor-pointer">
-                            <span className="label-text">Blue pill</span>
-                            <input type="radio" name="radio-10" className="radio checked:bg-blue-500" disabled />
-                        </label>
-                    </div>
-                </div>
-
-            </div>
 
             <div className="flex justify-center mb-20 mx-5 mt-5">
                 <button className="btn btn-primary btn-block">Place Order</button>
             </div>
+
 
             <Navbar />
 
