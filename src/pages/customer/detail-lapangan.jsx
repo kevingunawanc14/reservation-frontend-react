@@ -13,6 +13,7 @@ import { BsQrCode } from "react-icons/bs";
 import { MdOutlineLocalOffer } from "react-icons/md";
 import { RiCopperCoinLine } from "react-icons/ri";
 import pool from '../../assets/pool.webp';
+import { useForm } from "react-hook-form";
 
 export default function DetailLapangan() {
 
@@ -22,6 +23,19 @@ export default function DetailLapangan() {
     const currentUrl = window.location.href;
     const idProduct = currentUrl.split('/').pop()
     const navigate = useNavigate();
+    const [arrOfOrderSummary, setArrOfOrderSummary] = useState([]);
+    const [statusAllowPlaceOrder, setStatusAllowPlaceOrder] = useState(false);
+    const [subtotal, setSubtotal] = useState(0);
+    const [total, setTotal] = useState(0);
+    const [productPrice, setProductPrice] = useState(35000);
+    const { register, handleSubmit, watch, formState: { errors } } = useForm({
+        defaultValues: {
+            paymentMethod: "cash"
+        }
+    });
+
+    console.log('watch', watch());
+
 
     const hours = [
         '6.00-7.00', '7.00-8.00', '8.00-9.00',
@@ -32,19 +46,82 @@ export default function DetailLapangan() {
         '21.00-22.00', '22.00-23.00', '23.00-24.00'
     ];
 
-    const renderButtons = () => {
-        return hours.map(hour => {
-            const isReserved = scheduleData.some(data => data.hour === hour);
+    const [hoursWithStatus, setHoursWithStatus] = useState([
+        'free', 'free', 'free',
+        'free', 'free', 'free',
+        'free', 'free', 'free',
+        'free', 'free', 'free',
+        'free', 'free', 'free',
+        'free', 'free', 'free'
+    ]);
 
-            const buttonClass = isReserved ? 'btn btn-xs btn-error' : 'btn btn-xs btn-success';
+    const resetHoursWithStatus = () => {
+        const updatedHoursWithStatus = hoursWithStatus.map(() => 'free');
+        setHoursWithStatus(updatedHoursWithStatus);
+    };
+
+    const renderButtons = (hoursWithStatus, setHoursWithStatus, arrOfReserved) => {
+        // Create a copy of hoursWithStatus to update
+        const updatedStatus = [...hoursWithStatus];
+        console.log('updatedStatus', updatedStatus);
+
+        // Update the status for reserved hours
+        arrOfReserved.forEach(reservation => {
+            const index = hours.indexOf(reservation.hour);
+            if (index !== -1) {
+                updatedStatus[index] = 'reserved';
+            }
+        });
+
+        // Render buttons based on the updated status
+        return hours.map((hour, index) => {
+            let button = null;
+            if (updatedStatus[index] === 'free') {
+                button = <button className="btn btn-xs btn-success" onClick={() => {
+                    const newStatus = [...updatedStatus];
+                    newStatus[index] = 'info';
+                    setHoursWithStatus(newStatus);
+                    addToOrderSummary(hour); // Call the function to add hour to arrOfOrderSummary
+                }}>{hour}</button>;
+            } else if (updatedStatus[index] === 'reserved') {
+                button = <button className="btn btn-xs btn-error" onClick={() => document.getElementById('my_modal_2').showModal()}>{hour}</button>;
+            } else if (updatedStatus[index] === 'info') {
+                button = <button className="btn btn-xs btn-info" onClick={() => {
+                    const newStatus = [...updatedStatus];
+                    newStatus[index] = 'free';
+                    setHoursWithStatus(newStatus);
+                    removeFromOrderSummary(hour); // Call the function to remove hour from arrOfOrderSummary
+                }}>{hour}</button>;
+            }
+
             return (
                 <div className="grid" key={hour}>
-                    <button className={buttonClass}>{hour}</button>
+                    {button}
                 </div>
             );
         });
     };
 
+    function addToOrderSummary(hour) {
+        // Assuming arrOfOrderSummary is a state variable
+        setArrOfOrderSummary(prevState => [...prevState, hour]);
+    }
+
+    function removeFromOrderSummary(hour) {
+        const index = hours.indexOf(hour)
+
+        // Update hoursWithStatus[index] to 'success'
+        const newStatus = [...hoursWithStatus];
+        newStatus[index] = 'free';
+        setHoursWithStatus(newStatus);
+
+        // Remove hour from arrOfOrderSummary
+        setArrOfOrderSummary(prevState => prevState.filter(item => item !== hour));
+    }
+
+    function formatNumberWithDot(number) {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
 
     const handleBack = () => {
         const detailPath = localStorage.getItem('detailPath');
@@ -89,13 +166,12 @@ export default function DetailLapangan() {
 
             const filteredArray = response.data.filter(item => {
                 const itemDate = dayjs(item.createdAt);  // Convert item.createdAt to dayjs object
-                console.log('item.idProduct', item.idProduct);
-                console.log('idProduct', idProduct);
                 return itemDate.isSame(valueCalendar, 'day') && item.idProduct === parseInt(idProduct);  // Check if day matches today
             });
-            console.log('filteredArray', filteredArray);
 
             setScheduleData(filteredArray)
+            resetHoursWithStatus();
+            setArrOfOrderSummary([]);
         } catch (error) {
             console.error('Error fetching data:', error);
             navigate('/login', { state: { from: location }, replace: true });
@@ -103,14 +179,37 @@ export default function DetailLapangan() {
         }
     };
 
+    const [showQr, setShowQr] = useState(false);
+
+    const handleRadioClickPayment = (value) => {
+        if (value === 'QRIS') {
+            setShowQr(true);
+        } else {
+            setShowQr(false);
+        }
+    };
+
+    const [showRewards, setShowRewards] = useState(false);
+
+    const handleRadioClickRewards = (value) => {
+        if (!value) {
+            setShowRewards(true);
+        } else {
+            setShowRewards(false);
+        }
+
+        console.log('value', value);
+    };
+
     useEffect(() => {
         if (idProduct == 3) {
             setNamaProduct('Lapangan Badminton 1')
         }
+        // console.log('valueCalendar', valueCalendar);
+        // console.log('scheduleData', scheduleData);
         getDataOrder();
     }, [valueCalendar]);
 
-    console.log('valueCalendar', valueCalendar);
 
 
     return (
@@ -131,7 +230,6 @@ export default function DetailLapangan() {
 
             </div>
 
-
             <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DateCalendar
                     value={valueCalendar}
@@ -143,7 +241,7 @@ export default function DetailLapangan() {
             <div className="mx-5 mt-[-10px]">
                 <div className="mx-5 mt-[-10px]">
                     <div className="grid grid-cols-3 gap-4">
-                        {scheduleData && renderButtons()}
+                        {scheduleData && renderButtons(hoursWithStatus, setHoursWithStatus, scheduleData)}
                     </div>
                 </div>
             </div>
@@ -158,24 +256,53 @@ export default function DetailLapangan() {
                     className={'text-center mt-5 text-xl font-semibold bg-primary-content py-2'}
                 />
                 <div className='mx-5'>
-                    <div className="grid grid-cols-6 gap-4 mt-5 justify-items-center">
-                        <div className='col-span-3'>
-                            <p className='font-semibold'>18.00 - 19.00</p>
+                    {arrOfOrderSummary.length === 0 ? (
+                        <p className='text-center font-semibold mt-3'>Pick the time you want easily</p>
+                    ) : (
+                        arrOfOrderSummary.map((hour, index) => (
+                            <div key={index}>
+                                <div className="grid grid-cols-6 gap-4 mt-5 justify-items-center">
+                                    <div className='col-span-3'>
+                                        <p className='font-semibold'>{hour}</p>
+                                    </div>
+                                    <div className='col-span-2'>
+                                        <p>35.000</p> {/* Assuming this value is static */}
+                                    </div>
+                                    <div className='col-span-1'>
+                                        <button className="btn btn-error btn-circle btn-sm " onClick={() => removeFromOrderSummary(hour)}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className="divider"></div>
 
-                        </div>
-                        <div className='col-span-2'>
-                            <p>35.000</p>
-                        </div>
-                        <div className='col-span-1'>
-                            <button className="btn btn-error btn-circle btn-sm">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                            </button>
-                        </div>
-                    </div>
-                    <div className="divider"></div>
+                            </div>
+                        ))
+
+                    )}
 
 
+                    {arrOfOrderSummary.length > 0 && (
+                        <>
+                            <div className="grid grid-cols-2 gap-4 mt-2">
+                                <div className='justify-self-start'>
+                                    Subtotal
+                                </div>
+                                <div className='justify-self-end'>
+                                    <p className=''>Rp{formatNumberWithDot(productPrice * arrOfOrderSummary.length)}</p>
+                                </div>
+                            </div>
 
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className='justify-self-start'>
+                                    Total
+                                </div>
+                                <div className='justify-self-end'>
+                                    <p className='font-bold'>Rp{formatNumberWithDot((productPrice * arrOfOrderSummary.length) - 1000)}</p>
+                                </div>
+                            </div>
+                        </>
+                    )}
 
                 </div>
             </div>
@@ -196,7 +323,13 @@ export default function DetailLapangan() {
                             <div className='col-span-7'>
                                 <label className="label cursor-pointer">
                                     <span className="label-text">Cash</span>
-                                    <input type="radio" name="radio-10" className="radio checked:bg-red-500" checked />
+                                    <input
+                                        {...register("paymentMethod")}
+                                        value="cash"
+                                        type="radio"
+                                        className="radio radio-primary"
+                                        onClick={() => handleRadioClickPayment('Cash')}
+                                    />
                                 </label>
                             </div>
                         </div>
@@ -211,20 +344,31 @@ export default function DetailLapangan() {
                         <div className='col-span-7'>
                             <label className="label cursor-pointer">
                                 <span className="label-text">QRIS</span>
-                                <input type="radio" name="radio-10" className="radio checked:bg-red-500" checked />
+                                <input
+                                    {...register("paymentMethod")}
+                                    value="qris"
+                                    type="radio"
+                                    className="radio radio-primary"
+                                    onClick={() => handleRadioClickPayment('QRIS')}
+                                />
                             </label>
                         </div>
                     </div>
-                    <div className="collapse collapse-arrow border border-base-300 bg-base-200">
-                        <input type="checkbox" />
-                        <div className="collapse-title text-xl font-medium">
-                            Show QRIS
+                    {showQr && (
+                        <div className="collapse collapse-arrow border border-base-300 bg-neutral">
+                            <input type="checkbox" />
+                            <div className="collapse-title text-xl font-medium text-neutral-content">
+                                Show QRIS
+                            </div>
+                            <div className="collapse-content">
+                                <img src={pool} alt="" className='w-full' />
+                                <input
+                                    type="file"
+                                    className="file-input file-input-bordered w-full max-w-xs mt-3"
+                                />
+                            </div>
                         </div>
-                        <div className="collapse-content">
-                            <img src={pool} alt="" />
-                            <input type="file" className="file-input file-input-bordered w-full max-w-xs" />
-                        </div>
-                    </div>
+                    )}
                     <div className="grid grid-cols-8">
                         <div className='self-center'>
                             <RiCopperCoinLine
@@ -233,8 +377,14 @@ export default function DetailLapangan() {
                         </div>
                         <div className='col-span-7'>
                             <label className="label cursor-pointer">
-                                <span className="label-text">Krakatau Coin</span>
-                                <input type="radio" name="radio-10" className="radio checked:bg-red-500" checked />
+                                <span className="label-text">67.000</span>
+                                <input
+                                    {...register("paymentMethod")}
+                                    value="krakataucoin"
+                                    type="radio"
+                                    className="radio radio-primary"
+                                    onClick={() => handleRadioClickPayment('Krakatau Coin')}
+                                />
                             </label>
                         </div>
                     </div>
@@ -247,28 +397,44 @@ export default function DetailLapangan() {
                         <div className='col-span-7'>
                             <label className="label cursor-pointer">
                                 <span className="label-text">Use Rewards to get discounts</span>
-                                <input type="radio" name="radio-10" className="radio checked:bg-red-500" checked />
+                                <input
+                                    type="checkbox"
+                                    name="radio-11"
+                                    className="radio radio-primary"
+                                    onClick={() => handleRadioClickRewards(showRewards)}
+                                />
                             </label>
                         </div>
                     </div>
-                    <div className="collapse collapse-arrow border border-base-300 bg-base-200">
-                        <input type="checkbox" />
-                        <div className="collapse-title text-xl font-medium">
-                            Rewards
+                    {showRewards && (
+                        <div className="collapse collapse-arrow border border-base-300 bg-neutral">
+                            <input type="checkbox" />
+                            <div className="collapse-title text-xl font-medium text-neutral-content">
+                                Rewards
+                            </div>
+                            <div className="collapse-content">
+                                <p className='text-neutral-content'>You don't have any reward yet</p>
+                            </div>
                         </div>
-                        <div className="collapse-content">
-                            <p>mapping list rewards</p>
-                        </div>
-                    </div>
+                    )}
                 </div>
 
             </div>
 
 
             <div className="flex justify-center mb-20 mx-5 mt-5">
-                <button className="btn btn-primary btn-block">Place Order</button>
+                <button className={`btn btn-primary btn-block ${statusAllowPlaceOrder ? '' : 'btn-disabled'}`}>Place Order</button>
             </div>
 
+            <dialog id="my_modal_2" className="modal">
+                <div className="modal-box">
+                    <h3 className="font-bold text-lg text-center">Already Booked</h3>
+                    {/* <p className="py-4">Already Booked</p> */}
+                </div>
+                <form method="dialog" className="modal-backdrop">
+                    <button>close</button>
+                </form>
+            </dialog>
 
             <Navbar />
 
