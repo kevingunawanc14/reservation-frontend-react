@@ -30,12 +30,9 @@ export default function DetailLapangan() {
     const [productPrice, setProductPrice] = useState(35000);
     const { register, handleSubmit, watch, formState: { errors } } = useForm({
         defaultValues: {
-            paymentMethod: "cash"
+            paymentMethod: "cash",
         }
     });
-
-    console.log('watch', watch());
-
 
     const hours = [
         '6.00-7.00', '7.00-8.00', '8.00-9.00',
@@ -105,6 +102,7 @@ export default function DetailLapangan() {
     function addToOrderSummary(hour) {
         // Assuming arrOfOrderSummary is a state variable
         setArrOfOrderSummary(prevState => [...prevState, hour]);
+
     }
 
     function removeFromOrderSummary(hour) {
@@ -117,6 +115,7 @@ export default function DetailLapangan() {
 
         // Remove hour from arrOfOrderSummary
         setArrOfOrderSummary(prevState => prevState.filter(item => item !== hour));
+
     }
 
     function formatNumberWithDot(number) {
@@ -201,6 +200,25 @@ export default function DetailLapangan() {
         console.log('value', value);
     };
 
+    const handleOrder = async () => {
+        console.log('handle Order');
+        try {
+            const token = localStorage.getItem('token');
+
+            const response = await axios.post('http://localhost:2000/order', {
+                headers: {
+                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                }
+            });
+
+
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            navigate('/login', { state: { from: location }, replace: true });
+
+        }
+    }
+
     useEffect(() => {
         if (idProduct == 3) {
             setNamaProduct('Lapangan Badminton 1')
@@ -209,8 +227,6 @@ export default function DetailLapangan() {
         // console.log('scheduleData', scheduleData);
         getDataOrder();
     }, [valueCalendar]);
-
-
 
     return (
         <>
@@ -363,6 +379,7 @@ export default function DetailLapangan() {
                             <div className="collapse-content">
                                 <img src={pool} alt="" className='w-full' />
                                 <input
+                                    {...register("filePaymentProve", { required: true })}
                                     type="file"
                                     className="file-input file-input-bordered w-full max-w-xs mt-3"
                                 />
@@ -423,7 +440,13 @@ export default function DetailLapangan() {
 
 
             <div className="flex justify-center mb-20 mx-5 mt-5">
-                <button className={`btn btn-primary btn-block ${statusAllowPlaceOrder ? '' : 'btn-disabled'}`}>Place Order</button>
+                {watch("paymentMethod") === 'cash' || watch("paymentMethod") === 'krakataucoin' ? (
+                    <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 ? '' : 'btn-disabled'}`} >Place Order</button>
+
+                ) : (
+                    <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 && watch('filePaymentProve')?.length > 0 ? '' : 'btn-disabled'}`} >Place Order</button>
+
+                )}
             </div>
 
             <dialog id="my_modal_2" className="modal">
@@ -436,7 +459,6 @@ export default function DetailLapangan() {
                 </form>
             </dialog>
 
-            <Navbar />
 
         </>
     );
