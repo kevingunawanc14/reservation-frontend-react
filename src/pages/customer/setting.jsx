@@ -91,23 +91,23 @@ export default function DetailAccount() {
                     </div>
                     <div className="collapse-content grid place-items-center  ">
                         <div className="mt-3">
-                            <kbd className="kbd mx-2 text-sm w-40">Username: {userData.username}</kbd>
+                            <kbd className="kbd mx-2 text-sm w-40">Username:  <br /> {userData.username}</kbd>
 
                         </div>
                         <div className="mt-3">
-                            <kbd className="kbd mx-2 text-sm  w-40">Rank: {userData.rank}   {userData.rank === 'Platinum' ? <GiRank2 color="#3ba8ba" fontSize="20px" /> :
+                            <kbd className="kbd mx-2 text-sm  w-40">Rank:  <br /> {userData.rank}   {userData.rank === 'Platinum' ? <GiRank2 color="#3ba8ba" fontSize="20px" /> :
                                 userData.rank === 2 ? <GiRank2 color="#a46ced" fontSize="20px" /> :
                                     userData.rank === 3 ? <GiRank2 color="#eccc55" fontSize="20px" /> :
                                         null} </kbd>
                         </div>
                         <div className="mt-3">
-                            <kbd className="kbd mx-2 text-sm  w-40">Xp: {userData.xp}</kbd>
+                            <kbd className="kbd mx-2 text-sm  w-40">Xp: <br /> {userData.xp}</kbd>
                         </div>
                         <div className="mt-3">
-                            <kbd className="kbd mx-2 text-sm w-40">Hp: {userData.hp}</kbd>
+                            <kbd className="kbd mx-2 text-sm w-40">Hp:  <br /> {userData.hp}</kbd>
                         </div>
                         <div className="mt-3">
-                            <kbd className="kbd mx-2 text-sm  w-40">Krakatau Coin: {userData.coin}</kbd>
+                            <kbd className="kbd mx-2 text-sm  w-40">Krakatau Coin:  <br /> {userData.coin}</kbd>
                         </div>
                     </div>
                 </div>
