@@ -104,7 +104,7 @@ export default function DetailAccount() {
                             <kbd className="kbd mx-2 text-sm  w-40">Xp: {userData.xp}</kbd>
                         </div>
                         <div className="mt-3">
-                            <kbd className="kbd mx-2 text-sm w-60">Hp: {userData.hp}</kbd>
+                            <kbd className="kbd mx-2 text-sm w-40">Hp: {userData.hp}</kbd>
                         </div>
                         <div className="mt-3">
                             <kbd className="kbd mx-2 text-sm  w-40">Krakatau Coin: {userData.coin}</kbd>
