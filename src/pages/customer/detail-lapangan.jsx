@@ -14,6 +14,14 @@ import { MdOutlineLocalOffer } from "react-icons/md";
 import { RiCopperCoinLine } from "react-icons/ri";
 import pool from '../../assets/pool.webp';
 import { useForm } from "react-hook-form";
+import { data } from 'autoprefixer';
+import { TbHealthRecognition } from "react-icons/tb";
+import { LuSword } from "react-icons/lu";
+import { IoShieldOutline } from "react-icons/io5";
+import { BsTrophy } from "react-icons/bs";
+import { GiHealthPotion } from "react-icons/gi";
+import { LuHeartPulse } from "react-icons/lu";
+
 
 export default function DetailLapangan() {
 
@@ -33,6 +41,8 @@ export default function DetailLapangan() {
             paymentMethod: "cash",
         }
     });
+    const username = localStorage.getItem('username');
+
 
     const hours = [
         '6.00-7.00', '7.00-8.00', '8.00-9.00',
@@ -60,7 +70,6 @@ export default function DetailLapangan() {
     const renderButtons = (hoursWithStatus, setHoursWithStatus, arrOfReserved) => {
         // Create a copy of hoursWithStatus to update
         const updatedStatus = [...hoursWithStatus];
-        console.log('updatedStatus', updatedStatus);
 
         // Update the status for reserved hours
         arrOfReserved.forEach(reservation => {
@@ -201,17 +210,32 @@ export default function DetailLapangan() {
     };
 
     const handleOrder = async () => {
-        console.log('handle Order');
+
+        const dataToSend = {
+            idProduct: idProduct,
+            username: 'fns',
+            price: productPrice,
+            hour: arrOfOrderSummary,
+            paymentStatus:
+                watch("paymentMethod") === 'cash' ? 'belum bayar' :
+                    watch("paymentMethod") === 'krakataucoin' ? 'lunas' :
+                        watch("paymentMethod") === 'qris' ? 'sedang diverifikasi' :
+                            undefined,
+            paymentMethod: watch("paymentMethod"),
+            totalPrice: (productPrice * arrOfOrderSummary.length) - 1000,
+        };
+
         try {
             const token = localStorage.getItem('token');
+            console.log('dataToSend', dataToSend);
 
-            const response = await axios.post('http://localhost:2000/order', {
+            const response = await axios.post('http://localhost:2000/order', dataToSend, {
                 headers: {
                     Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
                 }
             });
 
-
+            navigate('/payment');
         } catch (error) {
             console.error('Error fetching data:', error);
             navigate('/login', { state: { from: location }, replace: true });
@@ -439,15 +463,58 @@ export default function DetailLapangan() {
             </div>
 
 
-            <div className="flex justify-center mb-20 mx-5 mt-5">
+            <div className="flex justify-center  mx-5 mt-5">
                 {watch("paymentMethod") === 'cash' || watch("paymentMethod") === 'krakataucoin' ? (
-                    <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 ? '' : 'btn-disabled'}`} >Place Order</button>
+                    <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 ? '' : 'btn-disabled'}`} onClick={handleOrder}>Place Order</button>
 
                 ) : (
-                    <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 && watch('filePaymentProve')?.length > 0 ? '' : 'btn-disabled'}`} >Place Order</button>
+                    <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 && watch('filePaymentProve')?.length > 0 ? '' : 'btn-disabled'}`} onClick={handleOrder} >Place Order</button>
 
                 )}
             </div>
+
+            <div className="flex justify-center mt-3 mb-3">
+                <div>
+                    <button className="btn btn-neutral btn-sm btn-square mx-2 hover:animate-bounce" onClick={() => document.getElementById('my_modal_3').showModal()}>
+                        <BsTrophy className=' hover:animate-pulse' fontSize="20px" />
+                    </button>
+                    <button className="btn btn-primary btn-sm btn-square  mx-2 hover:animate-bounce" onClick={() => document.getElementById('my_modal_3').showModal()}>
+                        <LuSword className=' hover:animate-bounce ' fontSize="20px" />
+                    </button>
+                    <button className="btn btn-secondary btn-sm btn-square mx-2 hover:animate-bounce" onClick={() => document.getElementById('my_modal_3').showModal()}>
+                        <IoShieldOutline className=' hover:animate-bounce ' fontSize="20px" />
+                    </button>
+                    <button className="btn btn-secondary btn-sm btn-square mx-2 hover:animate-bounce" onClick={() => document.getElementById('my_modal_3').showModal()}>
+                        <LuHeartPulse className=' hover:animate-ping ' fontSize="20px" />
+                    </button>
+                </div>
+                {/* <div>
+                    <button className="btn btn-secondary btn-sm btn-square animate-bounce" onClick={() => document.getElementById('my_modal_3').showModal()}><TbHealthRecognition fontSize="30px" />
+                    </button>
+                </div>
+                <div>
+                    <button className="btn btn-secondary btn-sm btn-square animate-bounce" onClick={() => document.getElementById('my_modal_3').showModal()}><TbHealthRecognition fontSize="30px" />
+                    </button>
+                </div>
+                <div>
+                    <button className="btn btn-secondary btn-sm btn-square animate-bounce" onClick={() => document.getElementById('my_modal_3').showModal()}><TbHealthRecognition fontSize="30px" />
+                    </button>
+                </div> */}
+            </div>
+            {/* <div className="flex justify-center mx-5 mt-5 mb-5">
+                <button className="btn btn-secondary btn-sm btn-square animate-bounce" onClick={() => document.getElementById('my_modal_3').showModal()}><TbHealthRecognition fontSize="30px" />
+                </button>
+            </div> */}
+
+            <dialog id="my_modal_3" className="modal">
+                <div className="modal-box">
+                    <h3 className="font-bold text-lg">Hello!</h3>
+                    <p className="py-4">Press ESC key or click outside to close</p>
+                </div>
+                <form method="dialog" className="modal-backdrop">
+                    <button>close</button>
+                </form>
+            </dialog>
 
             <dialog id="my_modal_2" className="modal">
                 <div className="modal-box">
@@ -464,9 +531,3 @@ export default function DetailLapangan() {
     );
 }
 
-{/* <p>dynamic ... jam lapangan basket</p>
-<p>dana tanam pohon</p>
-<p>payment details</p>
-<p>select dropdown pembayaran tunai,qr</p>
-<p>gift</p>
-<p>see grab for inspiration</p> */}

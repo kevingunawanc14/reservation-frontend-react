@@ -22,6 +22,9 @@ import useAxiosPrivate from '../../hooks/useAxiosPrivate.jsx';
 import Header from '../../components/header';
 import axios from 'axios';
 import AuthContext from "../../context/AuthProvider";
+import { MdLoop } from "react-icons/md";
+import { GoGift } from "react-icons/go";
+
 
 export default function Home() {
 
@@ -33,6 +36,9 @@ export default function Home() {
     const [valueTantanganMingguan, setValueTantanganMingguan] = useState(0);
     const [valueTantanganBulanan, setValueTantanganBulanan] = useState(0);
     const [valueTantangan6Bulanan, setValueTantangan6Bulanan] = useState(0);
+    const [timeRemaining, setTimeRemaining] = useState(calculateTimeRemaining());
+    const [showTooltip, setShowTooltip] = useState(false);
+
 
 
 
@@ -74,6 +80,8 @@ export default function Home() {
         }
     }
 
+
+
     const detailPage = (productName) => {
         navigate(`/product/${productName}`);
     };
@@ -100,6 +108,24 @@ export default function Home() {
         handleSearch(value);
     };
 
+    function calculateTimeRemaining() {
+        const now = new Date();
+        const target = new Date();
+        target.setHours(7, 0, 0, 0); // Set target time to 7:00:00 AM
+
+        if (now > target) {
+            // If current time is after 7 am, set target to next day 7 am
+            target.setDate(target.getDate() + 1);
+        }
+
+        const timeDiff = target.getTime() - now.getTime();
+        const hours = Math.floor(timeDiff / (1000 * 60 * 60));
+        const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+        return { hours, minutes, seconds };
+    }
+
     useEffect(() => {
         const token = localStorage.getItem('token');
 
@@ -111,8 +137,16 @@ export default function Home() {
         getDataChallange()
 
 
-
     }, [])
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setTimeRemaining(calculateTimeRemaining());
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, []);
+
 
     return (
         <>
@@ -254,30 +288,45 @@ export default function Home() {
                             <button className={`btn btn-primary mt-5 ${valueTantanganBulanan < 2 ? 'btn-error cursor-not-allowed' : 'btn-success'}`}>Claim Reward</button>
                         </div>
                     </div>
-                    <div className="card w-80 h-60 bg-neutral shadow-xl mt-2">
-                        <div className="card-body">
-                            <h2 className="card-title mt-3 text-neutral-content">Tantangan 6 Bulan</h2>
-                            <div className="grid grid-cols-4">
-                                <div className='col-span-1 justify-self-center'>
-                                    <p className='text-neutral-content'>0/50</p>
+                    <div>
+                        <div className="card w-80 h-60 bg-neutral shadow-xl mt-2">
+                            <div className="card-body">
+                                <h2 className="card-title mt-3 text-neutral-content">Tantangan 6 Bulan</h2>
+                                <div className="grid grid-cols-4">
+                                    <div className='col-span-1 justify-self-center'>
+                                        <p className='text-neutral-content'>0/50</p>
+                                    </div>
+                                    <div className=''>
+                                        <progress className="progress progress-success w-48 bg-neutral-content" value={null} max="100"></progress>
+                                    </div>
                                 </div>
-                                <div className=''>
-                                    <progress className="progress progress-success w-48 bg-neutral-content" value={null} max="100"></progress>
+                                <div className="grid">
+                                    <div className=''>
+                                        {challenges.filter(challenge => challenge.id === 3).map((challenge) => (
+                                            <p key={challenge.id} className='text-sm text-neutral-content'>
+                                                {challenge.description}
+                                            </p>
+                                        ))}
+                                    </div>
                                 </div>
+                                <button className={`btn btn-primary mt-1 ${valueTantangan6Bulanan < 2 ? 'btn-error cursor-not-allowed' : 'btn-success'} `}>Claim Reward</button>
                             </div>
-                            <div className="grid">
-                                <div className=''>
-                                    {challenges.filter(challenge => challenge.id === 3).map((challenge) => (
-                                        <p key={challenge.id} className='text-sm text-neutral-content'>
-                                            {challenge.description}
-                                        </p>
-                                    ))}
-                                </div>
-                            </div>
-                            <button className={`btn btn-primary mt-1 ${valueTantangan6Bulanan < 2 ? 'btn-error cursor-not-allowed' : 'btn-success'} `}>Claim Reward</button>
                         </div>
                     </div>
                 </div>
+
+                <div>
+                    <div style={{ position: 'fixed', bottom: 100, right: 20 }} className="tooltip tooltip-left tooltip-primary" data-tip="Claim Daily Reward">
+                        <button className="btn btn-primary mt-3 hover:animate-bounce btn-disabled">
+                            {/* {`${timeRemaining.hours}:${timeRemaining.minutes}:${timeRemaining.seconds}`} */}
+                            <GoGift fontSize="20px" />
+                        </button>
+                    </div>
+                </div>
+
+
+
+
             </div >
 
             <Navbar />

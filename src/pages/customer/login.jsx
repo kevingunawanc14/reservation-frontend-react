@@ -45,7 +45,10 @@ export default function Login() {
             console.log('response', response);
 
             const token = response.data.token; // Ambil token dari respons
+            const username = response.data.username; // Ambil token dari respons
+
             localStorage.setItem('token', token); // Simpan token ke local storage
+            localStorage.setItem('username', username); // Simpan token ke local storage
 
             navigate('/');
 
@@ -94,8 +97,6 @@ export default function Login() {
                 <div className="flex justify-center">
                     <Header title={'Welcome'} />
                 </div>
-                <input type="file" className="file-input file-input-bordered w-full max-w-xs" />
-
                 <div className="flex justify-center">
                     {registerStatus === 'success' && (
                         <Alert severity="success" onClose={() => setRegisterStatus(null)}>Registration Success</Alert>

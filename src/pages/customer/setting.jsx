@@ -3,8 +3,19 @@ import Header from '../../components/header.jsx';
 import Avatar1 from '../../assets/avatar/avatar1.webp';
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { GiRank2 } from "react-icons/gi";
 
 export default function DetailAccount() {
+
+
+    const [userData, setUserData] = useState({
+        username: '',
+        rank: '',
+        xp: '',
+        hp: '',
+        coin: ''
+    });
 
     const [theme, setTheme] = useState();
     const navigate = useNavigate();
@@ -15,12 +26,46 @@ export default function DetailAccount() {
         setTheme(newTheme);
     };
 
-
-    // Fungsi untuk logout
     const handleLogout = () => {
-        localStorage.removeItem('token'); // Hapus token dari local storage
+        localStorage.removeItem('token');
         navigate('/login');
     };
+
+
+    const getDataDetailUser = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const username = localStorage.getItem('username');
+
+            const response = await axios.get(`http://localhost:2000/user/detail/${username}`, {
+                headers: {
+                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                }
+            });
+
+            const responseData = response.data; // Assuming the response contains the user details
+
+            // Update the state with the fetched data
+            setUserData({
+                username: responseData.username,
+                rank: responseData.rank,
+                xp: responseData.xp,
+                hp: responseData.hp,
+                coin: responseData.coin
+            });
+
+            console.log('response', response)
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            // navigate('/login', { state: { from: location }, replace: true });
+
+        }
+    };
+
+
+    useEffect(() => {
+        getDataDetailUser();
+    }, []);
 
 
     return (
@@ -32,30 +77,57 @@ export default function DetailAccount() {
             <div className="mx-10 mt-5 mb-5">
 
                 <div className="collapse collapse-arrow bg-neutral">
-                    <input type="radio" name="my-accordion-2" />
+                    <input type="checkbox" />
                     <div className="collapse-title text-xl font-medium text-neutral-content">
-                        Detail Account
+                        <div className="grid grid-cols-4">
+                            <div className="col-span-3">
+                                <p>Detail Account</p>
+                            </div>
+                            <div className="justify-self-end ">
+
+                            </div>
+                        </div>
+
                     </div>
                     <div className="collapse-content grid place-items-center  ">
-                        <div className="mt-3 ">
-                            <kbd className="kbd mx-2 text-sm w-60	">Username: PRX</kbd>
+                        <div className="mt-3">
+                            <kbd className="kbd mx-2 text-sm w-60">Username: {userData.username}</kbd>
+
                         </div>
                         <div className="mt-3">
-                            <kbd className="kbd mx-2 text-sm w-60	">Rank: PRX</kbd>
+                            <kbd className="kbd mx-2 text-sm w-60">Rank: {userData.rank}   {userData.rank === 'Platinum' ? <GiRank2 color="#3ba8ba" fontSize="20px" /> :
+                                userData.rank === 2 ? <GiRank2 color="#a46ced" fontSize="20px" /> :
+                                    userData.rank === 3 ? <GiRank2 color="#eccc55" fontSize="20px" /> :
+                                        null} </kbd>
                         </div>
                         <div className="mt-3">
-                            <kbd className="kbd mx-2 text-sm w-60	">Xp: PRX</kbd>
+                            <kbd className="kbd mx-2 text-sm w-60">Xp: {userData.xp}</kbd>
                         </div>
                         <div className="mt-3">
-                            <kbd className="kbd mx-2 text-sm w-60	">Hp: PRX</kbd>
+                            <kbd className="kbd mx-2 text-sm w-60">Hp: {userData.hp}</kbd>
                         </div>
                         <div className="mt-3">
-                            <kbd className="kbd mx-2 text-sm w-60	">Coin: PRX</kbd>
+                            <kbd className="kbd mx-2 text-sm w-60">Krakatau Coin: {userData.coin}</kbd>
                         </div>
                     </div>
                 </div>
+                {/* <GiRank2
+                    color="#3ba8ba"
+                    fontSize="30px"
+                />
+
+                <GiRank2
+                    color="#a46ced"
+                    fontSize="30px"
+                />
+
+                <GiRank2
+                    color="#eccc55
+                    "
+                    fontSize="30px"
+                /> */}
                 <div className="collapse collapse-arrow bg-neutral mt-3">
-                    <input type="radio" name="my-accordion-2" />
+                    <input type="checkbox" />
                     <div className="collapse-title text-xl font-medium text-neutral-content">
                         Statistic
                     </div>
@@ -73,7 +145,7 @@ export default function DetailAccount() {
 
                 </div>
                 <div className="collapse collapse-arrow bg-neutral mt-3">
-                    <input type="radio" name="my-accordion-2" />
+                    <input type="checkbox" />
                     <div className="collapse-title text-xl font-medium text-neutral-content">
                         Achievement
                     </div>
@@ -115,7 +187,7 @@ export default function DetailAccount() {
                     </div>
                 </div>
                 <div className="collapse collapse-arrow bg-neutral mt-3">
-                    <input type="radio" name="my-accordion-2" />
+                    <input type="checkbox" />
                     <div className="collapse-title text-xl font-medium text-neutral-content">
                         Memberships
                     </div>
@@ -154,7 +226,7 @@ export default function DetailAccount() {
                     </div>
                 </div>
                 <div className="collapse collapse-arrow bg-neutral mt-3">
-                    <input type="radio" name="my-accordion-2" />
+                    <input type="checkbox" />
                     <div className="collapse-title text-xl font-medium text-neutral-content">
                         Shop
                     </div>
@@ -255,7 +327,7 @@ export default function DetailAccount() {
                     </div>
                 </div>
                 <div className="collapse collapse-arrow bg-neutral mt-3 mb-40">
-                    <input type="radio" name="my-accordion-2" />
+                    <input type="checkbox" />
                     <div className="collapse-title text-xl font-medium text-neutral-content">
                         Setting
                     </div>
@@ -359,7 +431,7 @@ export default function DetailAccount() {
                     </div>
                 </div>
 
-            </div>
+            </div >
 
             <Navbar />
         </>
