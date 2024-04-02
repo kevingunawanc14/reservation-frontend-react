@@ -132,7 +132,7 @@ export default function DetailAccount() {
                         </div>
                         <div className="grid grid-cols-1">
                             <div className="mt-3">
-                                <kbd className="kbd mx-2 text-sm  60">Rank:  {userData.rank}   {userData.rank === 'Platinum' ? <GiRank2 color="#3ba8ba" fontSize="25px" /> :
+                                <kbd className="kbd mx-2 text-sm  w-60">Rank:  {userData.rank}   {userData.rank === 'Platinum' ? <GiRank2 color="#3ba8ba" fontSize="25px" /> :
                                     userData.rank === 2 ? <GiRank2 color="#a46ced" fontSize="25px" /> :
                                         userData.rank === 3 ? <GiRank2 color="#eccc55" fontSize="25px" /> :
                                             null} </kbd>
@@ -140,23 +140,19 @@ export default function DetailAccount() {
                         </div>
                         <div className="grid grid-cols-1">
                             <div className="mt-3">
-                                <kbd className="kbd mx-2 text-sm  60">Xp: {userData.xp}</kbd>
-                            </div>
-
-                        </div>
-                        <div className="grid grid-cols-1">
-                            <div className="mt-3">
-                                <kbd className="kbd mx-2 text-sm 60">Hp:  {userData.hp}</kbd>
+                                <kbd className="kbd mx-2 text-sm  w-60">Xp: {userData.xp}</kbd>
                             </div>
                         </div>
                         <div className="grid grid-cols-1">
                             <div className="mt-3">
-                                <kbd className="kbd mx-2 text-sm  60">Krakatau Coin:  {userData.coin}</kbd>
+                                <kbd className="kbd mx-2 text-sm w-60">Hp:  {userData.hp}</kbd>
                             </div>
                         </div>
-
-
-
+                        <div className="grid grid-cols-1">
+                            <div className="mt-3">
+                                <kbd className="kbd mx-2 text-sm  w-60">Krakatau Coin:  {userData.coin}</kbd>
+                            </div>
+                        </div>
 
                     </div>
                 </div>
