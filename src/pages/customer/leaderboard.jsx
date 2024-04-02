@@ -52,7 +52,7 @@ export default function Leaderboard() {
 
         } catch (error) {
             console.error('Error fetching data:', error);
-            navigate('/login', { state: { from: location }, replace: true });
+            // navigate('/login', { state: { from: location }, replace: true });
 
         }
     };

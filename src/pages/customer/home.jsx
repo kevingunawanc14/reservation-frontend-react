@@ -21,6 +21,12 @@ import { FaRegAddressCard } from "react-icons/fa6";
 import Header from '../../components/header';
 import axios from 'axios';
 import { GoGift } from "react-icons/go";
+import { IoIosFootball } from "react-icons/io";
+import { TfiBasketball } from "react-icons/tfi";
+import { FaSwimmingPool } from "react-icons/fa";
+import { IoFootball } from "react-icons/io5";
+// import { PiSoccerBallFill } from "react-icons/pi";
+import { BiFootball } from "react-icons/bi";
 
 
 export default function Home() {
@@ -182,19 +188,19 @@ export default function Home() {
                 <div className="grid grid-cols-3 m-5">
                     <div className='grid justify-items-center'>
                         <button className="btn btn-circle btn-neutral text-neutral-content" onClick={() => detailPage('badminton')}>
-                            <GiShuttlecock />
+                            <GiShuttlecock fontSize="17px" />
                         </button>
                         <p className='font-mono'>Badminton</p>
                     </div>
                     <div className='grid justify-items-center'>
                         <button className="btn btn-circle btn-neutral text-neutral-content" onClick={() => detailPage('futsal')}>
-                            <GiSoccerKick />
+                            <BiFootball fontSize="20px" />
                         </button>
                         <p className='font-mono'>Futsal</p>
                     </div>
                     <div className='grid justify-items-center'>
                         <button className="btn btn-circle btn-neutral text-neutral-content" onClick={() => detailPage('basket')}>
-                            <TbPlayBasketball />
+                            <TfiBasketball fontSize="20px" />
 
 
                         </button>
@@ -205,13 +211,13 @@ export default function Home() {
                 <div className="grid grid-cols-3 m-5">
                     <div className='grid justify-items-center'>
                         <button className="btn btn-circle  btn-neutral text-neutral-content" onClick={() => detailPage('gym')}>
-                            <CgGym />
+                            <CgGym fontSize="20px" />
                         </button>
                         <p className='font-mono'>Gym</p>
                     </div>
                     <div className='grid justify-items-center'>
                         <button className="btn btn-circle  btn-neutral text-neutral-content" onClick={() => detailPage('renang')}>
-                            <FaSwimmer />
+                            <FaSwimmingPool fontSize="20px" />
 
 
                         </button>
@@ -219,7 +225,7 @@ export default function Home() {
                     </div>
                     <div className='grid justify-items-center'>
                         <button className="btn btn-circle  btn-neutral text-neutral-content" onClick={() => detailPage('membership')}>
-                            <FaRegAddressCard />
+                            <FaRegAddressCard fontSize="20px" />
 
 
                         </button>
@@ -387,7 +393,7 @@ export default function Home() {
 
                 <div>
                     <div style={{ position: 'fixed', bottom: 100, right: 20 }} className="tooltip tooltip-left tooltip-primary" data-tip="Claim Daily Reward">
-                        <button className="btn btn-primary mt-3 hover:animate-bounce btn-disabled">
+                        <button className="btn btn-primary mt-3 hover:animate-bounce ">
                             {/* {`${timeRemaining.hours}:${timeRemaining.minutes}:${timeRemaining.seconds}`} */}
                             <GoGift fontSize="20px" />
                         </button>
