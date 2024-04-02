@@ -12,7 +12,7 @@ export default defineConfig({
         enabled: true
       },
       manifest: {
-        name: 'Krakatau Sport Centre Jombang App',
+        name: 'Krakatau Sport Centre Jombang',
         short_name: 'Krakatau Sport Centre Jombang',
         description: 'Krakatau Sport Centre Jombang App description',
         theme_color: '#ffffff',
