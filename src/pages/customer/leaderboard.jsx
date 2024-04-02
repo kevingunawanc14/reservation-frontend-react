@@ -1,6 +1,5 @@
 import Navbar from "../../components/navbar";
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import Button from '@mui/material/Button';
+import { DataGrid } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
 import Header from '../../components/header';
 import { GiRank2 } from "react-icons/gi";
@@ -9,10 +8,6 @@ import { BiSolidShieldAlt2 } from "react-icons/bi";
 import { LuSwords } from "react-icons/lu";
 import Avatar1 from '../../assets/avatar/avatar1.webp';
 import { LuSword } from "react-icons/lu";
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Alert from '@mui/material/Alert';
-import useAxiosPrivate from '../../hooks/useAxiosPrivate.jsx';
 import { useNavigate, useLocation } from "react-router-dom";
 import { MdOutlineEdit } from "react-icons/md";
 import { MdDeleteOutline } from "react-icons/md";

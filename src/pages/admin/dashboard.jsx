@@ -3,7 +3,7 @@ import Header from '../../components/header';
 import { PieChart } from '@mui/x-charts/PieChart';
 import { LineChart } from '@mui/x-charts/LineChart';
 import { BarChart } from '@mui/x-charts/BarChart';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+import { DataGrid } from '@mui/x-data-grid';
 import { useState, useEffect } from 'react'
 import {
     GridToolbarContainer,
@@ -13,12 +13,11 @@ import {
 import { MdOutlineEdit } from "react-icons/md";
 import { MdDeleteOutline } from "react-icons/md";
 import { useNavigate, useLocation } from "react-router-dom";
-import useAxiosPrivate from '../../hooks/useAxiosPrivate.jsx';
+import axios from 'axios';
 
 export default function Dashboard() {
 
     const [tableData, setTableData] = useState([])
-    const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -26,12 +25,20 @@ export default function Dashboard() {
 
     const fetchData = async () => {
         try {
-            const response = await axiosPrivate.get('/dashboard')
+
+            const token = localStorage.getItem('token');
+
+            const response = await axios.get('http://localhost:2000/dashboard', {
+                headers: {
+                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                }
+            });
+
             console.log('response', response)
 
         } catch (error) {
             console.error('Error fetching data:', error);
-            navigate('/login', { state: { from: location }, replace: true });
+            // navigate('/login', { state: { from: location }, replace: true });
 
         }
     };

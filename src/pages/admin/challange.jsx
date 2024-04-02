@@ -1,11 +1,8 @@
 import Navbar from '../../components/navbar_admin.jsx';
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
+import { DataGrid } from '@mui/x-data-grid';
 import { useState, useEffect } from 'react'
 import Alert from '@mui/material/Alert';
 import Header from '../../components/header';
-import useAxiosPrivate from '../../hooks/useAxiosPrivate.jsx';
 import { useNavigate, useLocation } from "react-router-dom";
 import { MdOutlineEdit } from "react-icons/md";
 import { MdDeleteOutline } from "react-icons/md";

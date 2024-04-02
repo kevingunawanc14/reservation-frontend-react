@@ -12,7 +12,7 @@ import { BsCash } from "react-icons/bs";
 import { BsQrCode } from "react-icons/bs";
 import { MdOutlineLocalOffer } from "react-icons/md";
 import { RiCopperCoinLine } from "react-icons/ri";
-import pool from '../../assets/pool.webp';
+import qris from '../../assets/QRIS_KRAKATAU.png';
 import { useForm } from "react-hook-form";
 import { data } from 'autoprefixer';
 import { TbHealthRecognition } from "react-icons/tb";
@@ -21,6 +21,10 @@ import { IoShieldOutline } from "react-icons/io5";
 import { BsTrophy } from "react-icons/bs";
 import { GiHealthPotion } from "react-icons/gi";
 import { LuHeartPulse } from "react-icons/lu";
+import { FaWalking } from "react-icons/fa";
+import { FaRunning } from "react-icons/fa";
+import { FaPerson } from "react-icons/fa6";
+import { RxAvatar } from "react-icons/rx";
 
 
 export default function DetailLapangan() {
@@ -39,9 +43,15 @@ export default function DetailLapangan() {
     const { register, handleSubmit, watch, formState: { errors } } = useForm({
         defaultValues: {
             paymentMethod: "cash",
+            breathStatus: "normal"
         }
     });
     const username = localStorage.getItem('username');
+    const [breathStatus, setBreathStatus] = useState('normal');
+
+    const handleRadioBreathStatus = (status) => {
+        setBreathStatus(status);
+    };
 
 
     const hours = [
@@ -395,20 +405,28 @@ export default function DetailLapangan() {
                         </div>
                     </div>
                     {showQr && (
-                        <div className="collapse collapse-arrow border border-base-300 bg-neutral">
-                            <input type="checkbox" />
-                            <div className="collapse-title text-xl font-medium text-neutral-content">
-                                Show QRIS
-                            </div>
-                            <div className="collapse-content">
-                                <img src={pool} alt="" className='w-full' />
-                                <input
-                                    {...register("filePaymentProve", { required: true })}
-                                    type="file"
-                                    className="file-input file-input-bordered w-full max-w-xs mt-3"
-                                />
+                        <div className=''>
+                            <div className="collapse collapse-arrow border border-base-300 bg-neutral justify-self-center ">
+                                <input type="checkbox" />
+                                <div className="collapse-title text-xl font-medium text-neutral-content">
+                                    Show QRIS
+                                </div>
+                                <div className="collapse-content grid ">
+                                    <div className='justify-self-center '>
+                                        <img src={qris} alt="" className=' ' />
+                                        <input
+                                            {...register("filePaymentProve", { required: true })}
+                                            type="file"
+                                            className="file-input file-input-bordered w-full mt-3"
+                                        />
+
+                                    </div>
+
+                                </div>
+
                             </div>
                         </div>
+
                     )}
                     <div className="grid grid-cols-8">
                         <div className='self-center'>
@@ -475,41 +493,107 @@ export default function DetailLapangan() {
 
             <div className="flex justify-center mt-3 mb-3">
                 <div>
-                    <button className="btn btn-neutral btn-sm btn-square mx-2 hover:animate-bounce" onClick={() => document.getElementById('my_modal_3').showModal()}>
+                    <button className="btn btn-neutral btn-sm btn-square mx-2 hover:animate-bounce" onClick={() => document.getElementById('leaderboardModal').showModal()}>
                         <BsTrophy className=' hover:animate-pulse' fontSize="20px" />
                     </button>
-                    <button className="btn btn-primary btn-sm btn-square  mx-2 hover:animate-bounce" onClick={() => document.getElementById('my_modal_3').showModal()}>
+                    <button className="btn btn-primary btn-sm btn-square  mx-2 hover:animate-bounce" onClick={() => document.getElementById('attackModal').showModal()}>
                         <LuSword className=' hover:animate-bounce ' fontSize="20px" />
                     </button>
-                    <button className="btn btn-secondary btn-sm btn-square mx-2 hover:animate-bounce" onClick={() => document.getElementById('my_modal_3').showModal()}>
+                    <button className="btn btn-secondary btn-sm btn-square mx-2 hover:animate-bounce" onClick={() => document.getElementById('defenseModal').showModal()}>
                         <IoShieldOutline className=' hover:animate-bounce ' fontSize="20px" />
                     </button>
-                    <button className="btn btn-secondary btn-sm btn-square mx-2 hover:animate-bounce" onClick={() => document.getElementById('my_modal_3').showModal()}>
+                    <button className="btn btn-secondary btn-sm btn-square mx-2 hover:animate-bounce" onClick={() => document.getElementById('hearthModal').showModal()}>
                         <LuHeartPulse className=' hover:animate-ping ' fontSize="20px" />
                     </button>
                 </div>
-                {/* <div>
-                    <button className="btn btn-secondary btn-sm btn-square animate-bounce" onClick={() => document.getElementById('my_modal_3').showModal()}><TbHealthRecognition fontSize="30px" />
-                    </button>
-                </div>
-                <div>
-                    <button className="btn btn-secondary btn-sm btn-square animate-bounce" onClick={() => document.getElementById('my_modal_3').showModal()}><TbHealthRecognition fontSize="30px" />
-                    </button>
-                </div>
-                <div>
-                    <button className="btn btn-secondary btn-sm btn-square animate-bounce" onClick={() => document.getElementById('my_modal_3').showModal()}><TbHealthRecognition fontSize="30px" />
-                    </button>
-                </div> */}
             </div>
-            {/* <div className="flex justify-center mx-5 mt-5 mb-5">
-                <button className="btn btn-secondary btn-sm btn-square animate-bounce" onClick={() => document.getElementById('my_modal_3').showModal()}><TbHealthRecognition fontSize="30px" />
-                </button>
-            </div> */}
 
-            <dialog id="my_modal_3" className="modal">
+
+            <dialog id="leaderboardModal" className="modal">
                 <div className="modal-box">
-                    <h3 className="font-bold text-lg">Hello!</h3>
-                    <p className="py-4">Press ESC key or click outside to close</p>
+                    <h3 className="font-bold text-lg">Krakatau Leaderboard System</h3>
+                    <p className="py-4">Climb up to top by reservation any kind of product</p>
+                    <p className="py-4">1 XP for every Rp 10 000 you spend</p>
+                    <div className='bg-neutral p-3 rounded-lg mt-2 border-4 border-neutral-content border-double'>
+                        <p className="py-4 text-neutral-content">Note : Use your XP to customize your app theme or buy avatar.</p>
+                    </div>
+                    <p className="py-4">Every reservation allow you to set breath status to get HP</p>
+                    <p className="py-4">Breath status mean how much energy you will use for exercise</p>
+                    <div>
+                        <div>
+                            <div className='grid grid-cols-2'>
+                                <p ><FaPerson className={`${breathStatus === 'normal' ? 'animate-pulse' : ''}`} />Normal Breath</p>
+                                <input
+                                    {...register("breathStatus")}
+                                    value="normal"
+                                    type="radio"
+                                    className="radio checked:bg-green-500"
+                                    onClick={() => handleRadioBreathStatus('normal')}
+                                />
+                            </div>
+                            <div className='grid grid-cols-2 mt-2'>
+                                <p ><FaWalking className={`${breathStatus === 'medium' ? 'animate-pulse' : ''}`} />Medium Breath</p>
+                                <input
+                                    {...register("breathStatus")}
+                                    value="medium"
+                                    type="radio"
+                                    className="radio checked:bg-yellow-500"
+                                    onClick={() => handleRadioBreathStatus('medium')}
+                                />
+                            </div>
+                            <div className='grid grid-cols-2 mt-2'>
+                                <p ><FaRunning className={`${breathStatus === 'high' ? 'animate-pulse' : ''}`} />High Breath</p>
+                                <input
+                                    {...register("breathStatus")}
+                                    value="high"
+                                    type="radio"
+                                    className="radio checked:bg-red-500"
+                                    onClick={() => handleRadioBreathStatus('high')}
+                                />
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                    <div className='bg-neutral p-3 rounded-lg mt-2 border-4 border-neutral-content border-double'>
+                        <p className="py-4 text-neutral-content">Note : XP: Experience Point</p>
+                        <p className="py-4 text-neutral-content">Note : HP: Health Point</p>
+                    </div>
+
+                </div>
+                <form method="dialog" className="modal-backdrop">
+                    <button>close</button>
+                </form>
+            </dialog >
+
+            <dialog id="attackModal" className="modal">
+                <div className="modal-box">
+                    <h3 className="font-bold text-lg">Attack System</h3>
+                    <p className="py-4">Every successfull and already paid reservation can get +1 attack attempt</p>
+                    <div className='bg-neutral p-3 rounded-lg mt-2 border-4 border-neutral-content border-double'>
+                        <p className='text-neutral-content'>Note : Attack attempt can be use on leaderboard page to reduce another user health point</p>
+                    </div>
+                </div>
+                <form method="dialog" className="modal-backdrop">
+                    <button>close</button>
+                </form>
+            </dialog>
+
+            <dialog id="defenseModal" className="modal">
+                <div className="modal-box">
+                    <h3 className="font-bold text-lg">Defense System</h3>
+                    <p className="py-4 ">Every successfull and already paid reservation can get +1 defend to prevent direct attack to health point</p>
+                </div>
+                <form method="dialog" className="modal-backdrop">
+                    <button>close</button>
+                </form>
+            </dialog>
+
+            <dialog id="hearthModal" className="modal">
+                <div className="modal-box">
+                    <h3 className="font-bold text-lg">Health System</h3>
+                    <p className="py-4">Every successfull and already paid reservation can get +? HP depending on the breath status you pick</p>
                 </div>
                 <form method="dialog" className="modal-backdrop">
                     <button>close</button>
@@ -525,6 +609,8 @@ export default function DetailLapangan() {
                     <button>close</button>
                 </form>
             </dialog>
+
+
 
 
         </>

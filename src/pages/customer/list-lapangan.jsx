@@ -1,17 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { RiMoneyDollarCircleLine } from "react-icons/ri";
-import { RiAccountCircleLine } from "react-icons/ri";
-import { LiaHeartbeatSolid } from "react-icons/lia";
-import { IoTrophyOutline } from "react-icons/io5";
 import Header from '../../components/header.jsx';
-import Navbar from '../../components/navbar.jsx';
 import { useState, useEffect } from 'react'
-import useAxiosPrivate from '../../hooks/useAxiosPrivate.jsx';
-import badminton from '../../assets/badminton.webp';
-import basket from '../../assets/basketball.webp';
-import futsal from '../../assets/futsal.webp';
-import pool from '../../assets/pool.webp';
-import gym from '../../assets/gym.webp';
 import { IoMdLock } from "react-icons/io";
 import axios from 'axios';
 import { IoArrowBackOutline } from "react-icons/io5";
@@ -25,27 +14,9 @@ export default function ListGor() {
 
     const [courtData, setCourtData] = useState([])
 
-    const [courtImage, setCourtImage] = useState(null)
-
     const [courtName, setCourtName] = useState(null)
 
     const [lapangan, setLapangan] = useState('Lapangan')
-
-    const getImageSrc = () => {
-        if (currentUrl.split('/').pop() == 'badminton') {
-            setCourtImage(badminton)
-        } else if (currentUrl.split('/').pop() == 'basket') {
-            setCourtImage(basket)
-        } else if (currentUrl.split('/').pop() == 'futsal') {
-            setCourtImage(futsal)
-        } else if (currentUrl.split('/').pop() == 'gym') {
-            setCourtImage(gym)
-        } else if (currentUrl.split('/').pop() == 'renang') {
-            setCourtImage(pool)
-        }
-
-
-    };
 
     const handleDetailLapangan = (id) => {
         const path = `/product/${courtName.toLowerCase()}/${id}`;
@@ -56,7 +27,6 @@ export default function ListGor() {
     const handleBack = () => {
         navigate('/');
     };
-
 
     const getDataProduct = async () => {
         try {
@@ -77,7 +47,6 @@ export default function ListGor() {
     };
 
     useEffect(() => {
-        getImageSrc();
         setCourtName(currentUrl.split('/').pop().charAt(0).toUpperCase() + currentUrl.split('/').pop().slice(1));
         if (currentUrl.split('/').pop() === 'renang') {
             setLapangan('Kolam')
@@ -108,12 +77,12 @@ export default function ListGor() {
                     <div key={item.id} className="card lg:card-side bg-neutral shadow-xl mt-5">
                         {item.name.includes('Membership') ? (
                             item.name.includes('Membership Renang') ? (
-                                <figure><img src={pool} alt="" className="w-full h-[30vh] lg:h-fit" /></figure>
+                                <figure><img src={item.imagePath} alt="" className="w-full h-[30vh] lg:h-fit" /></figure>
                             ) : (
-                                <figure><img src={gym} alt="" className="w-full h-[30vh] lg:h-fit" /></figure>
+                                <figure><img src={item.imagePath} alt="" className="w-full h-[30vh] lg:h-fit" /></figure>
                             )
                         ) : (
-                            <figure><img src={courtImage} alt="" className="w-full h-[30vh] lg:h-fit" /></figure>
+                            <figure><img src={item.imagePath} alt="" className="w-full h-[30vh] lg:h-fit" /></figure>
                         )}
                         <div className="card-body">
                             {item.gor !== 0 && <h2 className="card-title text-neutral-content">Gor {item.gor}</h2>}

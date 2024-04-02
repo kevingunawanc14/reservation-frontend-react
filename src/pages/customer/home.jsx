@@ -18,11 +18,8 @@ import Who from '../../assets/who.png'; // Import the image file
 import { MdOutlineHealthAndSafety } from "react-icons/md";
 import { useState, useEffect, useContext } from 'react';
 import { FaRegAddressCard } from "react-icons/fa6";
-import useAxiosPrivate from '../../hooks/useAxiosPrivate.jsx';
 import Header from '../../components/header';
 import axios from 'axios';
-import AuthContext from "../../context/AuthProvider";
-import { MdLoop } from "react-icons/md";
 import { GoGift } from "react-icons/go";
 
 
@@ -31,7 +28,6 @@ export default function Home() {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
     const [challenges, setChallenges] = useState([]);
-    const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate();
     const [valueTantanganMingguan, setValueTantanganMingguan] = useState(0);
     const [valueTantanganBulanan, setValueTantanganBulanan] = useState(0);
@@ -233,34 +229,108 @@ export default function Home() {
                 <div className="mx-10 mt-5">
                     <Header title={'Selesaikan Tantanganmu Sekarang'} />
                 </div>
-                <div className="grid grid-rows-3 grid-flow-col gap-4 justify-items-center mt-3">
-                    <div className="card w-80 h-96 bg-neutral shadow-xl">
+                <div className=''>
+
+                </div>
+
+                <div className='grid grid-rows-3 gap-4 mb-20'>
+                    <div className="card lg:card-side bg-neutral shadow-xl m-4">
                         <div className="card-body">
-                            <h2 className="card-title mt-3 text-neutral-content">Tantangan Mingguan</h2>
-                            <div className="grid grid-cols-4">
-                                <div className='col-span-1 justify-self-center'>
+                            <h2 className="card-title text-neutral-content">Tantangan Mingguan</h2>
+                            <div className="grid grid-cols-12">
+                                <div className='sm:col-span-1 col-span-2 justify-self-center'>
                                     <p className='text-neutral-content'>0/2</p>
                                 </div>
-                                <div className=''>
-                                    <progress className="progress progress-success w-48 bg-neutral-content" value={null} max="100"></progress>
+                                <div className='sm:col-span-11 col-span-9'>
+                                    <progress className="progress progress-success w-full bg-neutral-content" value={null} max="100"></progress>
                                 </div>
                             </div>
                             <div className="grid grid-cols-4">
-                                <div className='col-span-2'>
+                                <div className='sm:col-span-2 col-span-4'>
                                     {challenges.filter(challenge => challenge.id === 1).map((challenge) => (
                                         <p key={challenge.id} className='text-sm text-neutral-content'>
                                             {challenge.description}
                                         </p>
                                     ))}
                                 </div>
-                                <div className='self-center col-span-2'>
-                                    <img src={aha} alt="who image logo" />
-
+                            </div>
+                            <div className="">
+                                <div className='grid grid-cols-2'>
+                                    <div className='self-center '>
+                                        <img src={aha} alt="" className='w-20 h-11 bg-neutral-content rounded border-1' />
+                                    </div>
+                                    <div className='justify-self-end'>
+                                        <button className={`btn btn-primary mt-5 ${valueTantanganMingguan < 2 ? 'btn-error cursor-not-allowed' : 'btn-success'}`}>Claim Reward</button>
+                                    </div>
                                 </div>
                             </div>
-                            <button className={`btn btn-primary mt-5 ${valueTantanganMingguan < 2 ? 'btn-error cursor-not-allowed' : 'btn-success'}`}>Claim Reward</button>
                         </div>
                     </div>
+                    <div className="card lg:card-side bg-neutral shadow-xl m-4">
+                        <div className="card-body">
+                            <h2 className="card-title text-neutral-content">Tantangan Bulanan</h2>
+                            <div className="grid grid-cols-12">
+                                <div className='sm:col-span-1 col-span-2 justify-self-center'>
+                                    <p className='text-neutral-content'>0/10</p>
+                                </div>
+                                <div className='sm:col-span-11 col-span-9'>
+                                    <progress className="progress progress-success w-full bg-neutral-content" value={null} max="100"></progress>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-4">
+                                <div className='sm:col-span-2 col-span-4'>
+                                    {challenges.filter(challenge => challenge.id === 2).map((challenge) => (
+                                        <p key={challenge.id} className='text-sm text-neutral-content'>
+                                            {challenge.description}
+                                        </p>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="">
+                                <div className='grid grid-cols-2'>
+                                    <div className='self-center '>
+                                        <img src={Who} alt="" className='w-20 h-11 bg-neutral-content rounded border-1 p-1' />
+                                    </div>
+                                    <div className='justify-self-end'>
+                                        <button className={`btn btn-primary mt-5 ${valueTantanganMingguan < 2 ? 'btn-error cursor-not-allowed' : 'btn-success'}`}>Claim Reward</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="card lg:card-side bg-neutral shadow-xl m-4">
+                        <div className="card-body">
+                            <h2 className="card-title text-neutral-content">Tantangan 6 Bulan</h2>
+                            <div className="grid grid-cols-12">
+                                <div className='sm:col-span-1 col-span-2 justify-self-center'>
+                                    <p className='text-neutral-content'>0/50</p>
+                                </div>
+                                <div className='sm:col-span-11 col-span-9'>
+                                    <progress className="progress progress-success w-full bg-neutral-content" value={null} max="100"></progress>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-4">
+                                <div className='sm:col-span-2 col-span-4'>
+                                    {challenges.filter(challenge => challenge.id === 3).map((challenge) => (
+                                        <p key={challenge.id} className='text-sm text-neutral-content'>
+                                            {challenge.description}
+                                        </p>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="">
+                                <div className='grid grid-cols-1'>
+                                    <div className='justify-self-end'>
+                                        <button className={`btn btn-primary mt-5 ${valueTantanganMingguan < 2 ? 'btn-error cursor-not-allowed' : 'btn-success'}`}>Claim Reward</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* <div className="grid grid-rows-3 grid-flow-col gap-4 justify-items-center mt-3">
+
                     <div className="card w-80 h-96 bg-neutral shadow-xl mt-2">
                         <div className="card-body">
                             <h2 className="card-title mt-3 text-neutral-content">Tantangan Bulanan</h2>
@@ -313,7 +383,7 @@ export default function Home() {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
                 <div>
                     <div style={{ position: 'fixed', bottom: 100, right: 20 }} className="tooltip tooltip-left tooltip-primary" data-tip="Claim Daily Reward">

@@ -1,7 +1,5 @@
 import Navbar from "../../components/navbar";
 import { useState, useEffect } from 'react'
-import useRefreshToken from "../../hooks/useRefreshToken";
-import Dummy from '../../assets/dummyImage.png';
 import Avatar1 from '../../assets/avatar/avatar1.webp';
 import Header from '../../components/header.jsx';
 

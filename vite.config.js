@@ -12,9 +12,9 @@ export default defineConfig({
         enabled: true
       },
       manifest: {
-        name: 'My Awesome App',
-        short_name: 'MyApp',
-        description: 'My Awesome App description',
+        name: 'Krakatau Sport Centre Jombang App',
+        short_name: 'Krakatau Sport Centre Jombang',
+        description: 'Krakatau Sport Centre Jombang App description',
         theme_color: '#ffffff',
         "icons": [
           {
