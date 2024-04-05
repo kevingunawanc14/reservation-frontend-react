@@ -13,6 +13,7 @@ import {
 } from '@mui/x-data-grid';
 import { useForm } from "react-hook-form";
 import { IoMdAddCircleOutline } from "react-icons/io";
+import axios from 'axios';
 
 function CustomToolbar() {
     return (
@@ -32,7 +33,6 @@ export default function ActiveOrder() {
     const [addStatus, setAddStatus] = useState(null);
     const [deleteId, setDeleteId] = useState(null);
     const [theme, setTheme] = useState(null);
-    const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -40,19 +40,19 @@ export default function ActiveOrder() {
 
     const fetchData = async () => {
         try {
-            const response = await axiosPrivate.get('/challenge')
+            const response = await axios.get('/challenge')
             setTableData(response.data);
 
         } catch (error) {
             console.error('Error fetching data:', error);
-            navigate('/login', { state: { from: location }, replace: true });
+            // navigate('/login', { state: { from: location }, replace: true });
 
         }
     };
 
     const handleDeleteProduct = async (id) => {
         try {
-            await axiosPrivate.delete(`/challenge/${id}`)
+            await axios.delete(`/challenge/${id}`)
             fetchData();
             setDeleteStatus('success');
             setTimeout(() => {
@@ -70,7 +70,7 @@ export default function ActiveOrder() {
 
     const handleUpdateChallenge = async (data) => {
         try {
-            await axiosPrivate.post(`/challenge/${data.id}/update`, {
+            await axios.post(`/challenge/${data.id}/update`, {
                 description: data.description,
                 repeatTime: data.repeatTime
             });
@@ -90,7 +90,7 @@ export default function ActiveOrder() {
 
     const handleDetailChallenge = async (id) => {
         try {
-            const response = await axiosPrivate.get(`/challenge/${id}`);
+            const response = await axios.get(`/challenge/${id}`);
             setChallangeData(response)
 
         } catch (error) {
@@ -131,7 +131,7 @@ export default function ActiveOrder() {
 
     const handleAddSubmitChallenge = async (data) => {
         try {
-            await axiosPrivate.post(`/challenge/add`, {
+            await axios.post(`/challenge/add`, {
                 description: data.descriptionAdd,
                 repeatTime: data.repeatTimeAdd
             });

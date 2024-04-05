@@ -11,14 +11,13 @@ export default function Payment() {
             <div className="mx-10 mt-5 mb-10">
                 <div className="card mb-3 flex justify-center shadow-xl bg-neutral">
                     <div className="card-body">
-                        <h2 className="card-title text-neutral-content">Jenis ?</h2>
-                        <p className="text-neutral-content">Lapangan ?</p>
-                        <p className="text-neutral-content">Rp. ? </p>
-                        <p className="text-neutral-content">Tanggal ?</p>
-                        <span className="badge badge-accent">Tipe ?</span>
+                        <p className="text-neutral-content">Lapangan Basket</p>
+                        <p className="text-neutral-content">Rp. 50.000 </p>
+                        <p className="text-neutral-content">Tanggal 4/4/2024</p>
+                        <span className="badge badge-accent">Detail</span>
                         <div className="card-actions justify-end">
                             <button className="btn btn-primary ">Rate</button>
-                            <button className="btn btn-primary ">Status ?</button>
+                            <button className="btn btn-primary ">Belum Dibayar</button>
                         </div>
                     </div>
                 </div>

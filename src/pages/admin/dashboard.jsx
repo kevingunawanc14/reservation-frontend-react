@@ -189,7 +189,7 @@ export default function Dashboard() {
 
 
             <div className="mx-10 mt-5 mb-20">
-                <p className="font-semibold ">List Unpaid Reservation</p>
+                <p className="font-semibold ">List Reservation Today</p>
 
                 <DataGrid
                     rows={tableData}

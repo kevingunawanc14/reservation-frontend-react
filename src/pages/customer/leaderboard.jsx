@@ -6,7 +6,6 @@ import { GiRank2 } from "react-icons/gi";
 import { FaHeart } from "react-icons/fa";
 import { BiSolidShieldAlt2 } from "react-icons/bi";
 import { LuSwords } from "react-icons/lu";
-import Avatar1 from '../../assets/avatar/avatar1.webp';
 import { LuSword } from "react-icons/lu";
 import { useNavigate, useLocation } from "react-router-dom";
 import { MdOutlineEdit } from "react-icons/md";
@@ -18,6 +17,8 @@ import {
 } from '@mui/x-data-grid';
 import { useForm } from "react-hook-form";
 import { IoMdAddCircleOutline } from "react-icons/io";
+import axios from 'axios';
+import { GiTigerHead } from "react-icons/gi";
 
 function CustomToolbar() {
     return (
@@ -39,7 +40,6 @@ export default function Leaderboard() {
     const [addStatus, setAddStatus] = useState(null);
     const [deleteId, setDeleteId] = useState(null);
     const [theme, setTheme] = useState(null);
-    const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -47,7 +47,13 @@ export default function Leaderboard() {
 
     const fetchData = async () => {
         try {
-            const response = await axiosPrivate.get('/user')
+            const token = localStorage.getItem('token');
+
+            const response = await axios.get('http://localhost:2000/user', {
+                headers: {
+                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                }
+            });
             setTableData(response.data);
 
         } catch (error) {
@@ -56,6 +62,23 @@ export default function Leaderboard() {
 
         }
     };
+
+    const getData = async () => {
+        try {
+            const token = localStorage.getItem('token');
+
+            const response = await axios.get('http://localhost:2000/user', {
+                headers: {
+                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                }
+            });
+
+            console.log('responsex', response);
+
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
 
     const handleDeleteProduct = async (id) => {
         try {
@@ -194,6 +217,9 @@ export default function Leaderboard() {
             field: 'id',
             headerName: 'Rank',
             flex: 0.5,
+            renderCell: (params, rowIndex) => { // Include rowIndex as a second argument
+                return rowIndex + 1; // Add 1 to start from 1
+            },
         },
         {
             field: 'username',
@@ -213,10 +239,9 @@ export default function Leaderboard() {
 
                     </div>
                     <div className="grid grid-rows-2 grid-flow-col ">
-                        <div className="avatar justify-self-center ">
-                            <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
-                                <img src={Avatar1} />
-                            </div>
+                        <div className="  ">
+                            <GiTigerHead fontSize={"25px"} />
+
                         </div>
                         <div className="text-center">{params.row.username}</div>
 
@@ -245,10 +270,10 @@ export default function Leaderboard() {
             field: 'Action',
             headerName: <LuSwords fontSize="20px" />,
             renderCell: (params) => (
-                <div className="flex justify-around">
+                <div className="flex justify-around ">
                     <div>
-                        <button className="btn btn-error">
-                            <LuSword fontSize="20px" />
+                        <button className="btn btn-error ">
+                            <LuSword fontSize="20px" className="hover:animate-bounce" />
                         </button>
 
                     </div>
@@ -275,7 +300,7 @@ export default function Leaderboard() {
                 <Header title={'Leaderboard'} />
             </div>
 
-            <div className="mx-3 mt-5 mb-20">
+            <div className="mx-10 mt-5 mb-5">
                 <DataGrid
                     rows={tableData}
                     columns={columns}

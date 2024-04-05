@@ -16,6 +16,31 @@ import { LiaChartBarSolid } from "react-icons/lia";
 import { FaRegUser } from "react-icons/fa";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import { FaRegMap } from "react-icons/fa";
+import { IoIosCheckmarkCircle } from "react-icons/io";
+
+// icon avatar
+import { GiAbstract042 } from "react-icons/gi";
+import { GiAbstract046 } from "react-icons/gi";
+import { GiAbstract047 } from "react-icons/gi";
+import { GiAbstract048 } from "react-icons/gi";
+import { GiAbstract049 } from "react-icons/gi";
+import { GiAce } from "react-icons/gi";
+import { GiAchillesHeel } from "react-icons/gi";
+import { GiAmericanFootballPlayer } from "react-icons/gi";
+import { GiAndroidMask } from "react-icons/gi";
+import { GiAnimalSkull } from "react-icons/gi";
+import { GiAntarctica } from "react-icons/gi";
+import { GiBatteredAxe } from "react-icons/gi";
+import { GiBattleAxe } from "react-icons/gi";
+import { GiBearFace } from "react-icons/gi";
+import { GiBiceps } from "react-icons/gi";
+import { GiBison } from "react-icons/gi";
+import { GiBrute } from "react-icons/gi";
+import { GiDoubleDragon } from "react-icons/gi";
+import { GiMuscleFat } from "react-icons/gi";
+import { GiMuscleUp } from "react-icons/gi";
+import { GiTigerHead } from "react-icons/gi";
+
 
 export default function DetailAccount() {
 
@@ -35,23 +60,24 @@ export default function DetailAccount() {
     const [theme, setTheme] = useState();
     const navigate = useNavigate();
 
-    const simulatedData = [
-        { name: 'Reservation Noob', status: 'Beginner' },
-        { name: 'Reservation Pro', status: 'Intermediate' },
-        { name: 'Reservation Expert', status: 'Expert' },
-        { name: 'Badminton Beginner', status: 'Beginner' },
-        { name: 'Badminton Intermediate', status: 'Intermediate' },
-        { name: 'Badminton Expert', status: 'Expert' },
-        { name: 'Futsal Beginner', status: 'Beginner' },
-        { name: 'Futsal Intermediate', status: 'Intermediate' },
-        { name: 'Futsal Expert', status: 'Expert' },
-        { name: 'Basketball Beginner', status: 'Beginner' },
-        { name: 'Basketball Intermediate', status: 'Intermediate' },
-        { name: 'Basketball Expert', status: 'Expert' },
-        { name: 'Gym Beginner', status: 'Beginner' },
-        { name: 'Gym Intermediate', status: 'Intermediate' },
-        { name: 'Gym Expert', status: 'Expert' },
+    const achievementData = [
+        { name: 'Reservation Noob', description: 'Just getting started with making reservations.', status: true },
+        { name: 'Reservation Pro', description: 'A proficient reservation maker, knows the ins and outs.', status: true },
+        { name: 'Reservation Expert', description: 'Master of reservations, can handle any booking task.', status: true },
+        { name: 'Badminton Beginner', description: 'New to badminton, learning the basics.', status: true },
+        { name: 'Badminton Intermediate', description: 'Has progressed beyond the beginner stage, gaining proficiency.', status: true },
+        { name: 'Badminton Expert', description: 'Highly skilled in badminton, capable of advanced techniques.', status: true },
+        { name: 'Futsal Beginner', description: 'Novice in futsal, exploring the game.', status: true },
+        { name: 'Futsal Intermediate', description: 'Moving past the beginner stage, improving skills in futsal.', status: true },
+        { name: 'Futsal Expert', description: 'An expert in futsal, proficient in all aspects of the game.', status: true },
+        { name: 'Basketball Beginner', description: 'Just starting out in basketball, learning the fundamentals.', status: true },
+        { name: 'Basketball Intermediate', description: 'Progressing in basketball skills, beyond the beginner level.', status: true },
+        { name: 'Basketball Expert', description: 'Highly skilled in basketball, able to play at an advanced level.', status: true },
+        { name: 'Gym Beginner', description: 'New to the gym, beginning the fitness journey.', status: true },
+        { name: 'Gym Intermediate', description: 'Progressing in fitness, gaining strength and endurance.', status: true },
+        { name: 'Gym Expert', description: 'An expert in fitness, well-versed in various workouts and techniques.', status: true },
     ];
+
 
 
     const handleClick = (newTheme) => {
@@ -78,13 +104,15 @@ export default function DetailAccount() {
 
             const responseData = response.data; // Assuming the response contains the user details
 
+            console.log(responseData)
+
             // Update the state with the fetched data
             setUserData({
                 username: responseData.username,
                 rank: responseData.rank,
-                xp: responseData.xp,
-                hp: responseData.hp,
-                coin: responseData.coin
+                xp: responseData.experiencePoint,
+                hp: responseData.healthPoint,
+                coin: responseData.digitalCoin
             });
 
             console.log('response', response)
@@ -98,7 +126,7 @@ export default function DetailAccount() {
 
     useEffect(() => {
         getDataDetailUser();
-        setStatusAchievement(simulatedData);
+        setStatusAchievement(achievementData);
     }, []);
 
 
@@ -131,20 +159,32 @@ export default function DetailAccount() {
                         </div>
                         <div className="grid grid-cols-1">
                             <div className="mt-3">
-                                <button className="btn btn-block">Rank:  {userData.rank}   {userData.rank === 'Platinum' ? <GiRank2 color="#3ba8ba" fontSize="25px" /> :
-                                    userData.rank === 2 ? <GiRank2 color="#a46ced" fontSize="25px" /> :
-                                        userData.rank === 3 ? <GiRank2 color="#eccc55" fontSize="25px" /> :
-                                            null}</button>
+                                {/* #a46ced */}
+                                {/* #eccc55 */}
+                                {/* #3ba8ba */}
+                                <button className="btn btn-block">Rank:
+                                    {userData.hp <= 100 ?
+                                        <div className="bg-white rounded">
+                                            <GiRank2 color="#eccc55" fontSize="25px" />
+                                        </div> :
+                                        userData.hp > 100 && userData.hp <= 200 ?
+                                            <div className="bg-white rounded">
+                                                <GiRank2 color="#3ba8ba" fontSize="25px" />
+                                            </div> :
+                                            userData.hp > 200 ? <div className="bg-white rounded">
+                                                <GiRank2 color="#a46ced" fontSize="25px" />
+                                            </div> :
+                                                null}</button>
                             </div>
                         </div>
                         <div className="grid grid-cols-1">
                             <div className="mt-3">
-                                <button className="btn btn-block">Xp: {userData.xp}</button>
+                                <button className="btn btn-block">XP: {userData.xp}</button>
                             </div>
                         </div>
                         <div className="grid grid-cols-1">
                             <div className="mt-3">
-                                <button className="btn btn-block">Hp:  {userData.hp}</button>
+                                <button className="btn btn-block">HP:  {userData.hp}</button>
                             </div>
                         </div>
                         <div className="grid grid-cols-1">
@@ -203,48 +243,13 @@ export default function DetailAccount() {
                             (index % 3 === 0) && (
                                 <div className="grid grid-cols-3 mt-2" key={index}>
                                     {statusAchievement.slice(index, index + 3).map((achievement, subIndex) => (
-                                        <button className={`btn btn-active btn-sm overflow-hidden ${achievement.status === 'Beginner' ? 'btn-success' : 'btn-error'} me-2 text-xs`} key={subIndex} onClick={() => document.getElementById('my_modal_2').showModal()}>
+                                        <button className={`btn btn-active btn-sm overflow-hidden ${achievement.status === 'Beginner' ? 'btn-success' : 'btn-error'} me-2 text-xs`} key={subIndex} onClick={() => document.getElementById('achievementModal').showModal()}>
                                             {achievement.name}
                                         </button>
                                     ))}
                                 </div>
                             )
                         ))}
-
-                        {/* <div className="grid grid-cols-3">
-                            <button className="btn btn-active btn-sm btn-success me-2 text-xs" onClick={() => document.getElementById('my_modal_2').showModal()}>Reservation Noob</button>
-                            <button className="btn btn-active btn-error btn-sm me-2 text-xs" onClick={() => document.getElementById('my_modal_2').showModal()}>Reservation Pro</button>
-                            <button className="btn btn-active btn-error btn-sm me-2 text-xs" onClick={() => document.getElementById('my_modal_2').showModal()}>Reservation Expert</button>
-                        </div>
-                        <div className="grid grid-cols-3 mt-2">
-                            <button className="btn btn-active btn-sm btn-success me-2 text-xs" onClick={() => document.getElementById('my_modal_2').showModal()}>Badminton Beginner</button>
-                            <button className="btn btn-active btn-error btn-sm me-2 text-xs" onClick={() => document.getElementById('my_modal_2').showModal()}>Badminton Intermediate</button>
-                            <button className="btn btn-active btn-error btn-sm me-2 text-xs" onClick={() => document.getElementById('my_modal_2').showModal()}>Badminton Expert</button>
-                        </div>
-                        <div className="grid grid-cols-3 mt-2">
-                            <button className="btn btn-active btn-sm btn-success me-2 text-xs" onClick={() => document.getElementById('my_modal_2').showModal()}>Futsal Beginner</button>
-                            <button className="btn btn-active btn-error btn-sm me-2 text-xs" onClick={() => document.getElementById('my_modal_2').showModal()}>Futsal Intermediate</button>
-                            <button className="btn btn-active btn-error btn-sm me-2 text-xs" onClick={() => document.getElementById('my_modal_2').showModal()}>Futsal Expert</button>
-                        </div>
-                        <div className="grid grid-cols-3 mt-2">
-                            <button className="btn btn-active btn-sm btn-success me-2 text-xs" onClick={() => document.getElementById('my_modal_2').showModal()}>Basketball Beginner</button>
-                            <button className="btn btn-active btn-error btn-sm me-2 text-xs" onClick={() => document.getElementById('my_modal_2').showModal()}>Basketball Intermediate</button>
-                            <button className="btn btn-active btn-error btn-sm me-2 text-xs" onClick={() => document.getElementById('my_modal_2').showModal()}>Basketball Expert</button>
-                        </div>
-                        <div className="grid grid-cols-3 mt-2">
-                            <button className="btn btn-active btn-sm btn-success me-2 text-xs" onClick={() => document.getElementById('my_modal_2').showModal()}>Gym Beginner</button>
-                            <button className="btn btn-active btn-error btn-sm me-2 text-xs" onClick={() => document.getElementById('my_modal_2').showModal()}>Gym Intermediate</button>
-                            <button className="btn btn-active btn-error btn-sm me-2 text-xs" onClick={() => document.getElementById('my_modal_2').showModal()}>Gym Expert</button>
-                        </div> */}
-                        {/* <dialog id="my_modal_2" className="modal">
-                            <div className="modal-box">
-                                <h3 className="font-bold text-lg">Status: ✅</h3>
-                                <p className="py-4">order lapapngan 10x</p>
-                            </div>
-                            <form method="dialog" className="modal-backdrop">
-                                <button>close</button>
-                            </form>
-                        </dialog> */}
                     </div>
                 </div>
                 <div className="collapse collapse-arrow bg-neutral mt-3">
@@ -289,12 +294,12 @@ export default function DetailAccount() {
                     <div className="collapse-content">
                         <div className="grid grid-cols-2 gap-1 ">
                             <div>
-                                <button className="btn btn-primary min-w-full" onClick={() => document.getElementById('my_modal_3').showModal()}>Avatar <MdOutlineShoppingCart />
+                                <button className="btn btn-primary min-w-full" onClick={() => document.getElementById('shopAvatarModal').showModal()}>Avatar <MdOutlineShoppingCart />
                                 </button>
 
                             </div>
                             <div>
-                                <button className="btn btn-primary min-w-full" onClick={() => document.getElementById('my_modal_2').showModal()}>Theme <MdOutlineShoppingCart />
+                                <button className="btn btn-primary min-w-full" onClick={() => document.getElementById('shopThemeModal').showModal()}>Theme <MdOutlineShoppingCart />
                                 </button>
 
                             </div>
@@ -318,11 +323,11 @@ export default function DetailAccount() {
                         <div className="grid grid-cols-2 gap-1 ">
                             <div>
                                 {/* Open the modal using document.getElementById('ID').showModal() method */}
-                                <button className="btn btn-primary min-w-full" onClick={() => document.getElementById('my_modal_3').showModal()}>Avatar <RxAvatar />
+                                <button className="btn btn-primary min-w-full" onClick={() => document.getElementById('avatarModal').showModal()}>Avatar <RxAvatar />
                                 </button>
                             </div>
                             <div>
-                                <button className="btn btn-primary min-w-full" onClick={() => document.getElementById('my_modal_2').showModal()}>Theme  <MdOutlineColorLens /></button>
+                                <button className="btn btn-primary min-w-full" onClick={() => document.getElementById('themeModal').showModal()}>Theme  <MdOutlineColorLens /></button>
                             </div>
                         </div>
 
@@ -343,72 +348,40 @@ export default function DetailAccount() {
 
             </div >
 
-            <dialog id="my_modal_3" className="modal">
+            <dialog id="achievementModal" className="modal">
                 <div className="modal-box">
-                    <h3 className="font-bold text-lg">Pick ur avatar!</h3>
-                    <div className="grid grid-cols-4 gap-4 justify-items-center mt-3">
-                        <div className="avatar">
-                            <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
-                                <img src={Avatar1} />
+                    <h3 className="font-bold text-lg">Status: ✅ or ❌</h3>
+                    <p className="py-4">Order any kind of product 1 time</p>
+                </div>
+                <form method="dialog" className="modal-backdrop">
+                    <button>close</button>
+                </form>
+            </dialog>
+
+            <dialog id="shopAvatarModal" className="modal">
+                <div className="modal-box">
+                    <h3 className="font-bold text-lg">Avatar Store</h3>
+                    <div className="grid grid-cols-2 gap-2">
+                        <div className=" " onClick={() => document.getElementById('buyAvatarConfirmation').showModal()}>
+                            <div className="bg-neutral rounded-t-lg grid grid-rows-1 place-items-center h-20 ">
+                                <div className="">
+                                    <div>
+                                        <GiMuscleFat fontSize={"30px"} className="text-neutral-content" />
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div className="avatar">
-                            <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
-                                <img src={Avatar1} />
-                            </div>
-                        </div>
-                        <div className="avatar">
-                            <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
-                                <img src={Avatar1} />
-                            </div>
-                        </div>
-                        <div className="avatar">
-                            <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
-                                <img src={Avatar1} />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-4 gap-4 mt-3 justify-items-center">
-                        <div className="avatar">
-                            <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer ">
-                                <img src={Avatar1} />
-                            </div>
-                        </div>
-                        <div className="avatar">
-                            <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
-                                <img src={Avatar1} />
-                            </div>
-                        </div>
-                        <div className="avatar">
-                            <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
-                                <img src={Avatar1} />
-                            </div>
-                        </div>
-                        <div className="avatar">
-                            <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
-                                <img src={Avatar1} />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-4 gap-4 mt-3 justify-items-center">
-                        <div className="avatar">
-                            <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
-                                <img src={Avatar1} />
-                            </div>
-                        </div>
-                        <div className="avatar">
-                            <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
-                                <img src={Avatar1} />
-                            </div>
-                        </div>
-                        <div className="avatar">
-                            <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
-                                <img src={Avatar1} />
-                            </div>
-                        </div>
-                        <div className="avatar">
-                            <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
-                                <img src={Avatar1} />
+                            <div className="border">
+                                <p className="text-xs">Muscle Fat</p>
+                                <div className="grid grid-cols-2 ">
+                                    <div className="">
+                                        <IoIosCheckmarkCircle color="green" />
+                                    </div>
+                                    <div className="flex justify-end place-self-center">
+                                        <p className="text-xs"><span className="font-bold">XP</span> 100</p>
+
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -419,9 +392,82 @@ export default function DetailAccount() {
                 </form>
             </dialog>
 
-            <dialog id="my_modal_2" className="modal">
+            <dialog id="shopThemeModal" className="modal">
                 <div className="modal-box">
-                    <h3 className="font-bold text-lg">Pick ur theme!</h3>
+                    <h3 className="font-bold text-lg">Theme Store</h3>
+                    <div className="grid grid-cols-2 gap-2">
+                        <div className=" " onClick={() => document.getElementById('buyThemeConfirmation').showModal()}>
+                            <div className="bg-slate-200 rounded-t-lg grid grid-rows-1 place-items-center h-20">
+                                <div className="">
+                                    <div>
+                                        ☀️
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="border">
+                                <p className="text-xs">Sunlight</p>
+                                <div className="grid grid-cols-2 ">
+                                    <div className="">
+                                        ❌
+                                    </div>
+                                    <div className="flex justify-end place-self-center">
+                                        <p className="text-xs"><span className="font-bold">XP</span> 100</p>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+                <form method="dialog" className="modal-backdrop">
+                    <button>close</button>
+                </form>
+            </dialog>
+
+            <dialog id="avatarModal" className="modal">
+                <div className="modal-box">
+                    <h3 className="font-bold text-lg">Change Avatar</h3>
+                    <div className="grid grid-cols-2 gap-2">
+                        <div className=" " onClick={() => document.getElementById('buyThemeConfirmation').showModal()}>
+                            <div className="bg-slate-200 rounded-t-lg grid grid-rows-1 place-items-center h-10">
+                                <div className="">
+                                    <div>
+                                        ☀️
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="border">
+                                <p className="text-xs text-primary font-bold text-center">Sunlight</p>
+                            </div>
+                        </div>
+                        <div className=" " onClick={() => document.getElementById('buyThemeConfirmation').showModal()}>
+                            <div className="bg-slate-200 rounded-t-lg grid grid-rows-1 place-items-center h-10">
+                                <div className="">
+                                    <div>
+                                        ☀️
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="border">
+                                <p className="text-xs  font-bold text-center">Sunlight</p>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+                <form method="dialog" className="modal-backdrop">
+                    <button>close</button>
+                </form>
+            </dialog>
+
+            <dialog id="themeModal" className="modal">
+                <div className="modal-box">
+                    <h3 className="font-bold text-lg">Change Theme</h3>
                     <div className="bg-slate-50 border-4 rounded-full flex justify-center hover:border-black cursor-pointer" onClick={() => handleClick("light")}>☀️</div>
                     <div className="bg-slate-900 border-4 rounded-full flex justify-center hover:border-black cursor-pointer" onClick={() => handleClick("dark")}>🐦‍⬛</div>
                     <div className="bg-green-950 border-4 rounded-full flex justify-center hover:border-black cursor-pointer" onClick={() => handleClick("forest")}>🌳</div>
@@ -435,93 +481,52 @@ export default function DetailAccount() {
                 </form>
             </dialog>
 
-            <dialog id="my_modal_3" className="modal">
+            <dialog id="buyAvatarConfirmation" className="modal">
                 <div className="modal-box">
-                    <h3 className="font-bold text-lg">Pick ur avatar!</h3>
-                    <div className="grid grid-cols-4 gap-4 justify-items-center mt-3">
-                        <div className="avatar">
-                            <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
-                                <img src={Avatar1} />
-                            </div>
-                        </div>
-                        <div className="avatar">
-                            <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
-                                <img src={Avatar1} />
-                            </div>
-                        </div>
-                        <div className="avatar">
-                            <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
-                                <img src={Avatar1} />
-                            </div>
-                        </div>
-                        <div className="avatar">
-                            <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
-                                <img src={Avatar1} />
-                            </div>
-                        </div>
+                    <h3 className="font-bold text-lg">Muscle Fat</h3>
+                    <div className="grid grid-cols-2 gap-1">
+                        <button className="btn btn-primary">XP 100 Points</button>
+                        <button className="btn">Cancel</button>
                     </div>
-                    <div className="grid grid-cols-4 gap-4 mt-3 justify-items-center">
-                        <div className="avatar">
-                            <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer ">
-                                <img src={Avatar1} />
-                            </div>
-                        </div>
-                        <div className="avatar">
-                            <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
-                                <img src={Avatar1} />
-                            </div>
-                        </div>
-                        <div className="avatar">
-                            <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
-                                <img src={Avatar1} />
-                            </div>
-                        </div>
-                        <div className="avatar">
-                            <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
-                                <img src={Avatar1} />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-4 gap-4 mt-3 justify-items-center">
-                        <div className="avatar">
-                            <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
-                                <img src={Avatar1} />
-                            </div>
-                        </div>
-                        <div className="avatar">
-                            <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
-                                <img src={Avatar1} />
-                            </div>
-                        </div>
-                        <div className="avatar">
-                            <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
-                                <img src={Avatar1} />
-                            </div>
-                        </div>
-                        <div className="avatar">
-                            <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
-                                <img src={Avatar1} />
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
                 <form method="dialog" className="modal-backdrop">
                     <button>close</button>
                 </form>
             </dialog>
-            {/* Open the modal using document.getElementById('ID').showModal() method */}
 
-            <dialog id="my_modal_2" className="modal">
+            <dialog id="buyThemeConfirmation" className="modal">
                 <div className="modal-box">
-                    <h3 className="font-bold text-lg">Pick ur theme!</h3>
-                    <div className="bg-slate-50 border-4 rounded-full flex justify-center hover:border-black cursor-pointer" onClick={() => handleClick("light")}>☀️</div>
-                    <div className="bg-slate-900 border-4 rounded-full flex justify-center hover:border-black cursor-pointer" onClick={() => handleClick("dark")}>🐦‍⬛</div>
-                    <div className="bg-green-950 border-4 rounded-full flex justify-center hover:border-black cursor-pointer" onClick={() => handleClick("forest")}>🌳</div>
-                    <div className="bg-yellow-600 border-4 rounded-full flex justify-center mt-1 hover:border-black cursor-pointer" onClick={() => handleClick("cyberpunk")}>🤖</div>
-                    <div className="bg-pink-600 border-4 rounded-full flex justify-center mt-1 hover:border-black cursor-pointer" onClick={() => handleClick("dracula")}>🧛‍♂️</div>
-                    <div className="bg-lime-950 border-4 rounded-full flex justify-center mt-1 hover:border-black cursor-pointer" onClick={() => handleClick("lemonade")}>🐉</div>
-                    <div className="bg-indigo-950 border-4 rounded-full flex justify-center mt-1 hover:border-black cursor-pointer" onClick={() => handleClick("synthwave")}>🌑</div>
+                    <h3 className="font-bold text-lg">Sunlight</h3>
+                    <div className="grid grid-cols-2 gap-1">
+                        <button className="btn btn-primary">XP 50 Points</button>
+                        <button className="btn">Cancel</button>
+                    </div>
+                </div>
+                <form method="dialog" className="modal-backdrop">
+                    <button>close</button>
+                </form>
+            </dialog>
+
+            <dialog id="changeActiveAvatarConfirmation" className="modal">
+                <div className="modal-box">
+                    <h3 className="font-bold text-lg">Muscle Fat</h3>
+                    <div className="grid grid-cols-2 gap-1">
+                        <button className="btn btn-primary">XP 100 Points</button>
+                        <button className="btn">Cancel</button>
+                    </div>
+                </div>
+                <form method="dialog" className="modal-backdrop">
+                    <button>close</button>
+                </form>
+            </dialog>
+
+            <dialog id="changeActiveThemeConfirmation" className="modal">
+                <div className="modal-box">
+                    <h3 className="font-bold text-lg">Sunlight</h3>
+                    <div className="grid grid-cols-2 gap-1">
+                        <button className="btn btn-primary">XP 50 Points</button>
+                        <button className="btn">Cancel</button>
+                    </div>
                 </div>
                 <form method="dialog" className="modal-backdrop">
                     <button>close</button>

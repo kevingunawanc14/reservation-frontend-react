@@ -13,6 +13,7 @@ import {
 } from '@mui/x-data-grid';
 import { useForm } from "react-hook-form";
 import { IoMdAddCircleOutline } from "react-icons/io";
+import axios from 'axios';
 
 function CustomToolbar() {
     return (
@@ -32,7 +33,6 @@ export default function ActiveOrder() {
     const [addStatus, setAddStatus] = useState(null);
     const [deleteId, setDeleteId] = useState(null);
     const [theme, setTheme] = useState(null);
-    const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -40,7 +40,7 @@ export default function ActiveOrder() {
 
     const fetchData = async () => {
         try {
-            const response = await axiosPrivate.get('/order')
+            const response = await axios.get('/order')
             setTableData(response.data);
 
         } catch (error) {
@@ -52,7 +52,7 @@ export default function ActiveOrder() {
 
     const handleDeleteProduct = async (id) => {
         try {
-            await axiosPrivate.delete(`/order/${id}`)
+            await axios.delete(`/order/${id}`)
             fetchData();
             setDeleteStatus('success');
             setTimeout(() => {
@@ -70,7 +70,7 @@ export default function ActiveOrder() {
 
     const handleUpdateChallenge = async (data) => {
         try {
-            await axiosPrivate.post(`/order/${data.id}/update`, {
+            await axios.post(`/order/${data.id}/update`, {
                 paymentMethod: data.paymentMethod,
             });
             fetchData();
@@ -89,7 +89,7 @@ export default function ActiveOrder() {
 
     const handleDetailChallenge = async (id) => {
         try {
-            const response = await axiosPrivate.get(`/order/${id}`);
+            const response = await axios.get(`/order/${id}`);
             setChallangeData(response)
 
         } catch (error) {
@@ -139,7 +139,7 @@ export default function ActiveOrder() {
 
     const handleAddSubmitChallenge = async (data) => {
         try {
-            await axiosPrivate.post(`/order/add`, {
+            await axios.post(`/order/add`, {
                 username: data.usernameAdd,
                 paymentStatus: data.paymentStatusAdd,
                 paymentMethod: data.paymentMethodAdd,

@@ -25,6 +25,7 @@ import { FaWalking } from "react-icons/fa";
 import { FaRunning } from "react-icons/fa";
 import { FaPerson } from "react-icons/fa6";
 import { RxAvatar } from "react-icons/rx";
+import { GiRank2 } from "react-icons/gi";
 
 
 export default function DetailLapangan() {
@@ -513,16 +514,60 @@ export default function DetailLapangan() {
                 <div className="modal-box">
                     <h3 className="font-bold text-lg">Krakatau Leaderboard System</h3>
                     <p className="py-4">Climb up to top by reservation any kind of product</p>
+                    <div className='grid grid-rows-3'>
+                        <div className='grid grid-cols-5'>
+                            <div className='col-span-1'>
+                                <GiRank2 color="#eccc55" fontSize="25px" />
+
+                            </div>
+                            <div className='col-span-2'>
+                                <p style={{ color: "#eccc55" }} className='font-bold'>Gold</p>
+
+                            </div>
+                            <div className='col-span-2 text-start flex items-center'>
+                                <p className='text-xs font-thin'>0 - 100 XP</p>
+
+                            </div>
+                        </div>
+                        <div className='grid grid-cols-5'>
+                            <div className='col-span-1' >
+                                <GiRank2 color="#3ba8ba" fontSize="25px" />
+
+                            </div>
+                            <div className='col-span-2'  >
+                                <p style={{ color: "#3ba8ba" }} className='font-bold'>Platinum</p>
+
+                            </div>
+                            <div className='col-span-2 text-start flex items-center'>
+                                <p className='text-xs font-thin'>101 - 200 XP</p>
+
+                            </div>
+                        </div>
+                        <div className='grid grid-cols-5'>
+                            <div className='col-span-1' >
+                                <GiRank2 color="#a46ced" fontSize="25px" />
+
+                            </div>
+                            <div className='col-span-2' >
+                                <p style={{ color: "#a46ced" }} className='font-bold'>Diamond</p>
+
+                            </div>
+                            <div className='col-span-2 text-start flex items-center' >
+                                <p className='text-xs font-thin'>201 - 1000 XP</p>
+
+                            </div>
+                        </div>
+                    </div>
                     <p className="py-4">1 XP for every Rp 10 000 you spend</p>
                     <div className='bg-neutral p-3 rounded-lg mt-2 border-4 border-neutral-content border-double'>
-                        <p className="py-4 text-neutral-content">Note : Use your XP to customize your app theme or buy avatar.</p>
+                        <p className="py-4 text-neutral-content">Note : Use your XP to buy avatar or app theme</p>
                     </div>
                     <p className="py-4">Every reservation allow you to set breath status to get HP</p>
-                    <p className="py-4">Breath status mean how much energy you will use for exercise</p>
+                    <p className="pb-4">Breath status mean how much energy you will use for exercise</p>
                     <div>
                         <div>
-                            <div className='grid grid-cols-2'>
-                                <p ><FaPerson className={`${breathStatus === 'normal' ? 'animate-pulse' : ''}`} />Normal Breath</p>
+                            <div className='grid grid-cols-3'>
+                                <p className='col-span-2' ><FaPerson className={`${breathStatus === 'normal' ? 'animate-pulse' : ''}`} />Normal Breath <span className='text-xs font-thin'>(10 HP)</span></p>
                                 <input
                                     {...register("breathStatus")}
                                     value="normal"
@@ -531,8 +576,8 @@ export default function DetailLapangan() {
                                     onClick={() => handleRadioBreathStatus('normal')}
                                 />
                             </div>
-                            <div className='grid grid-cols-2 mt-2'>
-                                <p ><FaWalking className={`${breathStatus === 'medium' ? 'animate-pulse' : ''}`} />Medium Breath</p>
+                            <div className='grid grid-cols-3 mt-2'>
+                                <p className='col-span-2' ><FaWalking className={`${breathStatus === 'medium' ? 'animate-pulse' : ''}`} />Medium Breath <span className='text-xs font-thin'>(10 - 20 HP)</span> </p>
                                 <input
                                     {...register("breathStatus")}
                                     value="medium"
@@ -541,8 +586,8 @@ export default function DetailLapangan() {
                                     onClick={() => handleRadioBreathStatus('medium')}
                                 />
                             </div>
-                            <div className='grid grid-cols-2 mt-2'>
-                                <p ><FaRunning className={`${breathStatus === 'high' ? 'animate-pulse' : ''}`} />High Breath</p>
+                            <div className='grid grid-cols-3 mt-2'>
+                                <p className='col-span-2' ><FaRunning className={`${breathStatus === 'high' ? 'animate-pulse' : ''}`} />High Breath <span className='text-xs font-thin'>(20 - 30 HP)</span></p>
                                 <input
                                     {...register("breathStatus")}
                                     value="high"

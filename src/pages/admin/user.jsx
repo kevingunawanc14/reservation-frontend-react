@@ -13,6 +13,7 @@ import {
 } from '@mui/x-data-grid';
 import { useForm } from "react-hook-form";
 import { IoMdAddCircleOutline } from "react-icons/io";
+import axios from 'axios';
 
 function CustomToolbar() {
     return (
@@ -32,7 +33,6 @@ export default function ActiveOrder() {
     const [addStatus, setAddStatus] = useState(null);
     const [deleteId, setDeleteId] = useState(null);
     const [theme, setTheme] = useState(null);
-    const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -40,7 +40,7 @@ export default function ActiveOrder() {
 
     const fetchData = async () => {
         try {
-            const response = await axiosPrivate.get('/user')
+            const response = await axios.get('/user')
             setTableData(response.data);
 
         } catch (error) {
@@ -52,7 +52,7 @@ export default function ActiveOrder() {
 
     const handleDeleteProduct = async (id) => {
         try {
-            await axiosPrivate.delete(`/user/${id}`)
+            await axios.delete(`/user/${id}`)
             fetchData();
             setDeleteStatus('success');
             setTimeout(() => {
@@ -70,7 +70,7 @@ export default function ActiveOrder() {
 
     const handleUpdateChallenge = async (data) => {
         try {
-            await axiosPrivate.post(`/user/${data.id}/update`, {
+            await axios.post(`/user/${data.id}/update`, {
                 username: data.username,
                 password: data.password,
                 phoneNumber: data.phoneNumber
@@ -91,7 +91,7 @@ export default function ActiveOrder() {
 
     const handleDetailChallenge = async (id) => {
         try {
-            const response = await axiosPrivate.get(`/user/${id}`);
+            const response = await axios.get(`/user/${id}`);
             setChallangeData(response)
 
         } catch (error) {
@@ -135,7 +135,7 @@ export default function ActiveOrder() {
 
     const handleAddSubmitChallenge = async (data) => {
         try {
-            await axiosPrivate.post(`/user/add`, {
+            await axios.post(`/user/add`, {
                 username: data.usernameAdd,
                 password: data.passwordAdd,
                 phoneNumber: data.phoneNumberAdd,
