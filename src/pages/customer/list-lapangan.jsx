@@ -19,7 +19,13 @@ export default function ListGor() {
     const [lapangan, setLapangan] = useState('Lapangan')
 
     const handleDetailLapangan = (id) => {
-        const path = `/product/${courtName.toLowerCase()}/${id}`;
+        const path = `/product/lapangan/${courtName.toLowerCase()}/${id}`;
+        localStorage.setItem('detailPath', `/product/${courtName.toLowerCase()}`);
+        navigate(path);
+    };
+
+    const handleDetailFasilitas = (id) => {
+        const path = `/product/fasilitas/${courtName.toLowerCase()}/${id}`;
         localStorage.setItem('detailPath', `/product/${courtName.toLowerCase()}`);
         navigate(path);
     };
@@ -65,7 +71,7 @@ export default function ListGor() {
                         <button className="btn btn-primary btn-sm " onClick={handleBack}> <IoArrowBackOutline fontSize="20px" /></button>
                     </div>
                     <div className='col-span-5 self-center '>
-                        <Header title={'List ' + lapangan + " " + courtName} />
+                        <Header title={'List ' + lapangan + " " + courtName} className={'text-xl font-semibold'} />
 
                     </div>
                 </div>
@@ -74,26 +80,16 @@ export default function ListGor() {
 
             <div className="mx-10 mt-5 mb-5">
                 {courtData.map(item => (
-                    <div key={item.id} className="card lg:card-side bg-neutral shadow-xl mt-5">
-                        {item.name.includes('Membership') ? (
-                            item.name.includes('Membership Renang') ? (
-                                <figure><img src={item.imagePath} alt="" className="w-full h-[30vh] lg:h-fit" /></figure>
-                            ) : (
-                                <figure><img src={item.imagePath} alt="" className="w-full h-[30vh] lg:h-fit" /></figure>
-                            )
-                        ) : (
-                            <figure><img src={item.imagePath} alt="" className="w-full h-[30vh] lg:h-fit" /></figure>
-                        )}
+                    <div key={item.id} className="card sm:card-side shadow-xl bg-neutral mt-5">
+
+                        <figure><img src={item.imagePath} alt="" className="w-full h-64 sm:min-w-[400px]" /></figure>
+
                         <div className="card-body">
                             {item.gor !== 0 && <h2 className="card-title text-neutral-content">Gor {item.gor}</h2>}
                             <p className='text-neutral-content'>{item.name} </p>
-                            {item.name === '½ lapangan basket' ? (
-                                <p className='text-neutral-content'>Rp. {item.price} / Orang</p>
-                            ) : item.name.includes('Membership') ? (
-                                <p className='text-neutral-content'>Rp. {item.price} / Bulan</p>
-                            ) : (
-                                <p className='text-neutral-content'>Rp. {item.price} / Jam</p>
-                            )}
+
+                            <p className='text-neutral-content'>Rp. {item.price}</p>
+
                             <div className="justify-start">
                                 <div className="tooltip tooltip-right tooltip-secondary" data-tip="Reach Rank ? ">
                                     <button className="btn btn-sm btn-secondary">
@@ -103,20 +99,18 @@ export default function ListGor() {
                                         </div>
                                     </button>
                                 </div>
-                                {/* <button className="btn btn-primary text-neutral-content btn-sm">View Rating</button> */}
-                                {/* <div className="rating flex justify-start ms-1 mt-2 hidden">
-                                    <input type="radio" name="rating-5" className="mask mask-star-2 bg-orange-400" />
-                                    <input type="radio" name="rating-5" className="mask mask-star-2 bg-orange-400" />
-                                    <input type="radio" name="rating-5" className="mask mask-star-2 bg-orange-400" />
-                                    <input type="radio" name="rating-5" className="mask mask-star-2 bg-orange-400" />
-                                    <input type="radio" name="rating-5" className="mask mask-star-2 bg-orange-400" />
-                                </div>
-                                <p className='ms-1 mt-2 '>Reach rank ? to view rating </p> */}
                             </div>
 
-                            <div className="card-actions justify-end">
-                                <button className="btn btn-primary transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110  duration-150 " onClick={() => handleDetailLapangan(item.id)}>Detail</button>
-                            </div>
+                            {item.gor !== 0 ? (
+                                <div className="card-actions justify-end">
+                                    <button className="btn btn-primary transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-150" onClick={() => handleDetailLapangan(item.id)}>Detail</button>
+
+                                </div>
+                            ) : (
+                                <div className="card-actions justify-end">
+                                    <button className="btn btn-primary transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110 duration-150" onClick={() => handleDetailFasilitas(item.id)}>Detail</button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 ))}
