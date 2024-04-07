@@ -43,7 +43,28 @@ export default function Home() {
 
 
 
+    const handleDetailLapangan = (id, courtName) => {
+        let parts = courtName.split(" ");
+        let lastPart = parts.pop();
+        lastPart = parts.pop();
+        let lowercaseLastPart = lastPart.toLowerCase();
+        courtName = lowercaseLastPart
+        const path = `/product/lapangan/${courtName}/${id}`;
+        localStorage.setItem('detailPath', `/`);
+        navigate(path);
+    };
 
+    const handleDetailFasilitas = (id, courtName) => {
+        if (id >= 37 && id <= 40) {
+            courtName = 'renang'
+        } else {
+            courtName = 'gym'
+
+        }
+        const path = `/product/fasilitas/${courtName.toLowerCase()}/${id}`;
+        localStorage.setItem('detailPath', `/`);
+        navigate(path);
+    };
 
     const getData = async () => {
         try {
@@ -163,7 +184,7 @@ export default function Home() {
                             value={searchQuery}
                         />
                         {searchQuery != '' && (
-                            <ul className="dropdown-content menu shadow bg-base-100 rounded-box w-80 z-40">
+                            <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-80">
                                 {searchResults.length === 0 ? (
                                     <li className='hover:bg-neutral p-2 hover:text-neutral-content rounded-lg '>
                                         Product not found...
@@ -171,12 +192,21 @@ export default function Home() {
                                 ) : (
                                     searchResults.map(item => (
                                         item.gor === 0 ? (
-                                            <li key={item.id} className='hover:bg-neutral p-2 hover:text-neutral-content rounded-lg cursor-default	'>
-                                                {item.name}
+                                            <li
+                                                key={item.id}
+                                                className='hover:bg-neutral p-2 hover:text-neutral-content rounded-lg cursor-pointer'
+                                                onClick={() => handleDetailFasilitas(item.id, item.name)}
+                                            >
+                                                {item.name} - {item.price}
                                             </li>
                                         ) : (
-                                            <li key={item.id} className='hover:bg-neutral p-2 hover:text-neutral-content rounded-lg cursor-default	'>
-                                                {item.name} - Gor {item.gor} - {item.price} / Jam
+                                            <li
+                                                key={item.id}
+                                                className='hover:bg-neutral p-2 hover:text-neutral-content rounded-lg cursor-pointer'
+                                                onClick={() => handleDetailLapangan(item.id, item.name)}
+
+                                            >
+                                                {item.name} - Gor {item.gor} - {item.price}
                                             </li>
                                         )
                                     ))
@@ -184,6 +214,7 @@ export default function Home() {
                             </ul>
                         )}
                     </div>
+
                 </div>
                 <div className="grid grid-cols-3 m-5">
                     <div className='grid justify-items-center'>

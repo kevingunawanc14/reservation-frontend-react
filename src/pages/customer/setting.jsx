@@ -112,7 +112,7 @@ export default function DetailAccount() {
                 rank: responseData.rank,
                 xp: responseData.experiencePoint,
                 hp: responseData.healthPoint,
-                coin: responseData.digitalCoin
+                coin: responseData.krakatauCoin
             });
 
             console.log('response', response)
@@ -154,7 +154,14 @@ export default function DetailAccount() {
                     <div className="collapse-content">
                         <div className="grid grid-cols-1">
                             <div className="mt-3">
-                                <button className="btn btn-block">Username:  {userData.username}</button>
+                                <button className="btn btn-block  ">Username:  {userData.username} <span className=""><GiAmericanFootballPlayer fontSize={"30px"} className="text-neutral" /></span>   </button>
+                                {/* <div className="flex justify-center">
+                                    <div className="rounded-full bg-neutral  p-1 w-10">
+                                        <GiBrute fontSize={"30px"} className="text-neutral-content" />
+
+                                    </div>
+
+                                </div> */}
                             </div>
                         </div>
                         <div className="grid grid-cols-1">
@@ -323,7 +330,7 @@ export default function DetailAccount() {
                         <div className="grid grid-cols-2 gap-1 ">
                             <div>
                                 {/* Open the modal using document.getElementById('ID').showModal() method */}
-                                <button className="btn btn-primary min-w-full" onClick={() => document.getElementById('avatarModal').showModal()}>Avatar <RxAvatar />
+                                <button className="btn btn-primary min-w-full" onClick={() => document.getElementById('avatarModal').showModal()}>Avatar <span className=""><GiAmericanFootballPlayer fontSize={"30px"} className="text-neutral" /></span>
                                 </button>
                             </div>
                             <div>

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { IoMdLock } from "react-icons/io";
 import axios from 'axios';
 import { IoArrowBackOutline } from "react-icons/io5";
+import { IoMdUnlock } from "react-icons/io";
 
 
 export default function ListGor() {
@@ -18,6 +19,15 @@ export default function ListGor() {
 
     const [lapangan, setLapangan] = useState('Lapangan')
 
+    const [userData, setUserData] = useState({
+        username: '',
+        rank: '',
+        xp: '',
+        hp: '',
+        coin: '',
+        totalMinuteWorkout: '0'
+    });
+
     const handleDetailLapangan = (id) => {
         const path = `/product/lapangan/${courtName.toLowerCase()}/${id}`;
         localStorage.setItem('detailPath', `/product/${courtName.toLowerCase()}`);
@@ -26,6 +36,12 @@ export default function ListGor() {
 
     const handleDetailFasilitas = (id) => {
         const path = `/product/fasilitas/${courtName.toLowerCase()}/${id}`;
+        localStorage.setItem('detailPath', `/product/${courtName.toLowerCase()}`);
+        navigate(path);
+    };
+
+    const handleDetailRating = (id) => {
+        const path = `/product/rating/${courtName.toLowerCase()}/${id}`;
         localStorage.setItem('detailPath', `/product/${courtName.toLowerCase()}`);
         navigate(path);
     };
@@ -52,6 +68,36 @@ export default function ListGor() {
         }
     };
 
+    const getDataDetailUser = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const username = localStorage.getItem('username');
+
+            const response = await axios.get(`http://localhost:2000/user/detail/${username}`, {
+                headers: {
+                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                }
+            });
+
+            const responseData = response.data; // Assuming the response contains the user details
+
+
+            // Update the state with the fetched data
+            setUserData({
+                username: responseData.username,
+                rank: responseData.rank,
+                xp: responseData.experiencePoint,
+                hp: responseData.healthPoint,
+                coin: responseData.digitalCoin
+            });
+
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            // navigate('/login', { state: { from: location }, replace: true });
+
+        }
+    };
+
     useEffect(() => {
         setCourtName(currentUrl.split('/').pop().charAt(0).toUpperCase() + currentUrl.split('/').pop().slice(1));
         if (currentUrl.split('/').pop() === 'renang') {
@@ -60,6 +106,7 @@ export default function ListGor() {
             setLapangan('')
         }
         getDataProduct();
+        getDataDetailUser();
     }, []);
 
 
@@ -90,16 +137,35 @@ export default function ListGor() {
 
                             <p className='text-neutral-content'>Rp. {item.price}</p>
 
-                            <div className="justify-start">
-                                <div className="tooltip tooltip-right tooltip-secondary" data-tip="Reach Rank ? ">
-                                    <button className="btn btn-sm btn-secondary">
-                                        View Rating
-                                        <div className='ms-[-4px]'>
-                                            <IoMdLock />
-                                        </div>
-                                    </button>
+                            {userData.xp >= 100 ? (
+                                <div className="justify-start">
+                                    <div className="tooltip tooltip-top tooltip-secondary cursor-pointer">
+                                        <button
+                                            className="btn btn-sm btn-secondary"
+                                            onClick={() => handleDetailRating(1)}>
+                                            View Rating
+                                            <div className='ms-[-4px]'>
+                                                <IoMdUnlock />
+                                            </div>
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
+                            ) : (
+                                <div className="justify-start">
+                                    <div className="tooltip tooltip-top tooltip-secondary " data-tip="Reach Rank Platinum ">
+                                        <button
+                                            className="btn btn-sm btn-secondary"
+
+                                        >
+                                            View Rating
+                                            <div className='ms-[-4px]'>
+                                                <IoMdLock />
+                                            </div>
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
 
                             {item.gor !== 0 ? (
                                 <div className="card-actions justify-end">

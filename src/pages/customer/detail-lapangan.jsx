@@ -73,16 +73,31 @@ export default function DetailLapangan() {
         'free', 'free', 'free'
     ]);
 
+    const getProductDetail = async () => {
+        try {
+            const token = localStorage.getItem('token');
+
+            const response = await axios.get(`http://localhost:2000/detail/${idProduct}`, {
+                headers: {
+                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                }
+            });
+
+            setNamaProduct(response.data.nameDetail);
+
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
     const resetHoursWithStatus = () => {
         const updatedHoursWithStatus = hoursWithStatus.map(() => 'free');
         setHoursWithStatus(updatedHoursWithStatus);
     };
 
     const renderButtons = (hoursWithStatus, setHoursWithStatus, arrOfReserved) => {
-        // Create a copy of hoursWithStatus to update
         const updatedStatus = [...hoursWithStatus];
 
-        // Update the status for reserved hours
         arrOfReserved.forEach(reservation => {
             const index = hours.indexOf(reservation.hour);
             if (index !== -1) {
@@ -109,6 +124,8 @@ export default function DetailLapangan() {
                     setHoursWithStatus(newStatus);
                     removeFromOrderSummary(hour); // Call the function to remove hour from arrOfOrderSummary
                 }}>{hour}</button>;
+            } else if (updatedStatus[index] === 'passed') {
+                button = <button className="btn btn-xs btn-disabled">{hour}</button>;
             }
 
             return (
@@ -191,6 +208,19 @@ export default function DetailLapangan() {
             setScheduleData(filteredArray)
             resetHoursWithStatus();
             setArrOfOrderSummary([]);
+
+            const currentTime = new Date().getHours();
+
+            if (currentTime >= 6 && currentTime < 24 && dayjs().$D === valueCalendar.$D) {
+                const updatedStatus = hoursWithStatus.map((status, index) => {
+                    if (index < currentTime - 6) {
+                        return 'passed';
+                    } else {
+                        return status;
+                    }
+                });
+                setHoursWithStatus(updatedStatus);
+            }
         } catch (error) {
             console.error('Error fetching data:', error);
             navigate('/login', { state: { from: location }, replace: true });
@@ -226,6 +256,7 @@ export default function DetailLapangan() {
             idProduct: idProduct,
             username: 'fns',
             price: productPrice,
+            date: valueCalendar.format('YYYY-MM-DD'),
             hour: arrOfOrderSummary,
             paymentStatus:
                 watch("paymentMethod") === 'cash' ? 'belum bayar' :
@@ -238,7 +269,6 @@ export default function DetailLapangan() {
 
         try {
             const token = localStorage.getItem('token');
-            console.log('dataToSend', dataToSend);
 
             const response = await axios.post('http://localhost:2000/order', dataToSend, {
                 headers: {
@@ -246,7 +276,9 @@ export default function DetailLapangan() {
                 }
             });
 
-            navigate('/payment');
+            console.log('response', response);
+
+            // navigate('/payment');
         } catch (error) {
             console.error('Error fetching data:', error);
             navigate('/login', { state: { from: location }, replace: true });
@@ -255,12 +287,9 @@ export default function DetailLapangan() {
     }
 
     useEffect(() => {
-        if (idProduct == 3) {
-            setNamaProduct('Lapangan Badminton 1')
-        }
-        // console.log('valueCalendar', valueCalendar);
-        // console.log('scheduleData', scheduleData);
+        window.scrollTo(0, 0);
         getDataOrder();
+        getProductDetail()
     }, [valueCalendar]);
 
     return (
@@ -290,16 +319,10 @@ export default function DetailLapangan() {
             </LocalizationProvider>
 
             <div className="mx-5 mt-[-10px]">
-                <div className="mx-5 mt-[-10px]">
-                    <div className="grid grid-cols-3 gap-4">
-                        {scheduleData && renderButtons(hoursWithStatus, setHoursWithStatus, scheduleData)}
-                    </div>
+                <div className="grid grid-cols-3 gap-4">
+                    {scheduleData && renderButtons(hoursWithStatus, setHoursWithStatus, scheduleData)}
                 </div>
             </div>
-
-            {/* <div className='mx-5'>
-                <div className="divider"></div>
-            </div> */}
 
             <div className="">
                 <Header
@@ -349,7 +372,7 @@ export default function DetailLapangan() {
                                     Total
                                 </div>
                                 <div className='justify-self-end'>
-                                    <p className='font-bold'>Rp{formatNumberWithDot((productPrice * arrOfOrderSummary.length) - 1000)}</p>
+                                    <p className='font-bold'>Rp{formatNumberWithDot((productPrice * arrOfOrderSummary.length))}</p>
                                 </div>
                             </div>
                         </>

@@ -5,7 +5,8 @@ import ListLapangan from './pages/customer/list-lapangan';
 import DetailLapangan from './pages/customer/detail-lapangan';
 import DetailFasilitas from './pages/customer/detail-fasilitas';
 import Payment from './pages/customer/payment';
-import Rate from './pages/customer/rate';
+import GiveRating from './pages/customer/give-rating';
+import DetailRating from './pages/customer/detail-rating';
 import Setting from './pages/customer/setting';
 import Leaderboard from './pages/customer/leaderboard';
 
@@ -36,10 +37,11 @@ function App() {
         <Route path="/product/:namaProduct" element={<ListLapangan />} />
         <Route path="/product/lapangan/:namaProduct/:idProduct" element={<DetailLapangan />} />
         <Route path="/product/fasilitas/:namaProduct/:idProduct" element={<DetailFasilitas />} />
+        <Route path="/product/rating/:namaProduct/:idProduct" element={<DetailRating />} />
         <Route path="/payment" element={<Payment />} />
+        <Route path="/product/give-rating/:idProduct" element={<GiveRating />} />
         <Route path="/setting" element={<Setting />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
-        <Route path="/rate" element={<Rate />} />
 
         {/* if ada token & role admin or user can go to this page */}
         <Route path="/dashboard" element={<Dashboard />} />

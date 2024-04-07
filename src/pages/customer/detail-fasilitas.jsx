@@ -37,7 +37,12 @@ export default function DetailFasilitas() {
     const [total, setTotal] = useState(0);
     const [productPrice, setProductPrice] = useState(35000);
     const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm({
+        defaultValues: {
+            paymentMethod: "cash",
+            breathStatus: "normal"
+        }
     });
+
 
     const username = localStorage.getItem('username');
     const [breathStatus, setBreathStatus] = useState('normal');
@@ -46,93 +51,10 @@ export default function DetailFasilitas() {
         setBreathStatus(status);
     };
 
-
-    const hours = [
-        '6.00-7.00', '7.00-8.00', '8.00-9.00',
-        '9.00-10.00', '10.00-11.00', '11.00-12.00',
-        '12.00-13.00', '13.00-14.00', '14.00-15.00',
-        '15.00-16.00', '16.00-17.00', '17.00-18.00',
-        '18.00-19.00', '19.00-20.00', '20.00-21.00',
-        '21.00-22.00', '22.00-23.00', '23.00-24.00'
-    ];
-
-    const [hoursWithStatus, setHoursWithStatus] = useState([
-        'free', 'free', 'free',
-        'free', 'free', 'free',
-        'free', 'free', 'free',
-        'free', 'free', 'free',
-        'free', 'free', 'free',
-        'free', 'free', 'free'
-    ]);
-
-    const resetHoursWithStatus = () => {
-        const updatedHoursWithStatus = hoursWithStatus.map(() => 'free');
-        setHoursWithStatus(updatedHoursWithStatus);
-    };
-
-    const renderButtons = (hoursWithStatus, setHoursWithStatus, arrOfReserved) => {
-        // Create a copy of hoursWithStatus to update
-        const updatedStatus = [...hoursWithStatus];
-
-        // Update the status for reserved hours
-        arrOfReserved.forEach(reservation => {
-            const index = hours.indexOf(reservation.hour);
-            if (index !== -1) {
-                updatedStatus[index] = 'reserved';
-            }
-        });
-
-        // Render buttons based on the updated status
-        return hours.map((hour, index) => {
-            let button = null;
-            if (updatedStatus[index] === 'free') {
-                button = <button className="btn btn-xs btn-success" onClick={() => {
-                    const newStatus = [...updatedStatus];
-                    newStatus[index] = 'info';
-                    setHoursWithStatus(newStatus);
-                    addToOrderSummary(hour); // Call the function to add hour to arrOfOrderSummary
-                }}>{hour}</button>;
-            } else if (updatedStatus[index] === 'reserved') {
-                button = <button className="btn btn-xs btn-error" onClick={() => document.getElementById('my_modal_2').showModal()}>{hour}</button>;
-            } else if (updatedStatus[index] === 'info') {
-                button = <button className="btn btn-xs btn-info" onClick={() => {
-                    const newStatus = [...updatedStatus];
-                    newStatus[index] = 'free';
-                    setHoursWithStatus(newStatus);
-                    removeFromOrderSummary(hour); // Call the function to remove hour from arrOfOrderSummary
-                }}>{hour}</button>;
-            }
-
-            return (
-                <div className="grid" key={hour}>
-                    {button}
-                </div>
-            );
-        });
-    };
-
-    function addToOrderSummary(hour) {
-        // Assuming arrOfOrderSummary is a state variable
-        setArrOfOrderSummary(prevState => [...prevState, hour]);
-
-    }
-
-    function removeFromOrderSummary(hour) {
-        const index = hours.indexOf(hour)
-
-        // Update hoursWithStatus[index] to 'success'
-        const newStatus = [...hoursWithStatus];
-        newStatus[index] = 'free';
-        setHoursWithStatus(newStatus);
-
-        // Remove hour from arrOfOrderSummary
-        setArrOfOrderSummary(prevState => prevState.filter(item => item !== hour));
-
-    }
-
     function formatNumberWithDot(number) {
         return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
+
 
     const handleBack = () => {
         const detailPath = localStorage.getItem('detailPath');
@@ -140,53 +62,6 @@ export default function DetailFasilitas() {
             navigate(`${detailPath}`);
         } else {
             navigate('/');
-        }
-    };
-
-    const shouldDisableDate = (date) => {
-
-        const today = new Date();
-        const yesterday = new Date(today);
-        yesterday.setDate(yesterday.getDate() - 1);
-
-        const selectedDate = new Date(date);
-
-        // Disable dates before yesterday
-        if (selectedDate < yesterday) {
-            return true;
-        }
-
-        // Disable dates two weeks after today
-        if (selectedDate > new Date(today.getTime() + 13 * 24 * 60 * 60 * 1000)) {
-            return true;
-        }
-
-        // Enable other dates
-        return false;
-    };
-
-    const getDataOrder = async () => {
-        try {
-            const token = localStorage.getItem('token');
-
-            const response = await axios.get('http://localhost:2000/order', {
-                headers: {
-                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
-                }
-            });
-
-            const filteredArray = response.data.filter(item => {
-                const itemDate = dayjs(item.createdAt);  // Convert item.createdAt to dayjs object
-                return itemDate.isSame(valueCalendar, 'day') && item.idProduct === parseInt(idProduct);  // Check if day matches today
-            });
-
-            setScheduleData(filteredArray)
-            resetHoursWithStatus();
-            setArrOfOrderSummary([]);
-        } catch (error) {
-            console.error('Error fetching data:', error);
-            navigate('/login', { state: { from: location }, replace: true });
-
         }
     };
 
@@ -213,30 +88,34 @@ export default function DetailFasilitas() {
     };
 
     const handleOrder = async () => {
-
         const dataToSend = {
             idProduct: idProduct,
-            username: 'fns',
+            username: username,
             price: productPrice,
-            hour: arrOfOrderSummary,
+            date: `${arrOfOrderSummary[0].startDate} - ${arrOfOrderSummary[0].endDate}`,
+            hour: null,
             paymentStatus:
                 watch("paymentMethod") === 'cash' ? 'belum bayar' :
                     watch("paymentMethod") === 'krakataucoin' ? 'lunas' :
-                        watch("paymentMethod") === 'qris' ? 'sedang diverifikasi' :
-                            undefined,
+                        'sedang diverifikasi',
             paymentMethod: watch("paymentMethod"),
-            totalPrice: (productPrice * arrOfOrderSummary.length) - 1000,
+            totalPrice: (productPrice * arrOfOrderSummary.length),
         };
+
+        console.log('dataToSend', dataToSend)
 
         try {
             const token = localStorage.getItem('token');
-            console.log('dataToSend', dataToSend);
 
             const response = await axios.post('http://localhost:2000/order', dataToSend, {
                 headers: {
                     Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
                 }
             });
+
+            console.log('response', response);
+
+            localStorage.setItem('fromOrder', 'true');
 
             navigate('/payment');
         } catch (error) {
@@ -246,46 +125,90 @@ export default function DetailFasilitas() {
         }
     }
 
+
     useEffect(() => {
-        if (idProduct == 20) {
+        window.scrollTo(0, 0);
+        if (idProduct == 41) {
             setNamaProduct('Gym')
             setValue("productType", 'gym');
             setValue("subscriptionType", 'daily');
-        } else if (idProduct == 21) {
+            const newOrderSummary = {
+                price: 25000,
+                startDate: `${dayjs().format('YYYY-MM-DD')}`,
+                endDate: `${dayjs().format('YYYY-MM-DD')}`,
+                name: 'Detail Gym'
+            };
+            setProductPrice(25000)
+            setArrOfOrderSummary(prevState => [...prevState, newOrderSummary]);
+
+        } else if (idProduct == 42) {
             setNamaProduct('Membership Gym')
             setValue("productType", 'gym');
             setValue("subscriptionType", 'membership');
-        } else if (idProduct == 16) {
+            const newOrderSummary = {
+                price: 100000,
+                startDate: `${dayjs().format('YYYY-MM-DD')}`,
+                endDate: `${dayjs().add(1, 'month').format('YYYY-MM-DD')}`,
+                name: 'Gym'
+            };
+            setProductPrice(100000)
+            setArrOfOrderSummary(prevState => [...prevState, newOrderSummary]);
+        } else if (idProduct == 37) {
             setNamaProduct('Kolam Renang Anak')
             setValue("productType", 'poolKid');
             setValue("subscriptionType", 'daily');
+            const newOrderSummary = {
+                price: 25000,
+                startDate: `${dayjs().format('YYYY-MM-DD')}`,
+                endDate: `${dayjs().format('YYYY-MM-DD')}`,
+                name: 'Gym'
+            };
+            setProductPrice(25000)
+            setArrOfOrderSummary(prevState => [...prevState, newOrderSummary]);
 
-        } else if (idProduct == 17) {
+        } else if (idProduct == 38) {
             setNamaProduct('Kolam Renang Dewasa')
             setValue("productType", 'poolAdult');
             setValue("subscriptionType", 'daily');
+            const newOrderSummary = {
+                price: 35000,
+                startDate: `${dayjs().format('YYYY-MM-DD')}`,
+                endDate: `${dayjs().format('YYYY-MM-DD')}`,
+                name: 'Gym'
+            };
+            setProductPrice(30000)
 
-        } else if (idProduct == 18) {
+            setArrOfOrderSummary(prevState => [...prevState, newOrderSummary]);
+
+        } else if (idProduct == 39) {
             setNamaProduct('Membership Renang Dewasa')
             setValue("productType", 'poolAdult');
             setValue("subscriptionType", 'membership');
+            const newOrderSummary = {
+                price: 220000,
+                startDate: `${dayjs().format('YYYY-MM-DD')}`,
+                endDate: `${dayjs().add(1, 'month').format('YYYY-MM-DD')}`,
+                name: 'Gym'
+            };
+            setProductPrice(220000)
 
-        } else if (idProduct == 19) {
+            setArrOfOrderSummary(prevState => [...prevState, newOrderSummary]);
+
+        } else if (idProduct == 40) {
             setNamaProduct('Membership Renang Anak')
             setValue("productType", 'poolKid');
             setValue("subscriptionType", 'membership');
+            const newOrderSummary = {
+                price: 180000,
+                startDate: `${dayjs().format('YYYY-MM-DD')}`,
+                endDate: `${dayjs().add(1, 'month').format('YYYY-MM-DD')}`,
+                name: 'Gym'
+            };
+            setProductPrice(180000)
+
+            setArrOfOrderSummary(prevState => [...prevState, newOrderSummary]);
 
         }
-
-        console.log('currentUrl', currentUrl)
-        // // Set default values based on URL parameters when component mounts
-        // if (defaultProductType) {
-        //     setValue("productType", defaultProductType);
-        // }
-        // if (defaultSubscriptionType) {
-        //     setValue("subscriptionType", defaultSubscriptionType);
-        // }
-        getDataOrder();
     }, [valueCalendar]);
 
     return (
@@ -308,22 +231,22 @@ export default function DetailFasilitas() {
 
             <div className='my-10'>
                 <div className='grid grid-rows-2 gap-4'>
-                    <div className='flex justify-center'>
+                    <div className='flex justify-center sm:mx-0 mx-5'>
                         <select
-                            className="select select-bordered w-full max-w-xs"
+                            className="select select-bordered w-full max-w-xs " disabled
                             {...register("productType")} >
-                            <option disabled selected>What kind of product ?</option>
+                            <option disabled >What kind of product ?</option>
                             <option value={'gym'}>Gym</option>
                             <option value={'poolKid'}>Kolam Renang Anak</option>
                             <option value={'poolAdult'}>Kolam Renang Dewasa</option>
 
                         </select>
                     </div>
-                    <div className='flex justify-center'>
+                    <div className='flex justify-center sm:mx-0 mx-5'>
                         <select
-                            className="select select-bordered w-full max-w-xs"
+                            className="select select-bordered w-full max-w-xs" disabled
                             {...register("subscriptionType")} >
-                            <option disabled selected>Type</option>
+                            <option disabled >Type</option>
                             <option value={'daily'}>Daily</option>
                             <option value={'membership'}>Membership / Monthly</option>
                         </select>
@@ -339,24 +262,22 @@ export default function DetailFasilitas() {
                     title={'Order Summary'}
                     className={'text-center mt-5 text-xl font-semibold bg-primary-content py-2'}
                 />
+
                 <div className='mx-5'>
                     {arrOfOrderSummary.length === 0 ? (
                         <p className='text-center font-semibold mt-3'>Pick the product and time you want easily</p>
                     ) : (
-                        arrOfOrderSummary.map((hour, index) => (
+                        arrOfOrderSummary.map((orderSummary, index) => (
                             <div key={index}>
                                 <div className="grid grid-cols-6 gap-4 mt-5 justify-items-center">
-                                    <div className='col-span-3'>
-                                        <p className='font-semibold'>{hour}</p>
+                                    <div className='col-span-4'>
+                                        <p className='font-semibold '>Start date : {orderSummary.startDate}</p>
+                                        <p className='font-semibold '>End date <span className='invisible'>x</span>: {orderSummary.endDate}</p>
                                     </div>
-                                    <div className='col-span-2'>
-                                        <p>35.000</p> {/* Assuming this value is static */}
+                                    <div className='col-span-2 flex items-center'>
+                                        <p>{orderSummary.price}</p>
                                     </div>
-                                    <div className='col-span-1'>
-                                        <button className="btn btn-error btn-circle btn-sm " onClick={() => removeFromOrderSummary(hour)}>
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                                        </button>
-                                    </div>
+
                                 </div>
                                 <div className="divider"></div>
 
@@ -380,7 +301,7 @@ export default function DetailFasilitas() {
                                     Total
                                 </div>
                                 <div className='justify-self-end'>
-                                    <p className='font-bold'>Rp{formatNumberWithDot((productPrice * arrOfOrderSummary.length) - 1000)}</p>
+                                    <p className='font-bold'>Rp{formatNumberWithDot((productPrice * arrOfOrderSummary.length))}</p>
                                 </div>
                             </div>
                         </>
