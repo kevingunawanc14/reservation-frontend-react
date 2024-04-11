@@ -5,14 +5,21 @@ import axios from 'axios';
 import { useState, useEffect, useContext } from 'react';
 import Alert from '@mui/material/Alert';
 import { BsQrCode } from "react-icons/bs";
+import { FaSackDollar } from "react-icons/fa6";
+import { CiCoins1 } from "react-icons/ci";
+import { RiCopperCoinLine } from "react-icons/ri";
+import { TbListDetails } from "react-icons/tb";
 
 export default function Payment() {
 
     const navigate = useNavigate();
     const [arrPayment, setArrPayment] = useState([]);
     const [orderStatus, setOrderStatus] = useState(null);
-    const handleDetailRating = (id) => {
-        const path = `/product/give-rating/${1}`;
+    const [detailOrder, setDetailOrder] = useState(null)
+    const token = localStorage.getItem('token');
+
+    const handleDetailRating = (idPayment, idProduct) => {
+        const path = `/product/give-rating/${idPayment}/${idProduct}`;
         localStorage.setItem('detailPath', `/payment`);
         navigate(path);
     };
@@ -30,8 +37,9 @@ export default function Payment() {
             });
 
             console.log('response', response);
+            console.log('response', response.data);
+
             setArrPayment(response.data)
-            console.log('arrPayment', arrPayment);
 
 
         } catch (error) {
@@ -39,9 +47,36 @@ export default function Payment() {
         }
     }
 
+    const handleDetailJamOrder = async (id) => {
+        try {
+            const response = await axios.get(`http://localhost:2000/order/detail/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+
+            console.log('response', response);
+            setDetailOrder(response.data)
+
+
+
+        } catch (error) {
+            console.log('error:', error);
+        }
+    }
+
+    useEffect(() => {
+        if (detailOrder) {
+            document.getElementById('detailJamOrderModal').showModal();
+            console.log(detailOrder.length > 1)
+            console.log(detailOrder[0].hour)
+
+
+        }
+    }, [detailOrder]);
+
     useEffect(() => {
         const fromOrder = localStorage.getItem('fromOrder');
-        console.log('fromOrder', fromOrder)
         if (fromOrder === 'true') {
             setOrderStatus('success');
             setTimeout(() => {
@@ -50,7 +85,6 @@ export default function Payment() {
             localStorage.setItem('fromOrder', 'false');
         }
 
-        console.log('fromOrder', fromOrder)
 
 
         getDataPayment()
@@ -73,26 +107,37 @@ export default function Payment() {
                         <div className="card mb-3 flex justify-center shadow-xl bg-neutral">
                             <div className="card-body">
                                 <p className="text-neutral-content">{payment.productName}</p>
-                                <div className="grid grid-cols-12">
-                                    <div className="col-span-5">
-                                        <p className="text-neutral-content">Rp. {payment.totalPrice}</p>
+                                <div className="grid grid-cols-2">
+                                    <div className="grid content-center">
+                                        <p className="text-neutral-content font-bold">Rp. {payment.totalPrice}</p>
+                                    </div>
+                                    <div className="grid content-center">
+                                        <div className="rounded-lg bg-neutral-content tooltip-info p-1 w-10 tooltip tooltip-right text-neutral cursor-pointer" data-tip={payment.paymentMethod === "krakataucoin" ? "Paid by krakatau coin" : ("Paid by " + payment.paymentMethod)}>
+                                            {payment.paymentMethod === 'qris' && (
+                                                <BsQrCode fontSize="19px" className="text-neutral w-full" />
+                                            )}
+                                            {payment.paymentMethod === 'cash' && (
+                                                <FaSackDollar fontSize="19px" className="text-neutral w-full" />
+                                            )}
+                                            {payment.paymentMethod === 'krakataucoin' && (
+                                                <RiCopperCoinLine fontSize="19px" className="text-neutral w-full" />
+                                            )}
+                                        </div>
 
                                     </div>
-                                    <div className="flex items-center justify-end tooltip tooltip-info tooltip-right" data-tip="Paid by QRIS" >
-                                        <BsQrCode
-                                            fontSize="19px"
-                                            className="text-neutral-content"
-                                        />
-
-                                    </div>
-
                                 </div>
-                                <p className="text-neutral-content">Start date : {payment.date.split(' - ')[0]}</p>
-                                <p className="text-neutral-content">End date <span className='invisible'>x</span>: {payment.date.split(' - ')[1]}</p>
+                                <p className="text-neutral-content">{payment.date.split(' - ')[0]}</p>
+                                <div className="grid grid-cols-1">
+                                    <button className="btn btn-info btn-sm " onClick={() => handleDetailJamOrder(payment.connectHistory)}>
+                                        Detail
+                                        <TbListDetails fontSize="20px" className="text-neutral" />
+                                    </button>
+                                </div>
+
                                 {/* <span className="badge badge-accent">Detail</span> */}
                                 <div className="card-actions justify-end">
-                                    <button className="btn btn-primary " onClick={() => handleDetailRating(1)}>Rate</button>
-                                    <button className="btn btn-primary ">Belum Dibayar</button>
+                                    <button className="btn btn-primary " onClick={() => handleDetailRating(payment.id, payment.idProduct)}>Rate</button>
+                                    <button className="btn btn-primary ">{payment.paymentStatus}</button>
                                 </div>
                             </div>
                         </div>
@@ -101,6 +146,56 @@ export default function Payment() {
                 ))}
 
             </div>
+
+            <dialog id="detailJamOrderModal" className="modal">
+                <div className="modal-box">
+                    <h3 className="font-bold text-lg">Detail Order</h3>
+                    {detailOrder && (
+                        <>
+                            <div>
+                                {/* Check if the date string contains a hyphen */}
+                                {detailOrder[0].date.split('-').length > 3 ? (
+                                    // If it contains a hyphen, display start and end dates separately
+                                    <>
+                                        <p className='text-lg'>Start date: <span className="font-semibold">{detailOrder[0].date.split(' - ')[0]}</span></p>
+                                        <p className='text-lg'>End date:  <span className="font-semibold">{detailOrder[0].date.split(' - ')[1]}</span></p>
+                                    </>
+                                ) : (
+                                    // If it doesn't contain a hyphen, display the date as is
+                                    <p className='text-lg'>Tanggal : {detailOrder[0].date}</p>
+                                )}
+                            </div>
+                            {detailOrder[0].hour && (
+                                <>
+                                    <p className='text-lg'>Jam: </p>
+                                    {detailOrder.map((item, index) => (
+                                        <div key={index}>
+                                            <p className='text-lg font-semibold'>
+                                                {item.hour}
+                                                {(() => {
+                                                    const hour = parseFloat(item.hour.split("-")[0]);
+                                                    if (hour >= 6 && hour < 15) {
+                                                        return <span>🏙️</span>;
+                                                    } else if (hour >= 15 && hour < 17) {
+                                                        return <span>🌇</span>;
+                                                    } else {
+                                                        return <span>🌆</span>;
+                                                    }
+                                                })()}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </>
+                            )}
+
+                        </>
+                    )}
+
+                </div>
+                <form method="dialog" className="modal-backdrop">
+                    <button>close</button>
+                </form>
+            </dialog>
 
             <Navbar />
         </>

@@ -39,7 +39,7 @@ function App() {
         <Route path="/product/fasilitas/:namaProduct/:idProduct" element={<DetailFasilitas />} />
         <Route path="/product/rating/:namaProduct/:idProduct" element={<DetailRating />} />
         <Route path="/payment" element={<Payment />} />
-        <Route path="/product/give-rating/:idProduct" element={<GiveRating />} />
+        <Route path="/product/give-rating/:idPayment/:idProduct" element={<GiveRating />} />
         <Route path="/setting" element={<Setting />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
 

@@ -47,7 +47,7 @@ export default function Navbar() {
                 <span className="btm-nav-label">User</span>
             </button>
 
-            <button className={window.location.pathname === '/product' ? 'active text-primary' : ''} onClick={() => handleNavigate('/product')}>
+            {/* <button className={window.location.pathname === '/product' ? 'active text-primary' : ''} onClick={() => handleNavigate('/product')}>
                 <TbClipboardList />
                 <span className="btm-nav-label">Product</span>
             </button>
@@ -55,7 +55,7 @@ export default function Navbar() {
             <button className={window.location.pathname === '/challange' ? 'active text-primary' : ''} onClick={() => handleNavigate('/challange')}>
                 <BiTask />
                 <span className="btm-nav-label">Challange</span>
-            </button>
+            </button> */}
 
         </div >
     );

@@ -93,13 +93,16 @@ export default function DetailFasilitas() {
             username: username,
             price: productPrice,
             date: `${arrOfOrderSummary[0].startDate} - ${arrOfOrderSummary[0].endDate}`,
+            detailDate: valueCalendar.format('YYYY-MM-DD HH:mm:ss'),
             hour: null,
             paymentStatus:
-                watch("paymentMethod") === 'cash' ? 'belum bayar' :
-                    watch("paymentMethod") === 'krakataucoin' ? 'lunas' :
-                        'sedang diverifikasi',
+                watch("paymentMethod") === 'cash' ? 'Belum dibayar' :
+                    watch("paymentMethod") === 'krakataucoin' ? 'Lunas' :
+                        watch("paymentMethod") === 'qris' ? 'Sedang diverifikasi' :
+                            undefined,
             paymentMethod: watch("paymentMethod"),
             totalPrice: (productPrice * arrOfOrderSummary.length),
+            connectHistory: crypto.randomUUID()
         };
 
         console.log('dataToSend', dataToSend)
@@ -128,7 +131,7 @@ export default function DetailFasilitas() {
 
     useEffect(() => {
         window.scrollTo(0, 0);
-        if (idProduct == 41) {
+        if (idProduct == 20) {
             setNamaProduct('Gym')
             setValue("productType", 'gym');
             setValue("subscriptionType", 'daily');
@@ -141,7 +144,7 @@ export default function DetailFasilitas() {
             setProductPrice(25000)
             setArrOfOrderSummary(prevState => [...prevState, newOrderSummary]);
 
-        } else if (idProduct == 42) {
+        } else if (idProduct == 21) {
             setNamaProduct('Membership Gym')
             setValue("productType", 'gym');
             setValue("subscriptionType", 'membership');
@@ -153,7 +156,7 @@ export default function DetailFasilitas() {
             };
             setProductPrice(100000)
             setArrOfOrderSummary(prevState => [...prevState, newOrderSummary]);
-        } else if (idProduct == 37) {
+        } else if (idProduct == 16) {
             setNamaProduct('Kolam Renang Anak')
             setValue("productType", 'poolKid');
             setValue("subscriptionType", 'daily');
@@ -166,7 +169,7 @@ export default function DetailFasilitas() {
             setProductPrice(25000)
             setArrOfOrderSummary(prevState => [...prevState, newOrderSummary]);
 
-        } else if (idProduct == 38) {
+        } else if (idProduct == 17) {
             setNamaProduct('Kolam Renang Dewasa')
             setValue("productType", 'poolAdult');
             setValue("subscriptionType", 'daily');
@@ -180,7 +183,7 @@ export default function DetailFasilitas() {
 
             setArrOfOrderSummary(prevState => [...prevState, newOrderSummary]);
 
-        } else if (idProduct == 39) {
+        } else if (idProduct == 18) {
             setNamaProduct('Membership Renang Dewasa')
             setValue("productType", 'poolAdult');
             setValue("subscriptionType", 'membership');
@@ -194,7 +197,7 @@ export default function DetailFasilitas() {
 
             setArrOfOrderSummary(prevState => [...prevState, newOrderSummary]);
 
-        } else if (idProduct == 40) {
+        } else if (idProduct == 19) {
             setNamaProduct('Membership Renang Anak')
             setValue("productType", 'poolKid');
             setValue("subscriptionType", 'membership');

@@ -40,7 +40,7 @@ export default function DetailLapangan() {
     const [statusAllowPlaceOrder, setStatusAllowPlaceOrder] = useState(false);
     const [subtotal, setSubtotal] = useState(0);
     const [total, setTotal] = useState(0);
-    const [productPrice, setProductPrice] = useState(35000);
+    const [productPrice, setProductPrice] = useState(0);
     const { register, handleSubmit, watch, formState: { errors } } = useForm({
         defaultValues: {
             paymentMethod: "cash",
@@ -83,7 +83,11 @@ export default function DetailLapangan() {
                 }
             });
 
+
             setNamaProduct(response.data.nameDetail);
+            const number = parseInt(response.data.priceInt);
+            console.log(number);
+            setProductPrice(number);
 
         } catch (error) {
             console.error('Error:', error);
@@ -194,17 +198,17 @@ export default function DetailLapangan() {
         try {
             const token = localStorage.getItem('token');
 
-            const response = await axios.get('http://localhost:2000/order', {
+            const response = await axios.get('http://localhost:2000/order/reserved', {
                 headers: {
                     Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
                 }
             });
 
             const filteredArray = response.data.filter(item => {
-                const itemDate = dayjs(item.createdAt);  // Convert item.createdAt to dayjs object
+                const itemDate = dayjs(item.date);  // Convert item.createdAt to dayjs object
                 return itemDate.isSame(valueCalendar, 'day') && item.idProduct === parseInt(idProduct);  // Check if day matches today
             });
-
+            console.log('filteredArray', filteredArray);
             setScheduleData(filteredArray)
             resetHoursWithStatus();
             setArrOfOrderSummary([]);
@@ -254,17 +258,19 @@ export default function DetailLapangan() {
 
         const dataToSend = {
             idProduct: idProduct,
-            username: 'fns',
+            username: username,
             price: productPrice,
             date: valueCalendar.format('YYYY-MM-DD'),
+            detailDate: valueCalendar.format('YYYY-MM-DD HH:mm:ss'),
             hour: arrOfOrderSummary,
             paymentStatus:
-                watch("paymentMethod") === 'cash' ? 'belum bayar' :
-                    watch("paymentMethod") === 'krakataucoin' ? 'lunas' :
-                        watch("paymentMethod") === 'qris' ? 'sedang diverifikasi' :
+                watch("paymentMethod") === 'cash' ? 'Belum dibayar' :
+                    watch("paymentMethod") === 'krakataucoin' ? 'Lunas' :
+                        watch("paymentMethod") === 'qris' ? 'Sedang diverifikasi' :
                             undefined,
             paymentMethod: watch("paymentMethod"),
-            totalPrice: (productPrice * arrOfOrderSummary.length) - 1000,
+            totalPrice: (productPrice * arrOfOrderSummary.length),
+            connectHistory: crypto.randomUUID()
         };
 
         try {
@@ -276,9 +282,10 @@ export default function DetailLapangan() {
                 }
             });
 
-            console.log('response', response);
+            localStorage.setItem('fromOrder', 'true');
 
-            // navigate('/payment');
+            navigate('/payment');
+
         } catch (error) {
             console.error('Error fetching data:', error);
             navigate('/login', { state: { from: location }, replace: true });
@@ -340,7 +347,7 @@ export default function DetailLapangan() {
                                         <p className='font-semibold'>{hour}</p>
                                     </div>
                                     <div className='col-span-2'>
-                                        <p>35.000</p> {/* Assuming this value is static */}
+                                        <p>{productPrice}</p> {/* Assuming this value is static */}
                                     </div>
                                     <div className='col-span-1'>
                                         <button className="btn btn-error btn-circle btn-sm " onClick={() => removeFromOrderSummary(hour)}>
@@ -363,7 +370,7 @@ export default function DetailLapangan() {
                                     Subtotal
                                 </div>
                                 <div className='justify-self-end'>
-                                    <p className=''>Rp{formatNumberWithDot(productPrice * arrOfOrderSummary.length)}</p>
+                                    <p className=''>Rp{formatNumberWithDot((productPrice * arrOfOrderSummary.length))}</p>
                                 </div>
                             </div>
 

@@ -139,10 +139,10 @@ export default function ListGor() {
 
                             {userData.xp >= 100 ? (
                                 <div className="justify-start">
-                                    <div className="tooltip tooltip-top tooltip-secondary cursor-pointer">
+                                    <div className="cursor-pointer">
                                         <button
                                             className="btn btn-sm btn-secondary"
-                                            onClick={() => handleDetailRating(1)}>
+                                            onClick={() => handleDetailRating(item.id)}>
                                             View Rating
                                             <div className='ms-[-4px]'>
                                                 <IoMdUnlock />
@@ -152,9 +152,9 @@ export default function ListGor() {
                                 </div>
                             ) : (
                                 <div className="justify-start">
-                                    <div className="tooltip tooltip-top tooltip-secondary " data-tip="Reach Rank Platinum ">
+                                    <div className="tooltip tooltip-right tooltip-secondary " data-tip="Reach Rank Platinum ">
                                         <button
-                                            className="btn btn-sm btn-secondary"
+                                            className="btn btn-sm btn-secondary cursor-default"
 
                                         >
                                             View Rating

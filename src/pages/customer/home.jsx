@@ -27,6 +27,12 @@ import { FaSwimmingPool } from "react-icons/fa";
 import { IoFootball } from "react-icons/io5";
 // import { PiSoccerBallFill } from "react-icons/pi";
 import { BiFootball } from "react-icons/bi";
+import Alert from '@mui/material/Alert';
+import { FaHandHoldingHeart } from "react-icons/fa";
+import { IoShieldOutline } from "react-icons/io5";
+import { LuSword } from "react-icons/lu";
+import { GiRank2 } from "react-icons/gi";
+import { FaSkull } from "react-icons/fa";
 
 
 export default function Home() {
@@ -38,9 +44,10 @@ export default function Home() {
     const [valueTantanganMingguan, setValueTantanganMingguan] = useState(0);
     const [valueTantanganBulanan, setValueTantanganBulanan] = useState(0);
     const [valueTantangan6Bulanan, setValueTantangan6Bulanan] = useState(0);
-    const [timeRemaining, setTimeRemaining] = useState(calculateTimeRemaining());
     const [showTooltip, setShowTooltip] = useState(false);
+    const username = localStorage.getItem('username');
 
+    const [userData, setUserData] = useState(null);
 
 
     const handleDetailLapangan = (id, courtName) => {
@@ -53,6 +60,68 @@ export default function Home() {
         localStorage.setItem('detailPath', `/`);
         navigate(path);
     };
+
+    const getDataDetailUser = async () => {
+        try {
+            const token = localStorage.getItem('token');
+
+            const response = await axios.get(`http://localhost:2000/user/detail/${username}`, {
+                headers: {
+                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                }
+            });
+
+            const responseData = response.data; // Assuming the response contains the user details
+
+            console.log(responseData)
+
+            // Update the state with the fetched data
+            setUserData({
+                username: responseData.username,
+                rank: responseData.rank,
+                xp: responseData.experiencePoint,
+                hp: responseData.healthPoint,
+                coin: responseData.krakatauCoin,
+                statusDailyReward: responseData.statusDailyReward
+            });
+
+            console.log('response', response)
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            // navigate('/login', { state: { from: location }, replace: true });
+
+        }
+    };
+
+    const handleClaimReward = async () => {
+        const dataToSend = {
+            username: username,
+            valueReward: Math.floor(Math.random() * 4),
+            tipe: Math.floor(Math.random() * 4) + 1
+        };
+
+
+        try {
+            // console.log('dataToSend', dataToSend);
+            // const token = localStorage.getItem('token');
+
+            // const response = await axios.post(`http://localhost:2000/claim-reward/${username}`, dataToSend, {
+            //     headers: {
+            //         Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+            //     }
+            // });
+
+            document.getElementById('rewardModal').showModal();
+            setUserData(prevState => ({
+                ...prevState,
+                statusDailyReward: true
+            }));
+
+
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
 
     const handleDetailFasilitas = (id, courtName) => {
         if (id >= 37 && id <= 40) {
@@ -131,24 +200,6 @@ export default function Home() {
         handleSearch(value);
     };
 
-    function calculateTimeRemaining() {
-        const now = new Date();
-        const target = new Date();
-        target.setHours(7, 0, 0, 0); // Set target time to 7:00:00 AM
-
-        if (now > target) {
-            // If current time is after 7 am, set target to next day 7 am
-            target.setDate(target.getDate() + 1);
-        }
-
-        const timeDiff = target.getTime() - now.getTime();
-        const hours = Math.floor(timeDiff / (1000 * 60 * 60));
-        const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
-
-        return { hours, minutes, seconds };
-    }
-
     useEffect(() => {
         const token = localStorage.getItem('token');
 
@@ -158,17 +209,10 @@ export default function Home() {
         }
 
         getDataChallange()
-
+        getDataDetailUser();
 
     }, [])
 
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setTimeRemaining(calculateTimeRemaining());
-        }, 1000);
-
-        return () => clearInterval(timer);
-    }, []);
 
 
     return (
@@ -422,14 +466,52 @@ export default function Home() {
                     </div>
                 </div> */}
 
-                <div>
-                    <div style={{ position: 'fixed', bottom: 100, right: 20 }} className="tooltip tooltip-left tooltip-primary" data-tip="Claim Daily Reward">
-                        <button className="btn btn-primary mt-3 hover:animate-bounce ">
-                            {/* {`${timeRemaining.hours}:${timeRemaining.minutes}:${timeRemaining.seconds}`} */}
-                            <GoGift fontSize="20px" />
-                        </button>
+                {userData && (
+                    <>
+                        {userData.statusDailyReward ? (
+                            <div
+                                style={{ position: 'fixed', bottom: 100, right: 20 }}
+                                className="tooltip tooltip-left tooltip-primary"
+                                data-tip="Please wait until tomorrow">
+                                <button className="btn  mt-3 hover:animate-bounce btn-disabled" disabled>
+                                    <GoGift fontSize="20px" />
+                                </button>
+                            </div>
+
+                        ) : (
+                            <div
+                                style={{ position: 'fixed', bottom: 100, right: 20 }}
+                                className="tooltip tooltip-left tooltip-primary"
+                                data-tip="Claim Daily Reward"
+                                onClick={() => handleClaimReward()}
+                            >
+                                <button className="btn btn-primary mt-3 hover:animate-bounce">
+                                    <GoGift fontSize="20px" />
+                                </button>
+                            </div>
+                        )}
+                    </>
+                )}
+
+                <dialog id="rewardModal" className="modal">
+                    <div className="modal-box bg-primary">
+                        <div className='grid grid-cols-2'>
+                            <div>
+                                <FaSkull fontSize={''} className='w-full h-20  text-neutral-content' />
+                                {/* <FaSkull /> */}
+
+                            </div>
+                            <div>
+                                <p className='text-lg font-bold mt-2 ms-[-10px] text-neutral-content'>Reward Points</p>
+                                <p className='font-semibold ms-[-10px]  text-neutral-content'>You get 0 points</p>
+                            </div>
+
+                        </div>
                     </div>
-                </div>
+                    <form method="dialog" className="modal-backdrop">
+                        <button>close</button>
+                    </form>
+                </dialog>
 
 
 
