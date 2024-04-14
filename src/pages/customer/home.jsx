@@ -41,9 +41,7 @@ export default function Home() {
     const [searchResults, setSearchResults] = useState([]);
     const [challenges, setChallenges] = useState([]);
     const navigate = useNavigate();
-    const [valueTantanganMingguan, setValueTantanganMingguan] = useState(0);
-    const [valueTantanganBulanan, setValueTantanganBulanan] = useState(0);
-    const [valueTantangan6Bulanan, setValueTantangan6Bulanan] = useState(0);
+    const [progressiveChallangeUser, setProgressiveChallangeUser] = useState(0);
     const [showTooltip, setShowTooltip] = useState(false);
     const username = localStorage.getItem('username');
 
@@ -82,10 +80,13 @@ export default function Home() {
                 xp: responseData.experiencePoint,
                 hp: responseData.healthPoint,
                 coin: responseData.krakatauCoin,
-                statusDailyReward: responseData.statusDailyReward
+                statusDailyReward: responseData.statusDailyReward,
+                statusWeeklyChallange: false,
+                statusMonthlyChallange: responseData.statusMonthlyChallange,
+                status6MonthChallange: true
             });
 
-            console.log('response', response)
+            console.log('response', userData.status6MonthChallange)
         } catch (error) {
             console.error('Error fetching data:', error);
             // navigate('/login', { state: { from: location }, replace: true });
@@ -172,7 +173,23 @@ export default function Home() {
         }
     }
 
+    const getProgressChallangeUser = async () => {
+        try {
+            const token = localStorage.getItem('token');
 
+            const response = await axios.get(`http://localhost:2000/progressive-challange/${username}`, {
+                headers: {
+                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                }
+            });
+            setProgressiveChallangeUser(response.data.scheduleCount);
+
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            navigate('/login', { state: { from: location }, replace: true });
+
+        }
+    };
 
     const detailPage = (productName) => {
         navigate(`/product/${productName}`);
@@ -208,12 +225,11 @@ export default function Home() {
             navigate('/login'); // Replace '/login' with your actual login path
         }
 
-        getDataChallange()
+        getDataChallange();
         getDataDetailUser();
+        getProgressChallangeUser();
 
     }, [])
-
-
 
     return (
         <>
@@ -315,21 +331,21 @@ export default function Home() {
                 </div>
 
                 <div className='grid grid-rows-3 gap-4 mb-20'>
-                    <div className="card lg:card-side bg-neutral shadow-xl m-4">
+                    <div className="card lg:card-side bg-accent shadow-xl m-4">
                         <div className="card-body">
-                            <h2 className="card-title text-neutral-content">Tantangan Mingguan</h2>
+                            <h2 className="card-title text-neutral">Tantangan Mingguan</h2>
                             <div className="grid grid-cols-12">
                                 <div className='sm:col-span-1 col-span-2 justify-self-center'>
-                                    <p className='text-neutral-content'>0/2</p>
+                                    <p className='text-neutral font-semibold'>0/2</p>
                                 </div>
                                 <div className='sm:col-span-11 col-span-9'>
-                                    <progress className="progress progress-success w-full bg-neutral-content" value={null} max="100"></progress>
+                                    <progress className="progress progress-success w-full bg-neutral-content" value={progressiveChallangeUser * 10} max="20"></progress>
                                 </div>
                             </div>
                             <div className="grid grid-cols-4">
                                 <div className='sm:col-span-2 col-span-4'>
                                     {challenges.filter(challenge => challenge.id === 1).map((challenge) => (
-                                        <p key={challenge.id} className='text-sm text-neutral-content'>
+                                        <p key={challenge.id} className='font-semibold text-neutral'>
                                             {challenge.description}
                                         </p>
                                     ))}
@@ -338,30 +354,51 @@ export default function Home() {
                             <div className="">
                                 <div className='grid grid-cols-2'>
                                     <div className='self-center '>
-                                        <img src={aha} alt="" className='w-20 h-11 bg-neutral-content rounded border-1' />
+                                        <img
+                                            src={aha}
+                                            alt=""
+                                            className='w-20 h-11 bg-neutral-content rounded border-1 cursor-pointer animate-pulse'
+                                            onClick={() => document.getElementById('ahaModal').showModal()}
+                                        />
                                     </div>
                                     <div className='justify-self-end'>
-                                        <button className={`btn btn-primary mt-5 ${valueTantanganMingguan < 2 ? 'btn-error cursor-not-allowed' : 'btn-success'}`}>Claim Reward</button>
+                                        {userData?.statusWeeklyChallange ? (
+                                            <button className={`btn btn-primary btn-disabled`}>Already Claimed</button>
+
+                                        ) : (
+                                            <button className={`btn btn-primary  ${progressiveChallangeUser < 2 ? 'btn-disabled' : 'btn-primary'}`}>Claim Reward</button>
+                                        )}
+
+                                        {/* {userData && (
+                                            <>
+                                                {userData.statusWeeklyChallange ? (
+                                                    <button className={`btn btn-primary btn-disabled`}>Already Claim</button>
+
+                                                ) : (
+                                                    <button className={`btn btn-primary  ${progressiveChallangeUser < 2 ? 'btn-disabled' : 'btn-primary'}`}>Claim Reward</button>
+                                                )}
+                                            </>
+                                        )} */}
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div className="card lg:card-side bg-neutral shadow-xl m-4">
+                    <div className="card lg:card-side bg-accent shadow-xl m-4">
                         <div className="card-body">
-                            <h2 className="card-title text-neutral-content">Tantangan Bulanan</h2>
+                            <h2 className="card-title text-neutral">Tantangan Bulanan</h2>
                             <div className="grid grid-cols-12">
                                 <div className='sm:col-span-1 col-span-2 justify-self-center'>
-                                    <p className='text-neutral-content'>0/10</p>
+                                    <p className='text-neutral font-semibold'>0/10</p>
                                 </div>
                                 <div className='sm:col-span-11 col-span-9'>
-                                    <progress className="progress progress-success w-full bg-neutral-content" value={null} max="100"></progress>
+                                    <progress className="progress progress-success w-full bg-neutral-content" value={progressiveChallangeUser * 10} max="100"></progress>
                                 </div>
                             </div>
                             <div className="grid grid-cols-4">
                                 <div className='sm:col-span-2 col-span-4'>
                                     {challenges.filter(challenge => challenge.id === 2).map((challenge) => (
-                                        <p key={challenge.id} className='text-sm text-neutral-content'>
+                                        <p key={challenge.id} className='text-base text-neutral font-semibold'>
                                             {challenge.description}
                                         </p>
                                     ))}
@@ -370,101 +407,62 @@ export default function Home() {
                             <div className="">
                                 <div className='grid grid-cols-2'>
                                     <div className='self-center '>
-                                        <img src={Who} alt="" className='w-20 h-11 bg-neutral-content rounded border-1 p-1' />
+                                        <img
+                                            src={Who}
+                                            alt=""
+                                            className='w-20 h-11 bg-neutral-content rounded border-1 p-1 cursor-pointer animate-pulse'
+                                            onClick={() => document.getElementById('whoModal').showModal()}
+                                        />
                                     </div>
                                     <div className='justify-self-end'>
-                                        <button className={`btn btn-primary mt-5 ${valueTantanganMingguan < 2 ? 'btn-error cursor-not-allowed' : 'btn-success'}`}>Claim Reward</button>
+                                        {userData?.statusMonthlyChallange ? (
+                                            <button className={`btn btn-primary btn-disabled`}>Already Claimed</button>
+
+                                        ) : (
+                                            <button className={`btn btn-primary  ${progressiveChallangeUser < 10 ? 'btn-disabled' : 'btn-primary'}`}>Claim Reward</button>
+                                        )}
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div className="card lg:card-side bg-neutral shadow-xl m-4">
+                    <div className="card lg:card-side bg-accent shadow-xl m-4">
                         <div className="card-body">
-                            <h2 className="card-title text-neutral-content">Tantangan 6 Bulan</h2>
+                            <h2 className="card-title text-neutral">Tantangan 6 Bulan</h2>
                             <div className="grid grid-cols-12">
                                 <div className='sm:col-span-1 col-span-2 justify-self-center'>
-                                    <p className='text-neutral-content'>0/50</p>
+                                    <p className='text-neutral font-semibold'>0/50</p>
                                 </div>
                                 <div className='sm:col-span-11 col-span-9'>
-                                    <progress className="progress progress-success w-full bg-neutral-content" value={null} max="100"></progress>
+                                    <progress className="progress progress-success w-full bg-neutral-content" value={progressiveChallangeUser * 10} max="500"></progress>
                                 </div>
                             </div>
                             <div className="grid grid-cols-4">
                                 <div className='sm:col-span-2 col-span-4'>
                                     {challenges.filter(challenge => challenge.id === 3).map((challenge) => (
-                                        <p key={challenge.id} className='text-sm text-neutral-content'>
+                                        <p key={challenge.id} className='text-base text-neutral font-semibold'>
                                             {challenge.description}
                                         </p>
                                     ))}
                                 </div>
                             </div>
+
                             <div className="">
                                 <div className='grid grid-cols-1'>
-                                    <div className='justify-self-end'>
-                                        <button className={`btn btn-primary mt-5 ${valueTantanganMingguan < 2 ? 'btn-error cursor-not-allowed' : 'btn-success'}`}>Claim Reward</button>
+                                    <div className='justify-self-end '
+                                    >
+                                        {userData?.status6MonthChallange ? (
+                                            <button className={`btn btn-primary btn-disabled`}>Already Claimed</button>
+
+                                        ) : (
+                                            <button className={`btn btn-primary  ${progressiveChallangeUser < 50 ? 'btn-disabled' : 'btn-primary'}`}>Claim Reward</button>
+                                        )}
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                {/* <div className="grid grid-rows-3 grid-flow-col gap-4 justify-items-center mt-3">
-
-                    <div className="card w-80 h-96 bg-neutral shadow-xl mt-2">
-                        <div className="card-body">
-                            <h2 className="card-title mt-3 text-neutral-content">Tantangan Bulanan</h2>
-                            <div className="grid grid-cols-4">
-                                <div className='col-span-1 justify-self-center'>
-                                    <p className='text-neutral-content'>0/10</p>
-                                </div>
-                                <div className=''>
-                                    <progress className="progress progress-success w-48 bg-neutral-content" value={null} max="100"></progress>
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-4">
-                                <div className='col-span-2'>
-                                    {challenges.filter(challenge => challenge.id === 2).map((challenge) => (
-                                        <p key={challenge.id} className='text-sm text-neutral-content'>
-                                            {challenge.description}
-                                        </p>
-                                    ))}
-                                </div>
-                                <div className='self-center col-span-2'>
-                                    <img src={Who} alt="who image logo" className='w-28' />
-
-                                </div>
-                            </div>
-                            <button className={`btn btn-primary mt-5 ${valueTantanganBulanan < 2 ? 'btn-error cursor-not-allowed' : 'btn-success'}`}>Claim Reward</button>
-                        </div>
-                    </div>
-                    <div>
-                        <div className="card w-80 h-60 bg-neutral shadow-xl mt-2">
-                            <div className="card-body">
-                                <h2 className="card-title mt-3 text-neutral-content">Tantangan 6 Bulan</h2>
-                                <div className="grid grid-cols-4">
-                                    <div className='col-span-1 justify-self-center'>
-                                        <p className='text-neutral-content'>0/50</p>
-                                    </div>
-                                    <div className=''>
-                                        <progress className="progress progress-success w-48 bg-neutral-content" value={null} max="100"></progress>
-                                    </div>
-                                </div>
-                                <div className="grid">
-                                    <div className=''>
-                                        {challenges.filter(challenge => challenge.id === 3).map((challenge) => (
-                                            <p key={challenge.id} className='text-sm text-neutral-content'>
-                                                {challenge.description}
-                                            </p>
-                                        ))}
-                                    </div>
-                                </div>
-                                <button className={`btn btn-primary mt-1 ${valueTantangan6Bulanan < 2 ? 'btn-error cursor-not-allowed' : 'btn-success'} `}>Claim Reward</button>
-                            </div>
-                        </div>
-                    </div>
-                </div> */}
 
                 {userData && (
                     <>
@@ -493,8 +491,12 @@ export default function Home() {
                     </>
                 )}
 
-                <dialog id="rewardModal" className="modal">
-                    <div className="modal-box bg-primary">
+                <dialog id="rewardModal" className="modal modal-bottom sm:modal-middle">
+                    <div className="modal-box bg-secondary">
+                        <form method="dialog">
+                            {/* if there is a button in form, it will close the modal */}
+                            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 text-secondary-content">✕</button>
+                        </form>
                         <div className='grid grid-cols-2'>
                             <div>
                                 <FaSkull fontSize={''} className='w-full h-20  text-neutral-content' />
@@ -508,9 +510,51 @@ export default function Home() {
 
                         </div>
                     </div>
-                    <form method="dialog" className="modal-backdrop">
+                    {/* <form method="dialog" className="modal-backdrop">
                         <button>close</button>
-                    </form>
+                    </form> */}
+                </dialog>
+
+                <dialog id="whoModal" className="modal modal-bottom sm:modal-middle bg-ne">
+                    <div className="modal-box bg-neutral">
+                        {/* <h3 className="font-bold text-lg"></h3> */}
+                        <ul className='list-inside list-disc mt-3 text-base font-medium text-neutral-content'>
+                            <li>Should do at least 150–300 minutes of moderate-intensity aerobic physical activity; or at least 75–150 minutes of vigorous-intensity aerobic physical activity; or an equivalent combination of moderate- and vigorous-intensity activity throughout the week.</li>
+                            <li>Should also do muscle-strengthening activities at moderate or greater intensity that involve all major muscle groups on 2 or more days a week, as these provide additional health benefits.</li>
+                            <li>May increase moderate-intensity aerobic physical activity to more than 300 minutes; or do more than 150 minutes of vigorous-intensity aerobic physical activity; or an equivalent combination of moderate- and vigorous-intensity activity throughout the week for additional health benefits.</li>
+                            <li>Should limit the amount of time spent being sedentary. Replacing sedentary time with physical activity of any intensity (including light intensity) provides health benefits.</li>
+                            <li>To help reduce the detrimental effects of high levels of sedentary behaviour on health, all adults and older adults should aim to do more than the recommended levels of moderate- to vigorous-intensity physical activity.</li>
+                        </ul>
+                        <div className="modal-action">
+                            <form method="dialog">
+                                {/* if there is a button in form, it will close the modal */}
+                                <button className="btn ">Close</button>
+                            </form>
+                        </div>
+                    </div>
+                </dialog>
+
+                <dialog id="ahaModal" className="modal modal-bottom sm:modal-middle">
+                    <div className="modal-box">
+                        {/* <h3 className="font-bold text-lg">Recommendations for Adults
+                        </h3> */}
+                        <ul className='list-inside list-disc mt-3 text-base font-medium'>
+                            <li>Get at least 150 minutes per week of moderate-intensity aerobic activity or 75 minutes per week of vigorous aerobic activity, or a combination of both, preferably spread throughout the week.</li>
+                            <li>Add moderate- to high-intensity muscle-strengthening activity (such as resistance or weights) on at least 2 days per week.</li>
+                            <li>Spend less time sitting. Even light-intensity activity can offset some of the risks of being sedentary.</li>
+                            <li>Gain even more benefits by being active at least 300 minutes (5 hours) per week.</li>
+                            <li>Increase amount and intensity gradually over time.</li>
+                        </ul>
+
+                        <div className="modal-action">
+                            <form method="dialog">
+                                {/* if there is a button in form, it will close the modal */}
+                                <button className="btn">Close</button>
+                            </form>
+                        </div>
+                    </div>
+
+
                 </dialog>
 
 

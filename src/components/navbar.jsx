@@ -29,7 +29,7 @@ export default function Navbar() {
 
 
     return (
-        <div className="btm-nav mt-10">
+        <div className="btm-nav mt-10 z-40">
             <button className={`sm:btm-nav-md btm-nav-xs ${window.location.pathname === '/' ? 'active text-primary ' : ''}`} onClick={() => handleNavigate('/')}>
                 {window.location.pathname === '/' ? <IoCompass /> : <IoCompassOutline />}
                 <span className={window.location.pathname === '/' ? 'btm-nav-label font-medium' : 'btm-nav-label'}>Home</span>

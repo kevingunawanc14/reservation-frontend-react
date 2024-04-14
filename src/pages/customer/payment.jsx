@@ -17,6 +17,7 @@ export default function Payment() {
     const [orderStatus, setOrderStatus] = useState(null);
     const [detailOrder, setDetailOrder] = useState(null)
     const token = localStorage.getItem('token');
+    const username = localStorage.getItem('username');
 
     const handleDetailRating = (idPayment, idProduct) => {
         const path = `/product/give-rating/${idPayment}/${idProduct}`;
@@ -28,7 +29,6 @@ export default function Payment() {
     const getDataPayment = async () => {
         try {
             const token = localStorage.getItem('token');
-            const username = localStorage.getItem('username');
 
             const response = await axios.get(`http://localhost:2000/payment/${username}`, {
                 headers: {
@@ -136,8 +136,8 @@ export default function Payment() {
 
                                 {/* <span className="badge badge-accent">Detail</span> */}
                                 <div className="card-actions justify-end">
-                                    <button className="btn btn-primary " onClick={() => handleDetailRating(payment.id, payment.idProduct)}>Rate</button>
-                                    <button className="btn btn-primary ">{payment.paymentStatus}</button>
+                                    <button className="btn btn-primary  " onClick={() => handleDetailRating(payment.id, payment.idProduct)}>Rate</button>
+                                    <button className="btn btn-primary btn-wide">{payment.paymentStatus}</button>
                                 </div>
                             </div>
                         </div>

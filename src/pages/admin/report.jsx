@@ -266,6 +266,13 @@ export default function ActiveOrder() {
         if (detailOrder) {
             console.log(detailOrder);
             console.log(detailOrder.length);
+            if (detailOrder.length > 1 || detailOrder[0].hour) {
+                console.log('truuuuu');
+            }
+            console.log(detailOrder[0].hour);
+            console.log(detailOrder.length > 1);
+
+
             document.getElementById('detailJamOrderModal').showModal();
         }
     }, [detailOrder]);
@@ -700,7 +707,7 @@ export default function ActiveOrder() {
                             <div>
                                 <p className='text-lg'>Tanggal: {detailOrder[0].date}</p>
                             </div>
-                            {detailOrder.length > 1 || detailOrder[0].hour && (
+                            {detailOrder[0].hour && (
                                 <>
                                     <p className='text-lg'>Jam: </p>
                                     {detailOrder.map((item, index) => (

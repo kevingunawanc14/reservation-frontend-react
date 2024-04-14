@@ -19,6 +19,7 @@ import { useForm } from "react-hook-form";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import axios from 'axios';
 import { GiTigerHead } from "react-icons/gi";
+import AvatarIcon from '../../components/avatar';
 
 function CustomToolbar() {
     return (
@@ -49,7 +50,7 @@ export default function Leaderboard() {
         try {
             const token = localStorage.getItem('token');
 
-            const response = await axios.get('http://localhost:2000/user', {
+            const response = await axios.get('http://localhost:2000/user/ranked', {
                 headers: {
                     Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
                 }
@@ -214,51 +215,56 @@ export default function Leaderboard() {
 
     const columns = [
         {
-            field: 'id',
+            field: 'mostHealthPoint',
             headerName: 'Rank',
             flex: 0.5,
-            renderCell: (params, rowIndex) => { // Include rowIndex as a second argument
-                return rowIndex + 1; // Add 1 to start from 1
-            },
+            renderCell: (params) => (
+                <div className="">
+                    {params.row.healthPoint <= 100 ?
+                        <div className="grid grid-cols-2 ">
+                            <p className="flex items-center">{params.row.mostHealthPoint}</p>
+                            <GiRank2 color="#eccc55" fontSize="30px" />
+                        </div> :
+                        params.row.healthPoint > 100 && params.row.healthPoint <= 200 ?
+                            <div className="grid grid-cols-2">
+                                <p className="flex items-center">{params.row.mostHealthPoint}</p>
+                                <GiRank2 color="#3ba8ba" fontSize="30px" />
+                            </div> :
+                            params.row.healthPoint > 200 ?
+                                <div className="grid grid-cols-2">
+                                    <p className="flex items-center">{params.row.mostHealthPoint}</p>
+                                    <GiRank2 color="#a46ced" fontSize="30px" />
+                                </div> :
+                                null}
+                </div>
+            ),
         },
         {
             field: 'username',
             headerName: 'Rating',
             renderCell: (params) => (
-                <div className="flex justify-center mt-3">
-                    <div className="grid grid-rows-1 grid-flow-col ">
-                        <div className="place-self-center mt-[-1em] ">
-                            <GiRank2
-                                color="#9c2444"
-                                fontSize="30px"
-                            />
-                            {/* {params} */}
+                <div className="grid grid-cols-4 place-items-center w-full">
+                    <div className=" ">
+                        <div className="bg-neutral rounded-full grid grid-cols-1 content-center">
+                            <div className="justify-self-center">
+                                <AvatarIcon avatar={params.row.activeAvatar} fontSize={"32px"} className="text-neutral-content p-1" />
+                            </div>
                         </div>
-
-
-
                     </div>
-                    <div className="grid grid-rows-2 grid-flow-col ">
-                        <div className="  ">
-                            <GiTigerHead fontSize={"25px"} />
-
-                        </div>
-                        <div className="text-center">{params.row.username}</div>
-
-
-                    </div>
-                    <div className="grid grid-rows-2 grid-flow-col ">
-                        <div className="place-self-center">
+                    <div className=" ">
+                        <div className="">
                             <FaHeart color="red" fontSize="20px" />
                         </div>
-                        <div className="text-center font-bold">123</div>
+                        <div className="text-center font-bold">{params.row.healthPoint}</div>
                     </div>
-                    <div className="grid grid-rows-2 grid-flow-col ">
-                        <div className="place-self-center">
+                    <div className=" ">
+                        <div className="">
                             <BiSolidShieldAlt2 color="#c2cccd" fontSize="22px" className="" />
                         </div>
-                        <div className="text-center font-bold">10</div>
-
+                        <div className="text-center font-bold">{params.row.defensePoint}</div>
+                    </div>
+                    <div className="tooltip tooltip-left z-40 cursor-pointer" data-tip={params.row.username}>
+                        <p className="font-semibold text-xs text-nowrap sm:w-full w-10 truncate "> {params.row.username}</p>
                     </div>
 
                 </div>
@@ -272,7 +278,7 @@ export default function Leaderboard() {
             renderCell: (params) => (
                 <div className="flex justify-around ">
                     <div>
-                        <button className="btn btn-error ">
+                        <button className="btn btn-error btn-sm sm:btn">
                             <LuSword fontSize="20px" className="hover:animate-bounce" />
                         </button>
 
