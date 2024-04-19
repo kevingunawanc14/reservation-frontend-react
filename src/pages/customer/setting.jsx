@@ -17,98 +17,116 @@ import { FaRegUser } from "react-icons/fa";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import { FaRegMap } from "react-icons/fa";
 import { IoIosCheckmarkCircle } from "react-icons/io";
-import { IoIosCloseCircle } from "react-icons/io";
 import { IoIosCloseCircleOutline } from "react-icons/io";
+import { GiLaurelsTrophy } from "react-icons/gi";
+import { GiAchievement } from "react-icons/gi";
+import { IoIosCloseCircle } from "react-icons/io";
+
 
 import AvatarIcon from '../../components/avatar';
 
 export default function DetailAccount() {
 
     const username = localStorage.getItem('username');
+    const [theme, setTheme] = useState(null);
     const [avatarItem, setAvatarItem] = useState([]);
     const [themeItem, setThemeItem] = useState([]);
     const [avatarOwnedItem, setAvatarOwnedItem] = useState([]);
     const [checkXp, setCheckXp] = useState(false);
+    const token = localStorage.getItem('token');
+    const [idThemeActive, setIdThemeActive] = useState(null);
 
-
+    console.log('theme', theme);
     const [userData, setUserData] = useState({
         username: '',
         rank: '',
         xp: '',
         hp: '',
         coin: '',
-        totalMinuteWorkout: '0'
+        totalMinuteWorkout: '0',
+        activeTheme: ''
     });
+
+    const [statisticData, setStatisticData] = useState(null);
 
     const [avatarDetail, setAvatarDetail] = useState({
         title: '',
         xp: '',
     });
 
+    const [achievementDetail, setAchievementDetail] = useState({
+        description: '',
+        status: '',
+    });
+
     const AvatarItemData = [
         { id: 1, icon: "GiMuscleFat", title: "Muscle Fat", xp: 100, status: 'non-active' },
         { id: 2, icon: "GiMuscleUp", title: "Muscle Up", xp: 150, status: 'non-active' },
-        { id: 3, icon: "GiTigerHead", title: "Tiger Head", xp: 200, status: 'non-active' },
-        { id: 4, icon: "GiAbstract042", title: "Abstract 042", xp: 120, status: 'non-active' },
-        { id: 5, icon: "GiAbstract047", title: "Abstract 047", xp: 140, status: 'non-active' },
-        { id: 6, icon: "GiAbstract048", title: "Abstract 048", xp: 110, status: 'non-active' },
-        { id: 7, icon: "GiAbstract049", title: "Abstract 049", xp: 160, status: 'non-active' },
-        { id: 8, icon: "GiAce", title: "Ace", xp: 170, status: 'non-active' },
-        { id: 9, icon: "GiAchillesHeel", title: "Achilles Heel", xp: 180, status: 'non-active' },
-        { id: 10, icon: "GiAmericanFootballPlayer", title: "American Football", xp: 190, status: 'non-active' },
-        { id: 11, icon: "GiAndroidMask", title: "Android Mask", xp: 210, status: 'non-active' },
-        { id: 12, icon: "GiAnimalSkull", title: "Animal Skull", xp: 220, status: 'non-active' },
-        { id: 13, icon: "GiAntarctica", title: "Antarctica", xp: 230, status: 'non-active' },
-        { id: 14, icon: "GiBatteredAxe", title: "Battered Axe", xp: 240, status: 'non-active' },
-        { id: 15, icon: "GiBattleAxe", title: "Battle Axe", xp: 250, status: 'non-active' },
-        { id: 16, icon: "GiBearFace", title: "Bear Face", xp: 260, status: 'non-active' },
-        { id: 17, icon: "GiBiceps", title: "Biceps", xp: 270, status: 'non-active' },
-        { id: 18, icon: "GiBison", title: "Bison", xp: 280, status: 'non-active' },
-        { id: 19, icon: "GiBrute", title: "Brute", xp: 290, status: 'non-active' },
-        { id: 20, icon: "GiDoubleDragon", title: "Double Dragon", xp: 300, status: 'non-active' }
+        { id: 3, icon: "GiBowman", title: "Bowman", xp: 200, status: 'non-active' },
+        { id: 4, icon: "GiBullyMinion", title: "Bully Minion", xp: 120, status: 'non-active' },
+        { id: 5, icon: "GiCardJoker", title: "Card Joker", xp: 140, status: 'non-active' },
+        { id: 6, icon: "GiDwarfFace", title: "Dwarf Face", xp: 110, status: 'non-active' },
+        { id: 7, icon: "GiEnrage", title: "Enrage", xp: 160, status: 'non-active' },
+        { id: 8, icon: "GiFireDash", title: "Fire Dash", xp: 170, status: 'non-active' },
+        { id: 9, icon: "GiFluffyCloud", title: "Fluffy Cloud", xp: 180, status: 'non-active' },
+        { id: 10, icon: "GiGiant", title: "Giant", xp: 190, status: 'non-active' },
+        { id: 11, icon: "GiGolemHead", title: "Golem Head", xp: 210, status: 'non-active' },
+        { id: 12, icon: "GiHeadshot", title: "Headshot", xp: 220, status: 'non-active' },
+        { id: 13, icon: "GiPolarBear", title: "Polar Bear", xp: 230, status: 'non-active' },
+        { id: 14, icon: "GiSickle", title: "Sickle", xp: 240, status: 'non-active' },
+        { id: 15, icon: "GiHoodedAssassin", title: "Hooded Assassin", xp: 250, status: 'non-active' },
+        { id: 16, icon: "GiUnicorn", title: "Unicorn", xp: 260, status: 'non-active' },
+        { id: 17, icon: "GiBatteredAxe", title: "Battered Axe", xp: 270, status: 'non-active' },
+        { id: 18, icon: "GiWeightLiftingUp", title: "Weight Lift", xp: 280, status: 'non-active' },
+        { id: 19, icon: "GiTornado", title: "Tornado", xp: 290, status: 'non-active' },
+        { id: 20, icon: "GiAncientSword", title: "Ancient Sword", xp: 300, status: 'non-active' }
     ];
 
     const ThemeItemData = [
-        { id: 1, icon: "☀️", title: "Light", status: 'non-active' },
-        { id: 2, icon: "🍂", title: "Autumn", status: 'non-active' },
-        { id: 3, icon: "🍋", title: "Lemonade", status: 'non-active' },
-        { id: 4, icon: "🏂", title: "Winter", status: 'non-active' },
-        { id: 5, icon: "🌑", title: "Dark", status: 'non-active' },
-        { id: 6, icon: "🎃", title: "Halloween", status: 'non-active' },
-        { id: 7, icon: "🌲", title: "Forest", status: 'non-active' },
-        { id: 8, icon: "☕", title: "Coffee", status: 'non-active' },
-        { id: 9, icon: "🦇", title: "Dracula", status: 'non-active' },
+        { id: 1, icon: "☀️", title: "Light", status: 'non-active', preview: 'non-active', bodySend: "light" },
+        { id: 2, icon: "🍂", title: "Autumn", status: 'non-active', preview: 'non-active', bodySend: "autumn" },
+        { id: 3, icon: "🍋", title: "Lemonade", status: 'non-active', preview: 'non-active', bodySend: "lemonade" },
+        { id: 4, icon: "🏂", title: "Winter", status: 'non-active', preview: 'non-active', bodySend: "winter" },
+        { id: 5, icon: "🌑", title: "Dark", status: 'non-active', preview: 'non-active', bodySend: "dark" },
+        { id: 6, icon: "🎃", title: "Halloween", status: 'non-active', preview: 'non-active', bodySend: "halloween" },
+        { id: 7, icon: "🌲", title: "Forest", status: 'non-active', preview: 'non-active', bodySend: "forest" },
+        { id: 8, icon: "☕", title: "Coffee", status: 'non-active', preview: 'non-active', bodySend: "coffee" },
+        { id: 9, icon: "🦇", title: "Dracula", status: 'non-active', preview: 'non-active', bodySend: "dracula" },
     ];
 
 
-    const [statusAchievement, setStatusAchievement] = useState([]);
 
-
-    const [theme, setTheme] = useState();
     const navigate = useNavigate();
 
     const achievementData = [
-        { name: 'Reservation Noob', description: 'Just getting started with making reservations.', status: true },
-        { name: 'Reservation Pro', description: 'A proficient reservation maker, knows the ins and outs.', status: true },
-        { name: 'Reservation Expert', description: 'Master of reservations, can handle any booking task.', status: true },
-        { name: 'Badminton Beginner', description: 'New to badminton, learning the basics.', status: true },
-        { name: 'Badminton Intermediate', description: 'Has progressed beyond the beginner stage, gaining proficiency.', status: true },
-        { name: 'Badminton Expert', description: 'Highly skilled in badminton, capable of advanced techniques.', status: true },
-        { name: 'Futsal Beginner', description: 'Novice in futsal, exploring the game.', status: true },
-        { name: 'Futsal Intermediate', description: 'Moving past the beginner stage, improving skills in futsal.', status: true },
-        { name: 'Futsal Expert', description: 'An expert in futsal, proficient in all aspects of the game.', status: true },
-        { name: 'Basketball Beginner', description: 'Just starting out in basketball, learning the fundamentals.', status: true },
-        { name: 'Basketball Intermediate', description: 'Progressing in basketball skills, beyond the beginner level.', status: true },
-        { name: 'Basketball Expert', description: 'Highly skilled in basketball, able to play at an advanced level.', status: true },
-        { name: 'Gym Beginner', description: 'New to the gym, beginning the fitness journey.', status: true },
-        { name: 'Gym Intermediate', description: 'Progressing in fitness, gaining strength and endurance.', status: true },
-        { name: 'Gym Expert', description: 'An expert in fitness, well-versed in various workouts and techniques.', status: true },
+        { id: 1, name: 'Reservation Beginner', description: 'Make 1 Reservation All Kind Product', status: true, count: 1 },
+        { id: 2, name: 'Reservation Intermediate', description: 'Make 10 Reservation All Kind Product', status: true, count: 10 },
+        { id: 3, name: 'Reservation Expert', description: 'Make 25 Reservation All Kind Product', status: true, count: 25 },
+        { id: 4, name: 'Badminton Beginner', description: 'Make 1 Reservation Badminton', status: true, count: 1 },
+        { id: 5, name: 'Badminton Intermediate', description: 'Make 10 Reservation Badminton', status: true, count: 10 },
+        { id: 6, name: 'Badminton Expert', description: 'Make 25 Reservation Badminton', status: true, count: 25 },
+        { id: 7, name: 'Futsal Beginner', description: 'Make 1 Reservation Futsal', status: true, count: 1 },
+        { id: 8, name: 'Futsal Intermediate', description: 'Make 10 Reservation Futsal', status: true, count: 10 },
+        { id: 9, name: 'Futsal Expert', description: 'Make 25 Reservation Futsal', status: true, count: 25 },
+        { id: 10, name: 'Basketball Beginner', description: 'Make 1 Reservation Basketball', status: true, count: 1 },
+        { id: 11, name: 'Basketball Intermediate', description: 'Make 10 Reservation Basketball', status: true, count: 10 },
+        { id: 12, name: 'Basketball Expert', description: 'Make 25 Reservation Basketball', status: true, count: 25 },
+        { id: 13, name: 'Gym Beginner', description: 'Make 1 Reservation Gym', status: true, count: 1 },
+        { id: 14, name: 'Gym Intermediate', description: 'Make 10 Reservation Gym', status: true, count: 10 },
+        { id: 15, name: 'Gym Expert', description: 'Make 25 Reservation Gym', status: true, count: 25 },
     ];
 
-    const handleClick = (newTheme) => {
-        document.documentElement.setAttribute('data-theme', newTheme);
-        setTheme(newTheme);
-    };
+    console.log(achievementData);
+
+
+    console.log(achievementData);
+
+
+    const [achievement, setAchievement] = useState(achievementData);
+
+
+
+
 
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -137,10 +155,51 @@ export default function DetailAccount() {
                 xp: responseData.experiencePoint,
                 hp: responseData.healthPoint,
                 coin: responseData.krakatauCoin,
-                avatar: responseData.activeAvatar
+                avatar: responseData.activeAvatar,
+                activeTheme: responseData.activeTheme
             });
 
             console.log('response', response)
+
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            // navigate('/login', { state: { from: location }, replace: true });
+
+        }
+    };
+
+    const getDataDetailStatisticAchievementMembership = async () => {
+        try {
+            const token = localStorage.getItem('token');
+
+            const response = await axios.get(`http://localhost:2000/user/detail/stat/${username}`, {
+                headers: {
+                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                }
+            });
+
+            const responseData = response.data; // Assuming the response contains the user details
+
+            console.log('getDataDetailStatisticAchievementMembership', responseData)
+
+            setStatisticData({
+                mostPlayedSport: responseData.mostPlayedSport,
+                totalMinuteWorkout: responseData.totalMinuteWorkout,
+                typeSport: responseData.typeSport
+            });
+
+
+            // Update the state with the fetched data
+            // setUserData({
+            //     username: responseData.username,
+            //     rank: responseData.rank,
+            //     xp: responseData.experiencePoint,
+            //     hp: responseData.healthPoint,
+            //     coin: responseData.krakatauCoin,
+            //     avatar: responseData.activeAvatar
+            // });
+
+            // console.log('response', response)
 
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -159,12 +218,64 @@ export default function DetailAccount() {
                 }
             });
 
-            setAvatarItem(AvatarItemData)
             setAvatarOwnedItem(response.data)
 
         } catch (error) {
             console.error('Error fetching data:', error);
             // navigate('/login', { state: { from: location }, replace: true });
+        }
+    };
+
+    const getDataAchievement = async () => {
+        try {
+            const token = localStorage.getItem('token');
+
+            const response = await axios.get(`http://localhost:2000/user/detail/achievement/${username}`, {
+                headers: {
+                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                }
+            });
+
+            const sums = response.data
+
+            const updatedAchievement = achievement.map(item => {
+                if (item.name.includes('Reservation')) {
+                    item.status = sums.sumReservation - item.count >= 0;
+                } else if (item.name.includes('Badminton')) {
+                    item.status = sums.sumBadminton - item.count >= 0;
+                } else if (item.name.includes('Futsal')) {
+                    item.status = sums.sumFutsal - item.count >= 0;
+                } else if (item.name.includes('Basketball')) {
+                    item.status = sums.sumBasketball - item.count >= 0;
+                } else if (item.name.includes('Gym')) {
+                    item.status = sums.sumGym - item.count >= 0;
+                }
+                return item;
+            });
+
+            console.log(updatedAchievement)
+
+            setAchievement(updatedAchievement);
+
+
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            // navigate('/login', { state: { from: location }, replace: true });
+        }
+    };
+
+    const handleDetailAchievement = async (id) => {
+        try {
+            const achievementData = achievement.find(item => item.id === id);
+
+            document.getElementById('achievementModal').showModal();
+
+            setAchievementDetail({
+                description: achievementData.description,
+                status: achievementData.status,
+            });
+        } catch (error) {
+            console.error('Error fetching data:', error);
         }
     };
 
@@ -237,6 +348,62 @@ export default function DetailAccount() {
         }
     };
 
+
+    const handlePreviewTheme = async (id) => {
+        const themeData = ThemeItemData.find(item => item.id === id);
+        document.querySelector('html').setAttribute('data-theme', themeData.title.toLowerCase());
+        const updatedData = ThemeItemData.map(item => {
+            if (item.id === id) {
+                return { ...item, preview: 'active' };
+            } else {
+                return { ...item, preview: 'non-active' };
+            }
+        });
+        setThemeItem(updatedData)
+
+
+    };
+
+    const handleCancelPreviewTheme = async () => {
+        document.querySelector('html').setAttribute('data-theme', theme);
+        const updatedData = ThemeItemData.map(item => {
+            if (item.bodySend === theme) {
+                return { ...item, preview: 'active' };
+            } else {
+                return { ...item, preview: 'non-active' };
+            }
+        });
+        setThemeItem(updatedData)
+
+    };
+
+    const handleSetAsActiveTheme = async () => {
+        const activePreviews = themeItem.filter(item => item.preview === 'active');
+        const dataToSend = {
+            activeTheme: activePreviews[0].bodySend,
+            username: username,
+        };
+
+
+        try {
+
+            const response = await axios.post('http://localhost:2000/update-theme', dataToSend, {
+                headers: {
+                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                }
+            });
+
+            setTheme(activePreviews[0].bodySend);
+            setUserData({
+                ...userData,
+                activeTheme: activePreviews[0].bodySend
+            });
+
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
+
     useEffect(() => {
 
         const filteredItems = avatarItem.map(item => {
@@ -250,10 +417,34 @@ export default function DetailAccount() {
     }, [avatarOwnedItem]);
 
     useEffect(() => {
+        console.log(achievement);
+        console.log(achievement.length);
+
+
+    }, [achievement]);
+
+    useEffect(() => {
+        document.querySelector('html').setAttribute('data-theme', userData.activeTheme.toLocaleLowerCase());
+        setTheme(userData.activeTheme.toLocaleLowerCase());
+        const updatedThemeItemData = ThemeItemData.map(item => {
+            if (item.bodySend === userData.activeTheme) {
+                return { ...item, preview: 'active' };
+            } else {
+                return { ...item, preview: 'non-active' };
+            }
+        });
+
+        setThemeItem(updatedThemeItemData)
+
+    }, [userData]);
+
+    useEffect(() => {
         getDataDetailUser();
+        getDataDetailStatisticAchievementMembership();
+        getDataAchievement();
         getDataAvatarUser();
         getDataThemeUser();
-        setStatusAchievement(achievementData);
+
     }, []);
 
 
@@ -263,14 +454,14 @@ export default function DetailAccount() {
                 <Header title={'Account'} />
             </div>
 
-            <div className="mx-10 mt-5 mb-5">
+            <div className="mx-10 mt-5 mb-5 text-neutral-content">
 
-                <div className="collapse collapse-arrow bg-neutral">
+                <div className="collapse collapse-arrow bg-neutral ">
                     <input type="checkbox" />
-                    <div className="collapse-title text-xl font-medium text-neutral-content">
+                    <div className="collapse-title text-xl font-medium ">
                         <div className="grid grid-cols-4">
                             <div className="col-span-3">
-                                <p>Detail Account</p>
+                                <p className="">Detail Account</p>
                             </div>
                             <div className="justify-self-end self-center">
                                 <FaRegUser />
@@ -281,7 +472,7 @@ export default function DetailAccount() {
                     <div className="collapse-content">
                         <div className="grid grid-cols-1">
                             <div className="mt-3">
-                                <button className="btn btn-block  ">Username:  {userData.username}
+                                <button className="btn btn-block  cursor-default">Username:  {userData.username}
                                     <span className="bg-neutral rounded-full">
                                         <AvatarIcon avatar={userData.avatar} fontSize={"32px"} className="text-neutral-content p-0.5" />
                                     </span>
@@ -290,19 +481,16 @@ export default function DetailAccount() {
                         </div>
                         <div className="grid grid-cols-1">
                             <div className="mt-3">
-                                {/* #a46ced */}
-                                {/* #eccc55 */}
-                                {/* #3ba8ba */}
-                                <button className="btn btn-block">Rank:
+                                <button className="btn btn-block cursor-default">Rank:
                                     {userData.hp <= 100 ?
-                                        <div className="bg-white rounded">
+                                        <div className=" rounded">
                                             <GiRank2 color="#eccc55" fontSize="30px" />
                                         </div> :
                                         userData.hp > 100 && userData.hp <= 200 ?
-                                            <div className="bg-white rounded">
+                                            <div className=" rounded">
                                                 <GiRank2 color="#3ba8ba" fontSize="30px" />
                                             </div> :
-                                            userData.hp > 200 ? <div className="bg-white rounded">
+                                            userData.hp > 200 ? <div className=" rounded">
                                                 <GiRank2 color="#a46ced" fontSize="30px" />
                                             </div> :
                                                 null}</button>
@@ -310,17 +498,17 @@ export default function DetailAccount() {
                         </div>
                         <div className="grid grid-cols-1">
                             <div className="mt-3">
-                                <button className="btn btn-block">XP: {userData.xp}</button>
+                                <button className="btn btn-block cursor-default">XP: {userData.xp}</button>
                             </div>
                         </div>
                         <div className="grid grid-cols-1">
                             <div className="mt-3">
-                                <button className="btn btn-block">HP:  {userData.hp}</button>
+                                <button className="btn btn-block cursor-default">HP:  {userData.hp}</button>
                             </div>
                         </div>
                         <div className="grid grid-cols-1">
                             <div className="mt-3">
-                                <button className="btn btn-block">Krakatau Coin:  {userData.coin}</button>
+                                <button className="btn btn-block cursor-default">Krakatau Coin:  {userData.coin}</button>
                             </div>
                         </div>
 
@@ -341,17 +529,17 @@ export default function DetailAccount() {
                     <div className="collapse-content   ">
                         <div className="grid grid-cols-1">
                             <div className="mt-3">
-                                <button className="btn btn-block" >Total Minute Workout:   {userData.totalMinuteWorkout}</button>
+                                <button className="btn btn-block" >Total Hour Workout:   {statisticData?.totalMinuteWorkout} hour</button>
                             </div>
                         </div>
                         <div className="grid grid-cols-1">
                             <div className="mt-3">
-                                <button className="btn btn-block">Most Sport Played:  {userData.mostSportPlayed}</button>
+                                <button className="btn btn-block">Most Sport Played:  {statisticData?.mostPlayedSport}</button>
                             </div>
                         </div>
                         <div className="grid grid-cols-1">
                             <div className="mt-3">
-                                <button className="btn btn-block">Type Sport:  {userData.typeSport}</button>
+                                <button className="btn btn-block">Type Sport:  {statisticData?.typeSport}</button>
                             </div>
                         </div>
                     </div>
@@ -369,19 +557,62 @@ export default function DetailAccount() {
                             </div>
                         </div>
                     </div>
-                    <div className="collapse-content">
-                        {statusAchievement.map((achievement, index) => (
-                            (index % 3 === 0) && (
-                                <div className="grid grid-cols-3 mt-2" key={index}>
-                                    {statusAchievement.slice(index, index + 3).map((achievement, subIndex) => (
-                                        <button className={`btn btn-active btn-sm overflow-hidden ${achievement.status === 'Beginner' ? 'btn-success' : 'btn-error'} me-2 text-xs`} key={subIndex} onClick={() => document.getElementById('achievementModal').showModal()}>
-                                            {achievement.name}
-                                        </button>
-                                    ))}
-                                </div>
-                            )
-                        ))}
-                    </div>
+                    {achievement && (
+                        <div className="collapse-content">
+                            <div className="grid grid-cols-3 mt-2">
+                                {achievement.slice(0, 3).map((achievement, index) => (
+                                    <button
+                                        key={index}
+                                        className={`btn btn-active btn-sm overflow-hidden ${achievement.status === true ? 'btn-success ' : 'btn-error cursor-default'} me-2 text-xs`
+                                        }
+                                        onClick={() => handleDetailAchievement(achievement.id)}
+                                    >
+                                        {achievement.status === true && (<span className="hidden sm:block  "><GiAchievement fontSize={'20px'} className="text-success-content" /></span>)}
+                                        {achievement.name} {achievement.index}
+                                    </button>
+                                ))}
+                            </div>
+                            <div className="grid grid-cols-3 mt-2">
+                                {achievement.slice(3, 6).map((achievement, index) => (
+                                    <button
+                                        key={index}
+                                        className={`btn btn-active btn-sm overflow-hidden ${achievement.status === true ? 'btn-success' : 'btn-error'} me-2 text-xs`}
+                                        onClick={() => handleDetailAchievement(achievement.id)}
+                                    >
+                                        {achievement.status === true && (<span className="hidden sm:block"><GiAchievement fontSize={'20px'} /></span>)}
+                                        {achievement.name} {achievement.index}
+                                    </button>
+                                ))}
+                            </div>
+                            <div className="grid grid-cols-3 mt-2">
+                                {achievement.slice(6, 9).map((achievement, index) => (
+                                    <button key={index} className={`btn btn-active btn-sm overflow-hidden ${achievement.status === true ? 'btn-success' : 'btn-error'} me-2 text-xs`}
+                                        onClick={() => handleDetailAchievement(achievement.id)}>
+                                        {achievement.status === true && (<span className="hidden sm:block"><GiAchievement fontSize={'20px'} /></span>)}
+                                        {achievement.name} {achievement.index}
+                                    </button>
+                                ))}
+                            </div>
+                            <div className="grid grid-cols-3 mt-2">
+                                {achievement.slice(9, 12).map((achievement, index) => (
+                                    <button key={index} className={`btn btn-active btn-sm overflow-hidden ${achievement.status === true ? 'btn-success' : 'btn-error'} me-2 text-xs`}
+                                        onClick={() => handleDetailAchievement(achievement.id)}>
+                                        {achievement.status === true && (<span className="hidden sm:block"><GiAchievement fontSize={'20px'} /></span>)}
+                                        {achievement.name} {achievement.index}
+                                    </button>
+                                ))}
+                            </div>
+                            <div className="grid grid-cols-3 mt-2">
+                                {achievement.slice(12, 15).map((achievement, index) => (
+                                    <button key={index} className={`btn btn-active btn-sm overflow-hidden ${achievement.status === true ? 'btn-success' : 'btn-error'} me-2 text-xs`}
+                                        onClick={() => handleDetailAchievement(achievement.id)}>
+                                        {achievement.status === true && (<span className="hidden sm:block"><GiAchievement fontSize={'20px'} /></span>)}
+                                        {achievement.name} {achievement.index}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
                 <div className="collapse collapse-arrow bg-neutral mt-3">
                     <input type="checkbox" />
@@ -466,7 +697,27 @@ export default function DetailAccount() {
                                     className="btn btn-primary min-w-full"
                                     onClick={() => document.getElementById('themeModal').showModal()}>Theme
                                     <div className="text-2xl bg-neutral rounded-full">
-                                        ☀️
+                                        {userData.activeTheme === 'light' ? (
+                                            <span>☀️</span>
+                                        ) : userData.activeTheme === 'autumn' ? (
+                                            <span>🍂</span>
+                                        ) : userData.activeTheme === 'lemonade' ? (
+                                            <span>🍋</span>
+                                        ) : userData.activeTheme === 'winter' ? (
+                                            <span>🏂</span>
+                                        ) : userData.activeTheme === 'dark' ? (
+                                            <span>🌑</span>
+                                        ) : userData.activeTheme === 'halloween' ? (
+                                            <span>🎃</span>
+                                        ) : userData.activeTheme === 'forest' ? (
+                                            <span>🌲</span>
+                                        ) : userData.activeTheme === 'coffee' ? (
+                                            <span>☕</span>
+                                        ) : userData.activeTheme === 'dracula' ? (
+                                            <span>🦇</span>
+                                        ) : (
+                                            <span>xxx</span>
+                                        )}
                                     </div>
                                 </button>
                             </div>
@@ -490,12 +741,23 @@ export default function DetailAccount() {
             </div >
 
             <dialog id="achievementModal" className="modal">
-                <div className="modal-box">
-                    <h3 className="font-bold text-lg">Status: ✅ or ❌</h3>
-                    <p className="py-4">Order any kind of product 1 time</p>
+                <div className="modal-box bg-neutral text-neutral-content">
+                    <div className="grid grid-cols-5">
+                        <div className="col-span-4  flex items-center">
+                            <p className="text-sm">{achievementDetail.description}</p>
+
+                        </div>
+                        <div className="flex justify-center">
+                            {achievementDetail.status ?
+                                <IoIosCheckmarkCircle color="green" fontSize={'30px'} />
+                                : <IoIosCloseCircle color="red" fontSize={'30px'} />
+                            }
+                        </div>
+                    </div>
+
                 </div>
                 <form method="dialog" className="modal-backdrop">
-                    <button>close</button>
+                    <button>Close</button>
                 </form>
             </dialog>
 
@@ -518,12 +780,12 @@ export default function DetailAccount() {
                                 <div className="bg-neutral rounded-t-lg grid grid-rows-1 place-items-center h-20">
                                     <div className="">
                                         <div>
-                                            <AvatarIcon avatar={item.icon} fontSize={"32px"} className="text-neutral-content" />
+                                            <AvatarIcon avatar={item.icon} fontSize={"50px"} className="text-neutral-content" />
                                         </div>
                                     </div>
                                 </div>
                                 <div className="border">
-                                    <p className="text-xs font-semibold">{item.title}</p>
+                                    <p className="text-xs font-semibold truncate">{item.title}</p>
                                     <div className="grid grid-cols-2">
                                         <div className="">
                                             {item.status === 'active' ? (
@@ -624,11 +886,8 @@ export default function DetailAccount() {
                 </form>
             </dialog>
 
-            <dialog id="themeModal" className="modal">
-                <div className="modal-box">
-                    <form method="dialog">
-                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-                    </form>
+            <dialog id="themeModal" className="modal ">
+                <div className="modal-box bg-neutral text-neutral-content ">
                     <h3 className="font-bold text-lg ">Change Theme</h3>
                     <div className="grid grid-cols-3 gap-2 mt-3">
                         {themeItem.map((item, index) => (
@@ -637,7 +896,7 @@ export default function DetailAccount() {
                                 className={`${item.status === 'non-active' ? 'cursor-pointer' : ''}`}
                                 onClick={() => {
                                     if (item.status === 'non-active') {
-                                        handleDetailAvatar(item.id)
+                                        handlePreviewTheme(item.id)
                                     }
                                 }}>
                                 <div className="bg-neutral-content rounded-t-lg grid grid-rows-1 place-items-center h-20">
@@ -648,20 +907,27 @@ export default function DetailAccount() {
                                     </div>
                                 </div>
                                 <div className="border ">
-                                    <p className={`text-sm font-semibold ${item.title === 'Light' ? 'text-primary' : ''}`}>{item.title}</p>
+                                    <p className={`text-sm font-semibold ${item.preview === 'active' ? 'text-primary' : ''}`}>{item.title}</p>
                                 </div>
                             </div>
                         ))}
                     </div>
                     <div className="modal-action">
                         <form method="dialog">
-                            <button className="btn">Close</button>
+                            <button
+                                className="btn"
+                                onClick={handleCancelPreviewTheme}>Cancel</button>
+
+                            <button
+                                className="btn btn-primary mx-3 w-20"
+                                onClick={handleSetAsActiveTheme}
+                            >Save</button>
                         </form>
                     </div>
                 </div>
-                <form method="dialog" className="modal-backdrop">
+                {/* <form method="dialog" className="modal-backdrop">
                     <button>close</button>
-                </form>
+                </form> */}
             </dialog>
 
             <dialog id="buyAvatarConfirmation" className="modal modal-bottom sm:modal-middle ">

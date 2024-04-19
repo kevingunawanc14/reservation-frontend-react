@@ -137,7 +137,7 @@ export default function ListGor() {
 
                             <p className='text-neutral-content'>Rp. {item.price}</p>
 
-                            {userData.xp >= 100 ? (
+                            {userData.xp <= 100 ? (
                                 <div className="justify-start">
                                     <div className="cursor-pointer">
                                         <button

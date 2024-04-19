@@ -103,14 +103,14 @@ export default function Home() {
 
 
         try {
-            // console.log('dataToSend', dataToSend);
-            // const token = localStorage.getItem('token');
+            console.log('dataToSend', dataToSend);
+            const token = localStorage.getItem('token');
 
-            // const response = await axios.post(`http://localhost:2000/claim-reward/${username}`, dataToSend, {
-            //     headers: {
-            //         Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
-            //     }
-            // });
+            const response = await axios.post(`http://localhost:2000/claim-reward/${username}`, dataToSend, {
+                headers: {
+                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                }
+            });
 
             document.getElementById('rewardModal').showModal();
             setUserData(prevState => ({

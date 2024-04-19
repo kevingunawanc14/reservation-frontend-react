@@ -712,19 +712,27 @@ export default function ActiveOrder() {
                                     <p className='text-lg'>Jam: </p>
                                     {detailOrder.map((item, index) => (
                                         <div key={index}>
-                                            <p className='text-lg'>
-                                                {item.hour}
-                                                {(() => {
-                                                    const hour = parseFloat(item.hour.split("-")[0]);
-                                                    if (hour >= 6 && hour < 15) {
-                                                        return <span>🏙️</span>;
-                                                    } else if (hour >= 15 && hour < 17) {
-                                                        return <span>🌇</span>;
-                                                    } else {
-                                                        return <span>🌆</span>;
-                                                    }
-                                                })()}
-                                            </p>
+                                            <div className="grid grid-cols-2 sm:grid-cols-4">
+                                                <div>
+                                                    <p className='text-lg font-semibold'>
+                                                        {item.hour}
+
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    {(() => {
+                                                        const hour = parseFloat(item.hour.split("-")[0]);
+                                                        if (hour >= 6 && hour < 15) {
+                                                            return <span>🏙️</span>;
+                                                        } else if (hour >= 15 && hour < 17) {
+                                                            return <span>🌇</span>;
+                                                        } else {
+                                                            return <span>🌆</span>;
+                                                        }
+                                                    })()}
+                                                </div>
+                                            </div>
+
                                         </div>
                                     ))}
                                 </>
