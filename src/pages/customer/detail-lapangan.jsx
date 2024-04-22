@@ -49,7 +49,7 @@ export default function DetailLapangan() {
     });
     const username = localStorage.getItem('username');
     const [breathStatus, setBreathStatus] = useState('normal');
-
+    const theme = document.documentElement.getAttribute("data-theme");
     const handleRadioBreathStatus = (status) => {
         setBreathStatus(status);
     };
@@ -322,6 +322,26 @@ export default function DetailLapangan() {
                     value={valueCalendar}
                     onChange={(newValue) => setValueCalendar(newValue)}
                     shouldDisableDate={shouldDisableDate}
+                    sx={{
+                        "& .MuiButtonBase-root": {
+                            color: theme === 'light'
+                                || theme === 'autumn'
+                                || theme === 'lemonade'
+                                || theme === 'winter' ? 'black' : 'white',
+                        },
+                        "& .MuiButtonBase-root.Mui-disabled": {
+                            color: theme === 'light'
+                                || theme === 'autumn'
+                                || theme === 'lemonade'
+                                || theme === 'winter' ? '' : '#94a3b8',
+                        },
+                        "& .MuiTypography-root": {
+                            color: theme === 'light'
+                                || theme === 'autumn'
+                                || theme === 'lemonade'
+                                || theme === 'winter' ? '' : '#64748b',
+                        }
+                    }}
                 />
             </LocalizationProvider>
 
