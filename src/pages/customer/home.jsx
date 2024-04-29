@@ -466,7 +466,7 @@ export default function Home() {
 
                 {userData && (
                     <>
-                        {userData.statusDailyReward ? (
+                        {!userData.statusDailyReward ? (
                             <div
                                 style={{ position: 'fixed', bottom: 100, right: 20 }}
                                 className="tooltip tooltip-left tooltip-primary"
