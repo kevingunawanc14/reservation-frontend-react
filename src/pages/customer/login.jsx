@@ -10,6 +10,7 @@ export default function Login() {
     const [registerStatus, setRegisterStatus] = useState(null);
     const [loginStatus, setLoginStatus] = useState(null);
     const [loginStatusMessage, setLoginStatusMessage] = useState(null);
+    const [registerStatusMessage, setRegisterStatusMessage] = useState(null);
     const navigate = useNavigate();
     const [mode, setMode] = useState('login');
     const { register, handleSubmit, formState: { errors }, reset, clearErrors,
@@ -80,6 +81,7 @@ export default function Login() {
 
         } catch (error) {
             setRegisterStatus('error');
+            setRegisterStatusMessage('Username already taken')
             setTimeout(() => {
                 setRegisterStatus(null);
             }, 2000);
@@ -97,7 +99,7 @@ export default function Login() {
                         <Alert severity="success" onClose={() => setRegisterStatus(null)}>Registration Success</Alert>
                     )}
                     {registerStatus === 'error' && (
-                        <Alert severity="error" onClose={() => setRegisterStatus(null)}>Registration Failed</Alert>
+                        <Alert severity="error" onClose={() => setRegisterStatus(null)}>{registerStatusMessage}</Alert>
                     )}
                     {loginStatus === 'success' && (
                         <Alert severity="success" onClose={() => setRegisterStatus(null)}>Login Success</Alert>
