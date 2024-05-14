@@ -63,68 +63,17 @@ export default function Journal() {
             <div className="mx-10 mt-5">
                 <Header title={'Journal'} />
             </div>
-            <div className="mx-10 mt-5 mb-10 ">
-                {arrJournals.map((payment, index) => (
-                    <div key={index}>
-                        <div className="card shadow-xl image-full bg-neutral">
-                            {/* <figure><img src={null} className="w-full sm:hidden" alt="Shoes" /></figure> */}
-                            <div className="card-body">
-                                {/* <h2 className="card-title text-neutral-content  ">Basketball 🏀</h2> */}
-                                <div className="grid grid-cols-2 ">
-                                    <div>
-                                        <p className="">{payment.typeBreath}  in {payment.minuteBreath} min</p>
-                                        <p className="font-bold">
-                                            {payment.productName.includes("Badminton") ? "Badminton" :
-                                                payment.productName.includes("Basketball") ? "Basketball" :
-                                                    payment.productName.includes("Futsal") ? "Futsal" : "Unknown"}
-                                        </p>
-                                        <p className="text-neutral-content">{payment.date}</p>
-                                    </div>
-                                    <div className="place-self-center">
-                                        <div className="col-span-2 sm:col-span-1 place-self-c ">
-                                            <div className="rounded-full bg-neutral-content  p-1 w-10">
-                                                {payment.typeBreath === "Normal Breath" ? (
-                                                    <GiWalk fontSize={"30px"} className="text-neutral" />
-                                                ) : payment.typeBreath === "Medium Breath" ? (
-                                                    <GiRun fontSize={"30px"} className="text-neutral" />
-                                                ) : payment.typeBreath === "Hard Breath" ? (
-                                                    <GiSprint fontSize={"30px"} className="text-neutral" />
-                                                ) : null}
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                                <div className="">
-                                    <div className="grid grid-cols-2 gap-2">
-                                        <button className="btn btn-primary btn-sm cursor-default"> <GiRank2 fontSize={"20px"} />
-                                            +{payment.totalXp}</button>
-                                        <button className="btn btn-accent btn-sm cursor-default"><FaHandHoldingHeart fontSize={"20px"} />
-                                            + {payment.totalHp}</button>
-
-                                    </div>
-
-                                    <div className="grid grid-cols-2 gap-2 mt-2">
-                                        <button className="btn btn-secondary  btn-sm cursor-default"><LuSword />
-                                            +{payment.totalAttack}</button>
-                                        <button className="btn btn-secondary  btn-sm cursor-default"><IoShieldOutline />
-                                            +{payment.totalDefense}</button>
-                                    </div>
-
-
-
-                                </div>
-                            </div>
+            <div className="mx-10 mt-5 mb-10">
+                {arrJournals.length === 0 ? (
+                    <p>No journal yet...</p>
+                ) : (
+                    arrJournals.map((payment, index) => (
+                        <div key={index}>
+                            {/* Your existing JSX code for rendering each journal */}
                         </div>
-                        <div className="divider"></div>
-                    </div>
-                ))}
-
-
-            </div >
+                    ))
+                )}
+            </div>
 
 
 

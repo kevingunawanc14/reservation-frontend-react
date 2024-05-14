@@ -22,12 +22,37 @@ import { GiLaurelsTrophy } from "react-icons/gi";
 import { GiAchievement } from "react-icons/gi";
 import { IoIosCloseCircle } from "react-icons/io";
 import { RiCoupon2Line } from "react-icons/ri";
+import { RiDiscordLine } from "react-icons/ri";
+import { FaGifts } from "react-icons/fa";
+import { FaGift } from "react-icons/fa6";
+import { LuSword } from "react-icons/lu";
+import { IoShieldOutline } from "react-icons/io5";
+import { BsTrophy } from "react-icons/bs";
+import { GiHealthPotion } from "react-icons/gi";
+import { LuHeartPulse } from "react-icons/lu";
+import { FaWalking } from "react-icons/fa";
+import { FaRunning } from "react-icons/fa";
+import { FaPerson } from "react-icons/fa6";
+import { useForm } from "react-hook-form";
 
 
 import AvatarIcon from '../../components/avatar';
 import { data } from "autoprefixer";
 
 export default function DetailAccount() {
+    const { register, handleSubmit, watch, formState: { errors } } = useForm({
+        defaultValues: {
+            paymentMethod: "cash",
+            breathStatus: "normal"
+        }
+    });
+
+    const [breathStatus, setBreathStatus] = useState('normal');
+    const handleRadioBreathStatus = (status) => {
+        setBreathStatus(status);
+    };
+
+
     const AvatarItemData = [
         { id: 1, icon: "GiMuscleFat", title: "Muscle Fat", xp: 100, status: 'non-active', preview: 'non-active' },
         { id: 2, icon: "GiMuscleUp", title: "Muscle Up", xp: 110, status: 'non-active', preview: 'non-active' },
@@ -601,6 +626,159 @@ export default function DetailAccount() {
                 <Header title={'Account'} />
             </div>
 
+            <div className="flex justify-center mt-3 mb-3">
+                <div>
+                    <button className="btn btn-neutral btn-sm btn-square mx-2 hover:animate-bounce" onClick={() => document.getElementById('leaderboardModal').showModal()}>
+                        <BsTrophy className=' hover:animate-pulse' fontSize="20px" />
+                    </button>
+                    <button className="btn btn-primary btn-sm btn-square  mx-2 hover:animate-bounce" onClick={() => document.getElementById('attackModal').showModal()}>
+                        <LuSword className=' hover:animate-bounce ' fontSize="20px" />
+                    </button>
+                    <button className="btn btn-secondary btn-sm btn-square mx-2 hover:animate-bounce" onClick={() => document.getElementById('defenseModal').showModal()}>
+                        <IoShieldOutline className=' hover:animate-bounce ' fontSize="20px" />
+                    </button>
+                    <button className="btn btn-secondary btn-sm btn-square mx-2 hover:animate-bounce" onClick={() => document.getElementById('hearthModal').showModal()}>
+                        <LuHeartPulse className=' hover:animate-ping ' fontSize="20px" />
+                    </button>
+                </div>
+            </div>
+
+
+            <dialog id="leaderboardModal" className="modal">
+                <div className="modal-box">
+                    <h3 className="font-bold text-lg">Krakatau Leaderboard System</h3>
+                    <p className="py-4">Climb up to top by reservation any kind of product</p>
+                    <div className='grid grid-rows-3'>
+                        <div className='grid grid-cols-5'>
+                            <div className='col-span-1'>
+                                <GiRank2 color="#eccc55" fontSize="25px" />
+
+                            </div>
+                            <div className='col-span-2'>
+                                <p style={{ color: "#eccc55" }} className='font-bold'>Gold</p>
+
+                            </div>
+                            <div className='col-span-2 text-start flex items-center'>
+                                <p className='text-xs font-thin'>0 - 100 XP</p>
+
+                            </div>
+                        </div>
+                        <div className='grid grid-cols-5'>
+                            <div className='col-span-1' >
+                                <GiRank2 color="#3ba8ba" fontSize="25px" />
+
+                            </div>
+                            <div className='col-span-2'  >
+                                <p style={{ color: "#3ba8ba" }} className='font-bold'>Platinum</p>
+
+                            </div>
+                            <div className='col-span-2 text-start flex items-center'>
+                                <p className='text-xs font-thin'>101 - 200 XP</p>
+
+                            </div>
+                        </div>
+                        <div className='grid grid-cols-5'>
+                            <div className='col-span-1' >
+                                <GiRank2 color="#a46ced" fontSize="25px" />
+
+                            </div>
+                            <div className='col-span-2' >
+                                <p style={{ color: "#a46ced" }} className='font-bold'>Diamond</p>
+
+                            </div>
+                            <div className='col-span-2 text-start flex items-center' >
+                                <p className='text-xs font-thin'>201 - 1000 XP</p>
+
+                            </div>
+                        </div>
+                    </div>
+                    <p className="py-4">1 XP for every Rp 10 000 you spend</p>
+                    <div className='bg-neutral p-3 rounded-lg mt-2 border-4 border-neutral-content border-double'>
+                        <p className="py-4 text-neutral-content">Note : Use your XP to buy avatar or app theme</p>
+                    </div>
+                    <p className="py-4">Every reservation allow you to set breath status to get HP</p>
+                    <p className="pb-4">Breath status mean how much energy you will use for exercise</p>
+                    <div>
+                        <div>
+                            <div className='grid grid-cols-3'>
+                                <p className='col-span-2' ><FaPerson className={`${breathStatus === 'normal' ? 'animate-pulse' : ''}`} />Normal Breath <span className='text-xs font-thin'>(10 HP)</span></p>
+                                <input
+                                    {...register("breathStatus")}
+                                    value="normal"
+                                    type="radio"
+                                    className="radio checked:bg-green-500"
+                                    onClick={() => handleRadioBreathStatus('normal')}
+                                />
+                            </div>
+                            <div className='grid grid-cols-3 mt-2'>
+                                <p className='col-span-2' ><FaWalking className={`${breathStatus === 'medium' ? 'animate-pulse' : ''}`} />Medium Breath <span className='text-xs font-thin'>(10 - 20 HP)</span> </p>
+                                <input
+                                    {...register("breathStatus")}
+                                    value="medium"
+                                    type="radio"
+                                    className="radio checked:bg-yellow-500"
+                                    onClick={() => handleRadioBreathStatus('medium')}
+                                />
+                            </div>
+                            <div className='grid grid-cols-3 mt-2'>
+                                <p className='col-span-2' ><FaRunning className={`${breathStatus === 'high' ? 'animate-pulse' : ''}`} />High Breath <span className='text-xs font-thin'>(20 - 30 HP)</span></p>
+                                <input
+                                    {...register("breathStatus")}
+                                    value="high"
+                                    type="radio"
+                                    className="radio checked:bg-red-500"
+                                    onClick={() => handleRadioBreathStatus('high')}
+                                />
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                    <div className='bg-neutral p-3 rounded-lg mt-2 border-4 border-neutral-content border-double'>
+                        <p className="py-4 text-neutral-content">Note : XP: Experience Point</p>
+                        <p className="py-4 text-neutral-content">Note : HP: Health Point</p>
+                    </div>
+
+                </div>
+                <form method="dialog" className="modal-backdrop">
+                    <button>close</button>
+                </form>
+            </dialog >
+
+            <dialog id="attackModal" className="modal">
+                <div className="modal-box">
+                    <h3 className="font-bold text-lg">Attack System</h3>
+                    <p className="py-4">Every successfull and already paid reservation can get +1 attack attempt</p>
+                    <div className='bg-neutral p-3 rounded-lg mt-2 border-4 border-neutral-content border-double'>
+                        <p className='text-neutral-content'>Note : Attack attempt can be use on leaderboard page to reduce another user health point</p>
+                    </div>
+                </div>
+                <form method="dialog" className="modal-backdrop">
+                    <button>close</button>
+                </form>
+            </dialog>
+
+            <dialog id="defenseModal" className="modal">
+                <div className="modal-box">
+                    <h3 className="font-bold text-lg">Defense System</h3>
+                    <p className="py-4 ">Every successfull and already paid reservation can get +1 defend to prevent direct attack to health point</p>
+                </div>
+                <form method="dialog" className="modal-backdrop">
+                    <button>close</button>
+                </form>
+            </dialog>
+
+            <dialog id="hearthModal" className="modal">
+                <div className="modal-box">
+                    <h3 className="font-bold text-lg">Health System</h3>
+                    <p className="py-4">Every successfull and already paid reservation can get +? HP depending on the breath status you pick</p>
+                </div>
+                <form method="dialog" className="modal-backdrop">
+                    <button>close</button>
+                </form>
+            </dialog>
+
             <div className="mx-10 mt-5 mb-5 text-neutral-content">
 
                 <div className="collapse collapse-arrow bg-neutral ">
@@ -907,25 +1085,29 @@ export default function DetailAccount() {
                                 <p>Reward</p>
                             </div>
                             <div className="justify-self-end self-center">
-                                <RiCoupon2Line />
+                                <FaGifts />
 
                             </div>
                         </div>
                     </div>
                     <div className="collapse-content">
-                        <div className="grid grid-cols-2 gap-1 ">
-                            <div>
-                                <button className="btn btn-primary min-w-full" onClick={() => document.getElementById('shopAvatarModal').showModal()}>Avatar    <MdOutlineShoppingCart className="" />
-                                </button>
+                        <button className="btn btn-secondary min-w-full btn-circle" onClick={() => document.getElementById('shopAvatarModal').showModal()}>
+                            <FaGift /> Voucher 100.000 Lapangan Badminton
 
-                            </div>
-                            <div>
-                                <button className="btn btn-primary min-w-full" onClick={() => document.getElementById('shopThemeModal').showModal()}>Theme <MdOutlineShoppingCart />
-                                </button>
 
-                            </div>
+                        </button>
+                        <button className="btn btn-secondary min-w-full btn-circle mt-2" onClick={() => document.getElementById('shopAvatarModal').showModal()}>
+                            <FaGift /> Voucher 100.000 Lapangan Badminton
 
-                        </div>
+
+                        </button>
+                        <button className="btn btn-secondary min-w-full btn-circle mt-2" onClick={() => document.getElementById('shopAvatarModal').showModal()}>
+                            <FaGift /> Voucher 100.000 Lapangan Badminton
+
+
+                        </button>
+
+
                     </div>
                 </div>
 

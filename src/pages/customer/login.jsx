@@ -2,13 +2,14 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/header';
 import Alert from '@mui/material/Alert';
-import axios from 'axios';
 import { useState, useEffect } from 'react';
+import axios from '../../api/axios';
 
 
 export default function Login() {
     const [registerStatus, setRegisterStatus] = useState(null);
     const [loginStatus, setLoginStatus] = useState(null);
+    const [loginStatusMessage, setLoginStatusMessage] = useState(null);
     const navigate = useNavigate();
     const [mode, setMode] = useState('login');
     const { register, handleSubmit, formState: { errors }, reset, clearErrors,
@@ -40,10 +41,7 @@ export default function Login() {
     const login = async (data) => {
         const dataToSend = { username: data.username, password: data.password };
         try {
-            const response = await axios.post('http://localhost:2000/login', dataToSend);
-
-            console.log('response', response);
-
+            const response = await axios.post('/login', dataToSend);
             const token = response.data.token; // Ambil token dari respons
             const username = response.data.username; // Ambil token dari respons
 
@@ -58,8 +56,8 @@ export default function Login() {
             }, 2000);
 
         } catch (error) {
-            console.error('Error:', error);
             setLoginStatus('error');
+            setLoginStatusMessage(`Your login credentials don't match an account in our system`)
             setTimeout(() => {
                 setLoginStatus(null);
             }, 2000);
@@ -70,9 +68,7 @@ export default function Login() {
         const dataToSend = { username: data.username, password: data.password, phoneNumber: data.phoneNumber };
         try {
 
-            const response = await axios.post('http://localhost:2000/register', dataToSend);
-
-            console.log('response', response);
+            await axios.post('/register', dataToSend);
 
             setRegisterStatus('success');
             setTimeout(() => {
@@ -83,7 +79,6 @@ export default function Login() {
             reset();
 
         } catch (error) {
-            console.error('Error:', error);
             setRegisterStatus('error');
             setTimeout(() => {
                 setRegisterStatus(null);
@@ -108,7 +103,7 @@ export default function Login() {
                         <Alert severity="success" onClose={() => setRegisterStatus(null)}>Login Success</Alert>
                     )}
                     {loginStatus === 'error' && (
-                        <Alert severity="error" onClose={() => setRegisterStatus(null)}>Login Failed</Alert>
+                        <Alert severity="error" onClose={() => setRegisterStatus(null)}>{loginStatusMessage}</Alert>
                     )}
                 </div>
                 {mode === 'login' ? (
@@ -147,7 +142,7 @@ export default function Login() {
                         </div>
                         <div className="grid justify-items-center">
                             <button className="btn btn-primary mt-3 " type='submit'>Login</button>
-                            <p className="cursor-pointer mt-2" onClick={toggleMode}>Don't have account Sign Up</p>
+                            <p className="cursor-pointer mt-2" onClick={toggleMode}>Don't have an account? Sign up</p>
                         </div>
 
                     </form>
@@ -163,7 +158,10 @@ export default function Login() {
                                     placeholder="Type here"
                                     className="input input-bordered w-full max-w-xs"
                                     {...register("username",
-                                        { required: 'Username harus diisi' }
+                                        {
+                                            required: 'Username is required',
+                                            minLength: { value: 5, message: 'Username must be at least 5 characters' },
+                                        }
                                     )}
                                 />
                                 {errors.username && <p className="text-red-500 mt-2">{errors.username.message}</p>}
@@ -179,7 +177,13 @@ export default function Login() {
                                     placeholder="Type here"
                                     className="input input-bordered w-full max-w-xs"
                                     {...register("password",
-                                        { required: 'Password harus diisi' }
+                                        {
+                                            required: 'Password is required',
+                                            pattern: {
+                                                value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
+                                                message: 'Password must be at least 8 characters and include a number, letter',
+                                            },
+                                        }
                                     )}
                                 />
                                 {errors.password && <p className="text-red-500 mt-2">{errors.password.message}</p>}
@@ -188,14 +192,19 @@ export default function Login() {
                         <div className="flex justify-center">
                             <label className="form-control w-full max-w-xs">
                                 <div className="label">
-                                    <span className="label-text">Nomor Telepon</span>
+                                    <span className="label-text">Phone Number</span>
                                 </div>
                                 <input
                                     type="number"
                                     placeholder="Type here"
                                     className="input input-bordered w-full max-w-xs"
                                     {...register("phoneNumber",
-                                        { required: 'Nomor telepon harus diisi' }
+                                        {
+                                            required: 'Phone number is required',
+                                            minLength: { value: 12, message: 'Phone number must be at least 12 characters' },
+                                            maxLength: { value: 12, message: 'Phone number cannot exceed 12 characters' },
+
+                                        }
                                     )}
                                 />
                                 {errors.phoneNumber && <p className="text-red-500 mt-2">{errors.phoneNumber.message}</p>}

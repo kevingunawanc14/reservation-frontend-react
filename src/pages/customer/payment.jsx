@@ -102,48 +102,49 @@ export default function Payment() {
             </div>
 
             <div className="mx-10 mt-5 mb-10">
-                {arrPayment.map((payment, index) => (
-                    <div key={index}>
-                        <div className="card mb-3 flex justify-center shadow-xl bg-neutral">
-                            <div className="card-body">
-                                <p className="text-neutral-content">{payment.productName}</p>
-                                <div className="grid grid-cols-2">
-                                    <div className="grid content-center">
-                                        <p className="text-neutral-content font-bold">Rp. {payment.totalPrice}</p>
-                                    </div>
-                                    <div className="grid content-center">
-                                        <div className="rounded-lg bg-neutral-content tooltip-info p-1 w-10 tooltip tooltip-right text-neutral cursor-pointer" data-tip={payment.paymentMethod === "krakataucoin" ? "Paid by krakatau coin" : ("Paid by " + payment.paymentMethod)}>
-                                            {payment.paymentMethod === 'qris' && (
-                                                <BsQrCode fontSize="19px" className="text-neutral w-full" />
-                                            )}
-                                            {payment.paymentMethod === 'cash' && (
-                                                <FaSackDollar fontSize="19px" className="text-neutral w-full" />
-                                            )}
-                                            {payment.paymentMethod === 'krakataucoin' && (
-                                                <RiCopperCoinLine fontSize="19px" className="text-neutral w-full" />
-                                            )}
+                {arrPayment.length === 0 ? (
+                    <p>No payment yet...</p>
+                ) : (
+                    arrPayment.map((payment, index) => (
+                        <div key={index}>
+                            <div className="card mb-3 flex justify-center shadow-xl bg-neutral">
+                                <div className="card-body">
+                                    <p className="text-neutral-content">{payment.productName}</p>
+                                    <div className="grid grid-cols-2">
+                                        <div className="grid content-center">
+                                            <p className="text-neutral-content font-bold">Rp. {payment.totalPrice}</p>
                                         </div>
-
+                                        <div className="grid content-center">
+                                            <div className="rounded-lg bg-neutral-content tooltip-info p-1 w-10 tooltip tooltip-right text-neutral cursor-pointer" data-tip={payment.paymentMethod === "krakataucoin" ? "Paid by krakatau coin" : ("Paid by " + payment.paymentMethod)}>
+                                                {payment.paymentMethod === 'qris' && (
+                                                    <BsQrCode fontSize="19px" className="text-neutral w-full" />
+                                                )}
+                                                {payment.paymentMethod === 'cash' && (
+                                                    <FaSackDollar fontSize="19px" className="text-neutral w-full" />
+                                                )}
+                                                {payment.paymentMethod === 'krakataucoin' && (
+                                                    <RiCopperCoinLine fontSize="19px" className="text-neutral w-full" />
+                                                )}
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <p className="text-neutral-content">{payment.date.split(' - ')[0]}</p>
-                                <div className="grid grid-cols-1">
-                                    <button className="btn btn-info btn-sm " onClick={() => handleDetailJamOrder(payment.connectHistory)}>
-                                        Detail
-                                        <TbListDetails fontSize="20px" className="text-neutral" />
-                                    </button>
-                                </div>
-
-                                {/* <span className="badge badge-accent">Detail</span> */}
-                                <div className="card-actions justify-end">
-                                    <button className="btn btn-primary  " onClick={() => handleDetailRating(payment.id, payment.idProduct)}>Rate</button>
-                                    <button className="btn btn-primary btn-wide">{payment.paymentStatus}</button>
+                                    <p className="text-neutral-content">{payment.date.split(' - ')[0]}</p>
+                                    <div className="grid grid-cols-1">
+                                        <button className="btn btn-info btn-sm " onClick={() => handleDetailJamOrder(payment.connectHistory)}>
+                                            Detail
+                                            <TbListDetails fontSize="20px" className="text-neutral" />
+                                        </button>
+                                    </div>
+                                    <div className="card-actions justify-end">
+                                        <button className="btn btn-primary  " onClick={() => handleDetailRating(payment.id, payment.idProduct)}>Rate</button>
+                                        <button className="btn btn-primary btn-wide">{payment.paymentStatus}</button>
+                                    </div>
                                 </div>
                             </div>
+                            <div className="divider"></div>
                         </div>
-                        <div className="divider"></div>
-                    </div>
-                ))}
+                    ))
+                )}
 
             </div>
 

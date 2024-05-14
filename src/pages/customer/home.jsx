@@ -1,37 +1,17 @@
 import { useNavigate } from 'react-router-dom';
-import { IoCompassOutline } from "react-icons/io5";
-import { RiMoneyDollarCircleLine } from "react-icons/ri";
-import { RiAccountCircleLine } from "react-icons/ri";
-import { LiaHeartbeatSolid } from "react-icons/lia";
-import { IoTrophyOutline } from "react-icons/io5";
-import { GiBasketballBasket } from "react-icons/gi";
 import { GiShuttlecock } from "react-icons/gi";
-import { PiSoccerBallFill } from "react-icons/pi";
-import { TbPlayBasketball } from "react-icons/tb";
-import { GiSoccerKick } from "react-icons/gi";
-import { FaSwimmer } from "react-icons/fa";
 import { CgGym } from "react-icons/cg";
-import { MdOutlineSportsMartialArts } from "react-icons/md";
 import Navbar from '../../components/navbar.jsx';
 import aha from '../../assets/aha.png'; // Import the image file
 import Who from '../../assets/who.png'; // Import the image file
-import { MdOutlineHealthAndSafety } from "react-icons/md";
 import { useState, useEffect, useContext } from 'react';
 import { FaRegAddressCard } from "react-icons/fa6";
 import Header from '../../components/header';
 import axios from 'axios';
 import { GoGift } from "react-icons/go";
-import { IoIosFootball } from "react-icons/io";
 import { TfiBasketball } from "react-icons/tfi";
 import { FaSwimmingPool } from "react-icons/fa";
-import { IoFootball } from "react-icons/io5";
-// import { PiSoccerBallFill } from "react-icons/pi";
 import { BiFootball } from "react-icons/bi";
-import Alert from '@mui/material/Alert';
-import { FaHandHoldingHeart } from "react-icons/fa";
-import { IoShieldOutline } from "react-icons/io5";
-import { LuSword } from "react-icons/lu";
-import { GiRank2 } from "react-icons/gi";
 import { FaSkull } from "react-icons/fa";
 
 
@@ -71,7 +51,7 @@ export default function Home() {
 
             const responseData = response.data; // Assuming the response contains the user details
 
-            console.log(responseData)
+            console.log('responseData detail user', responseData)
 
             // Update the state with the fetched data
             setUserData({
@@ -81,7 +61,7 @@ export default function Home() {
                 hp: responseData.healthPoint,
                 coin: responseData.krakatauCoin,
                 statusDailyReward: responseData.statusDailyReward,
-                statusWeeklyChallange: false,
+                statusWeeklyChallange: responseData.statusWeeklyChallange,
                 statusMonthlyChallange: responseData.statusMonthlyChallange,
                 status6MonthChallange: true
             });
@@ -466,7 +446,7 @@ export default function Home() {
 
                 {userData && (
                     <>
-                        {!userData.statusDailyReward ? (
+                        {userData.statusDailyReward ? (
                             <div
                                 style={{ position: 'fixed', bottom: 100, right: 20 }}
                                 className="tooltip tooltip-left tooltip-primary"
