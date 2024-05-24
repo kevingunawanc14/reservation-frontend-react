@@ -1,17 +1,11 @@
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { useEffect, useState } from 'react';
 import Header from '../../components/header.jsx';
-import Navbar from '../../components/navbar.jsx';
 import { IoArrowBackOutline } from "react-icons/io5";
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs';
-import axios from 'axios';
+import axios from '../../api/axios';
 import { BsCash } from "react-icons/bs";
 import { BsQrCode } from "react-icons/bs";
-import { MdOutlineLocalOffer } from "react-icons/md";
-import { RiCopperCoinLine } from "react-icons/ri";
 import { useForm } from "react-hook-form";
 import { LuSword } from "react-icons/lu";
 import { IoShieldOutline } from "react-icons/io5";
@@ -21,21 +15,25 @@ import { FaWalking } from "react-icons/fa";
 import { FaRunning } from "react-icons/fa";
 import { FaPerson } from "react-icons/fa6";
 import { GiRank2 } from "react-icons/gi";
+import qris from '../../assets/QRIS_KRAKATAU.png';
 
 
 export default function DetailFasilitas() {
+    const token = localStorage.getItem('token');
+    const username = localStorage.getItem('username');
 
-    const [valueCalendar, setValueCalendar] = useState(dayjs())
-    const [scheduleData, setScheduleData] = useState(null)
-    const [namaProduct, setNamaProduct] = useState(null)
     const currentUrl = window.location.href;
     const idProduct = currentUrl.split('/').pop()
     const navigate = useNavigate();
+
+    const [valueCalendar, setValueCalendar] = useState(dayjs())
+    const [breathStatus, setBreathStatus] = useState('normal');
+
+    const [namaProduct, setNamaProduct] = useState(null)
+    const [productPrice, setProductPrice] = useState(0);
+
     const [arrOfOrderSummary, setArrOfOrderSummary] = useState([]);
-    const [statusAllowPlaceOrder, setStatusAllowPlaceOrder] = useState(false);
-    const [subtotal, setSubtotal] = useState(0);
-    const [total, setTotal] = useState(0);
-    const [productPrice, setProductPrice] = useState(35000);
+
     const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm({
         defaultValues: {
             paymentMethod: "cash",
@@ -43,9 +41,27 @@ export default function DetailFasilitas() {
         }
     });
 
+    const getDataDetailUser = async () => {
+        try {
 
-    const username = localStorage.getItem('username');
-    const [breathStatus, setBreathStatus] = useState('normal');
+            const response = await axios.get(`/user/detail/${username}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            const responseData = response.data;
+
+            document.querySelector('html').setAttribute('data-theme', responseData.activeTheme.toLocaleLowerCase());
+
+        } catch (error) {
+            console.error('Error fetching data:', error);
+
+        }
+    };
+
+    const [loadingStatus, setLoadingStatus] = useState(null);
+
 
     const handleRadioBreathStatus = (status) => {
         setBreathStatus(status);
@@ -57,12 +73,7 @@ export default function DetailFasilitas() {
 
 
     const handleBack = () => {
-        const detailPath = localStorage.getItem('detailPath');
-        if (detailPath) {
-            navigate(`${detailPath}`);
-        } else {
-            navigate('/');
-        }
+        navigate(-1);
     };
 
     const [showQr, setShowQr] = useState(false);
@@ -75,19 +86,29 @@ export default function DetailFasilitas() {
         }
     };
 
-    const [showRewards, setShowRewards] = useState(false);
+    const handleOrder = async () => {
 
-    const handleRadioClickRewards = (value) => {
-        if (!value) {
-            setShowRewards(true);
-        } else {
-            setShowRewards(false);
+        const formData = new FormData();
+
+        if (watch("paymentMethod") === 'qris') {
+            const allowedExtensions = ['jpg', 'jpeg', 'png'];
+            const fileExtension = watch("filePaymentProve")[0].name.split('.').pop().toLowerCase();
+            console.log('fileExtension', fileExtension)
+            if (!allowedExtensions.includes(fileExtension)) {
+                return alert('Invalid file type. Please select a JPG, JPEG, or PNG file.');
+            }
+
+            const maxFileSize = 1024 * 1024 * 5;
+            console.log('maxFileSize', maxFileSize)
+
+            if (watch("filePaymentProve")[0].size > maxFileSize) {
+                return alert('File size exceeds limit (5 MB). Please select a smaller file.');
+            }
+
+            formData.append('filePaymentProve', watch("filePaymentProve")[0]);
+
         }
 
-        console.log('value', value);
-    };
-
-    const handleOrder = async () => {
         const dataToSend = {
             idProduct: idProduct,
             username: username,
@@ -102,35 +123,54 @@ export default function DetailFasilitas() {
                             undefined,
             paymentMethod: watch("paymentMethod"),
             totalPrice: (productPrice * arrOfOrderSummary.length),
-            connectHistory: crypto.randomUUID()
+            typeBreath: watch("breathStatus"),
+            minuteBreath: (arrOfOrderSummary.length * 60),
+            totalXp: Math.floor(productPrice * arrOfOrderSummary.length / 10000),
+            totalHp: watch("breathStatus") === 'normal' ? Math.floor((Math.random() * 5) + 5) : watch("breathStatus") === 'medium' ? Math.floor((Math.random() * 10) + 10) : watch("breathStatus") === 'high' ? Math.floor((Math.random() * 10) + 20) : undefined,
+            totalAttack: 1,
+            totalDefense: 1,
+            connectHistory: crypto.randomUUID(),
+            cancelId: crypto.randomUUID(),
         };
 
-        console.log('dataToSend', dataToSend)
+        // Append each key-value pair from dataToSend to formData
+        Object.keys(dataToSend).forEach(key => {
+            formData.append(key, dataToSend[key]);
+        });
+        console.log('dataToSend.hour', dataToSend.hour);
+        // Log the FormData content
+        for (let pair of formData.entries()) {
+            console.log(pair[0] + ':', pair[1]);
+        }
 
         try {
-            const token = localStorage.getItem('token');
+            setLoadingStatus(true)
 
-            const response = await axios.post('http://localhost:2000/order', dataToSend, {
+            const response = await axios.post('/order', formData, {
                 headers: {
-                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${token}`
                 }
             });
 
-            console.log('response', response);
+            setLoadingStatus(false)
 
-            localStorage.setItem('fromOrder', 'true');
+
+            localStorage.setItem('lastPage', 'order');  // Set lastPage to 'order'
+
 
             navigate('/payment');
         } catch (error) {
             console.error('Error fetching data:', error);
-            navigate('/login', { state: { from: location }, replace: true });
+            localStorage.removeItem('token');
+            navigate('/login');
 
         }
     }
 
-
     useEffect(() => {
         window.scrollTo(0, 0);
+
         if (idProduct == 20) {
             setNamaProduct('Gym')
             setValue("productType", 'gym');
@@ -212,6 +252,9 @@ export default function DetailFasilitas() {
             setArrOfOrderSummary(prevState => [...prevState, newOrderSummary]);
 
         }
+
+        getDataDetailUser();
+
     }, [valueCalendar]);
 
     return (
@@ -268,7 +311,7 @@ export default function DetailFasilitas() {
 
                 <div className='mx-5'>
                     {arrOfOrderSummary.length === 0 ? (
-                        <p className='text-center font-semibold mt-3'>Pick the product and time you want easily</p>
+                        <p className='text-center font-semibold mt-3'>Loading...</p>
                     ) : (
                         arrOfOrderSummary.map((orderSummary, index) => (
                             <div key={index}>
@@ -384,64 +427,16 @@ export default function DetailFasilitas() {
                         </div>
 
                     )}
-                    <div className="grid grid-cols-8">
-                        <div className='self-center'>
-                            <RiCopperCoinLine
-                                fontSize="20px"
-                            />
-                        </div>
-                        <div className='col-span-7'>
-                            <label className="label cursor-pointer">
-                                <span className="label-text">67.000</span>
-                                <input
-                                    {...register("paymentMethod")}
-                                    value="krakataucoin"
-                                    type="radio"
-                                    className="radio radio-primary"
-                                    onClick={() => handleRadioClickPayment('Krakatau Coin')}
-                                />
-                            </label>
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-8">
-                        <div className='self-center'>
-                            <MdOutlineLocalOffer
-                                fontSize="20px"
-                            />
-                        </div>
-                        <div className='col-span-7'>
-                            <label className="label cursor-pointer">
-                                <span className="label-text">Use Rewards to get discounts</span>
-                                <input
-                                    type="checkbox"
-                                    name="radio-11"
-                                    className="radio radio-primary"
-                                    onClick={() => handleRadioClickRewards(showRewards)}
-                                />
-                            </label>
-                        </div>
-                    </div>
-                    {showRewards && (
-                        <div className="collapse collapse-arrow border border-base-300 bg-neutral">
-                            <input type="checkbox" />
-                            <div className="collapse-title text-xl font-medium text-neutral-content">
-                                Rewards
-                            </div>
-                            <div className="collapse-content">
-                                <p className='text-neutral-content'>You don't have any reward yet</p>
-                            </div>
-                        </div>
-                    )}
                 </div>
 
             </div>
 
             <div className="flex justify-center  mx-5 mt-5">
                 {watch("paymentMethod") === 'cash' || watch("paymentMethod") === 'krakataucoin' ? (
-                    <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 ? '' : 'btn-disabled'}`} onClick={handleOrder}>Place Order</button>
+                    <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 ? '' : 'btn-disabled'} ${loadingStatus ? 'btn-disabled skeleton' : ''}`} onClick={handleOrder}> {loadingStatus ? 'Processing' : 'Place Order'}</button>
 
                 ) : (
-                    <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 && watch('filePaymentProve')?.length > 0 ? '' : 'btn-disabled'}`} onClick={handleOrder} >Place Order</button>
+                    <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 && watch('filePaymentProve')?.length > 0 ? '' : 'btn-disabled'} ${loadingStatus ? 'btn-disabled skeleton' : ''}`} onClick={handleOrder} > {loadingStatus ? 'Processing' : 'Place Order'}</button>
 
                 )}
             </div>
@@ -462,7 +457,6 @@ export default function DetailFasilitas() {
                     </button>
                 </div>
             </div>
-
 
             <dialog id="leaderboardModal" className="modal">
                 <div className="modal-box">

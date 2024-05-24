@@ -1,12 +1,9 @@
 import Navbar from "../../components/navbar";
 import Header from '../../components/header.jsx';
-import Avatar1 from '../../assets/avatar/avatar1.webp';
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../../api/axios';
 import { GiRank2 } from "react-icons/gi";
-import { RxAvatar } from "react-icons/rx";
-import { MdOutlineColorLens } from "react-icons/md";
 import { IoMdLogOut } from "react-icons/io";
 import { BiStore } from "react-icons/bi";
 import { TbSettings } from "react-icons/tb";
@@ -17,41 +14,25 @@ import { FaRegUser } from "react-icons/fa";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import { FaRegMap } from "react-icons/fa";
 import { IoIosCheckmarkCircle } from "react-icons/io";
-import { IoIosCloseCircleOutline } from "react-icons/io";
-import { GiLaurelsTrophy } from "react-icons/gi";
 import { GiAchievement } from "react-icons/gi";
 import { IoIosCloseCircle } from "react-icons/io";
-import { RiCoupon2Line } from "react-icons/ri";
-import { RiDiscordLine } from "react-icons/ri";
 import { FaGifts } from "react-icons/fa";
 import { FaGift } from "react-icons/fa6";
 import { LuSword } from "react-icons/lu";
 import { IoShieldOutline } from "react-icons/io5";
 import { BsTrophy } from "react-icons/bs";
-import { GiHealthPotion } from "react-icons/gi";
 import { LuHeartPulse } from "react-icons/lu";
 import { FaWalking } from "react-icons/fa";
 import { FaRunning } from "react-icons/fa";
 import { FaPerson } from "react-icons/fa6";
 import { useForm } from "react-hook-form";
-
-
 import AvatarIcon from '../../components/avatar';
-import { data } from "autoprefixer";
 
 export default function DetailAccount() {
-    const { register, handleSubmit, watch, formState: { errors } } = useForm({
-        defaultValues: {
-            paymentMethod: "cash",
-            breathStatus: "normal"
-        }
-    });
 
-    const [breathStatus, setBreathStatus] = useState('normal');
-    const handleRadioBreathStatus = (status) => {
-        setBreathStatus(status);
-    };
-
+    const token = localStorage.getItem('token');
+    const username = localStorage.getItem('username');
+    const navigate = useNavigate();
 
     const AvatarItemData = [
         { id: 1, icon: "GiMuscleFat", title: "Muscle Fat", xp: 100, status: 'non-active', preview: 'non-active' },
@@ -106,76 +87,51 @@ export default function DetailAccount() {
         { id: 15, name: 'Gym Expert', description: 'Make 25 Reservation Gym', status: true, count: 25 },
     ];
 
-    const username = localStorage.getItem('username');
+    const { register, handleSubmit, watch, formState: { errors } } = useForm({
+        defaultValues: {
+            paymentMethod: "cash",
+            breathStatus: "normal"
+        }
+    });
+
     const [theme, setTheme] = useState(null);
     const [avatar, setAvatar] = useState(null);
+
+
+    // for shop avatar
     const [avatarOwnedItem, setAvatarOwnedItem] = useState([]);
-    const [avatarItem, setAvatarItem] = useState([]);
-    const [avatarItemSetting, setAvatarItemSetting] = useState([]);
     const [themeItem1, setThemeItem1] = useState([]);
-    const [themeItemShop, setThemeItemShop] = useState([]);
-    const [themeItem, setThemeItem] = useState([]);
-    const [checkXp, setCheckXp] = useState(false);
-    const token = localStorage.getItem('token');
-    const [membership, setMembership] = useState([]);
-    const navigate = useNavigate();
+    const [themeItemShop, setThemeItemShop] = useState(null);
+    const [avatarItem, setAvatarItem] = useState(null);
+    const [avatarDetail, setAvatarDetail] = useState(null);
+    const [themeDetail, setThemeDetail] = useState(null);
+
+    // for change avatar
+    const [themeItem, setThemeItem] = useState(null);
+    const [avatarItemSetting, setAvatarItemSetting] = useState(null);
+
+    const [userData, setUserData] = useState(null);
     const [statisticData, setStatisticData] = useState(null);
     const [achievement, setAchievement] = useState(achievementData);
+    const [achievementDetail, setAchievementDetail] = useState(null);
+    const [membership, setMembership] = useState(null);
+    const [checkXp, setCheckXp] = useState(false);
+    const [breathStatus, setBreathStatus] = useState('normal');
 
-    const [achievementDetail, setAchievementDetail] = useState({
-        description: '',
-        status: '',
-    });
+    const [loadingStatus, setLoadingStatus] = useState(null);
 
-    const [userData, setUserData] = useState({
-        username: '',
-        rank: '',
-        xp: '',
-        hp: '',
-        coin: '',
-        totalMinuteWorkout: '0',
-        activeTheme: '',
-        activeAvatar: ''
-
-    });
-
-    const [avatarDetail, setAvatarDetail] = useState({
-        title: '',
-        xp: '',
-    });
-
-    const [themeDetail, setThemeDetail] = useState({
-        title: '',
-        xp: '',
-        bodySend: ''
-    });
-
-
-
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        navigate('/login');
-    };
-
-    const handleNavigateJournal = (pageName) => {
-        navigate(`${pageName}`);
-    };
 
     const getDataDetailUser = async () => {
         try {
-            const token = localStorage.getItem('token');
 
-            const response = await axios.get(`http://localhost:2000/user/detail/${username}`, {
+            const response = await axios.get(`/user/detail/${username}`, {
                 headers: {
-                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                    Authorization: `Bearer ${token}`
                 }
             });
 
-            const responseData = response.data; // Assuming the response contains the user details
+            const responseData = response.data;
 
-            console.log(responseData)
-
-            // Update the state with the fetched data
             setUserData({
                 username: responseData.username,
                 rank: responseData.rank,
@@ -186,28 +142,24 @@ export default function DetailAccount() {
                 activeTheme: responseData.activeTheme
             });
 
-            console.log('response', response)
 
         } catch (error) {
             console.error('Error fetching data:', error);
-            // navigate('/login', { state: { from: location }, replace: true });
-
+            localStorage.removeItem('token');
+            navigate('/login');
         }
     };
 
     const getDataDetailStatisticAchievementMembership = async () => {
         try {
-            const token = localStorage.getItem('token');
 
-            const response = await axios.get(`http://localhost:2000/user/detail/stat/${username}`, {
+            const response = await axios.get(`/user/detail/stat/${username}`, {
                 headers: {
-                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                    Authorization: `Bearer ${token}`
                 }
             });
 
-            const responseData = response.data; // Assuming the response contains the user details
-
-            console.log('getDataDetailStatisticAchievementMembership', responseData)
+            const responseData = response.data;
 
             setStatisticData({
                 mostPlayedSport: responseData.mostPlayedSport,
@@ -215,33 +167,18 @@ export default function DetailAccount() {
                 typeSport: responseData.typeSport
             });
 
-
-            // Update the state with the fetched data
-            // setUserData({
-            //     username: responseData.username,
-            //     rank: responseData.rank,
-            //     xp: responseData.experiencePoint,
-            //     hp: responseData.healthPoint,
-            //     coin: responseData.krakatauCoin,
-            //     avatar: responseData.activeAvatar
-            // });
-
-            // console.log('response', response)
-
         } catch (error) {
             console.error('Error fetching data:', error);
-            // navigate('/login', { state: { from: location }, replace: true });
-
+            localStorage.removeItem('token');
+            navigate('/login');
         }
     };
 
     const getDataAchievement = async () => {
         try {
-            const token = localStorage.getItem('token');
-
-            const response = await axios.get(`http://localhost:2000/user/detail/achievement/${username}`, {
+            const response = await axios.get(`/user/detail/achievement/${username}`, {
                 headers: {
-                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                    Authorization: `Bearer ${token}`
                 }
             });
 
@@ -262,14 +199,14 @@ export default function DetailAccount() {
                 return item;
             });
 
-            console.log(updatedAchievement)
 
             setAchievement(updatedAchievement);
 
 
         } catch (error) {
             console.error('Error fetching data:', error);
-            // navigate('/login', { state: { from: location }, replace: true });
+            localStorage.removeItem('token');
+            navigate('/login');
         }
     };
 
@@ -285,41 +222,39 @@ export default function DetailAccount() {
             });
         } catch (error) {
             console.error('Error fetching data:', error);
+            localStorage.removeItem('token');
+            navigate('/login');
         }
     };
 
     const getDataMembership = async () => {
         try {
-            const token = localStorage.getItem('token');
 
-            const response = await axios.get(`http://localhost:2000/payment/${username}`, {
+            const response = await axios.get(`/payment/${username}`, {
                 headers: {
-                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                    Authorization: `Bearer ${token}`
                 }
             });
 
-            console.log('response data membership', response);
-            console.log('response data membership', response.data);
-            // Assuming responseData is the data you've provided
             const filteredData = response.data.filter(item => {
                 return (item.idProduct === 18 || item.idProduct === 19 || item.idProduct === 21) && item.paymentStatus === 'Lunas';
             });
 
-            // Set the filtered data to state
             setMembership(filteredData);
-
 
         } catch (error) {
             console.error('Error:', error);
+            localStorage.removeItem('token');
+            navigate('/login');
         }
     }
 
     const getDataAvatarUser = async () => {
         try {
 
-            const response = await axios.get(`http://localhost:2000/user/detail/avatar/${username}`, {
+            const response = await axios.get(`/user/detail/avatar/${username}`, {
                 headers: {
-                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                    Authorization: `Bearer ${token}`
                 }
             });
 
@@ -327,21 +262,18 @@ export default function DetailAccount() {
 
         } catch (error) {
             console.error('Error fetching data:', error);
-            // navigate('/login', { state: { from: location }, replace: true });
+            localStorage.removeItem('token');
+            navigate('/login');
         }
     };
 
     const handleDetailAvatar = async (id) => {
         try {
             const avatarData = AvatarItemData.find(item => item.id === id);
-            console.log(avatarData);
 
-            // Check if the avatar data is found
             if (avatarData) {
-                // Show modal with avatar details
                 document.getElementById('buyAvatarConfirmation').showModal();
 
-                // Set avatar detail in state
                 setAvatarDetail({
                     title: avatarData.icon,
                     xp: avatarData.xp,
@@ -352,30 +284,42 @@ export default function DetailAccount() {
             }
         } catch (error) {
             console.error('Error fetching data:', error);
-            // navigate('/login', { state: { from: location }, replace: true });
+            localStorage.removeItem('token');
+            navigate('/login');
         }
     };
 
     const handleBuyAvatar = async (avatar, price) => {
         const dataToSend = {
             avatar: avatar,
+            price: price,
         };
+        console.log('userData.xp', userData.xp);
         try {
-            if (userData.xp > price) {
+            if (userData.xp < price) {
                 setCheckXp(true);
             } else {
+                setLoadingStatus(true)
 
-                const response = await axios.post('http://localhost:2000/buy-avatar', dataToSend, {
+
+                const response = await axios.post('/buy-avatar', dataToSend, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 });
 
+                setLoadingStatus(false)
+
+
                 document.getElementById('buyAvatarConfirmation').close();
                 getDataAvatarUser()
+                getDataDetailUser();
+
             }
         } catch (error) {
             console.error('Error:', error);
+            localStorage.removeItem('token');
+            navigate('/login');
         }
     };
 
@@ -391,7 +335,6 @@ export default function DetailAccount() {
     };
 
     const handleCancelPreviewAvatar = async () => {
-        console.log('avatar', avatar)
         const updatedData = avatarItemSetting.map(item => {
             if (item.icon === avatar) {
                 return { ...item, preview: 'active' };
@@ -409,11 +352,10 @@ export default function DetailAccount() {
             activeAvatar: activePreviews[0].icon,
         };
 
-        // console.log('dataToSend xx', dataToSend);
 
         try {
 
-            const response = await axios.post('http://localhost:2000/update-avatar', dataToSend, {
+            const response = await axios.post('/update-avatar', dataToSend, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -427,15 +369,17 @@ export default function DetailAccount() {
 
         } catch (error) {
             console.error('Error:', error);
+            localStorage.removeItem('token');
+            navigate('/login');
         }
     };
 
     const getDataThemeUser = async () => {
         try {
 
-            const response = await axios.get('http://localhost:2000/user/detail-theme', {
+            const response = await axios.get(`/user/detail/theme/${username}`, {
                 headers: {
-                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                    Authorization: `Bearer ${token}`
                 }
             });
 
@@ -444,7 +388,8 @@ export default function DetailAccount() {
 
         } catch (error) {
             console.error('Error fetching data:', error);
-            // navigate('/login', { state: { from: location }, replace: true });
+            localStorage.removeItem('token');
+            navigate('/login');
         }
     };
 
@@ -470,35 +415,42 @@ export default function DetailAccount() {
             }
         } catch (error) {
             console.error('Error fetching data:', error);
-            // navigate('/login', { state: { from: location }, replace: true });
+            localStorage.removeItem('token');
+            navigate('/login');
         }
     };
 
     const handleBuyTheme = async (theme, price) => {
-        console.log('themeeee', theme)
         const dataToSend = {
             theme: theme,
+            price: price,
         };
 
-        console.log('dataToSend', dataToSend);
         try {
-            if (userData.xp > price) {
+            if (userData.xp < price) {
                 setCheckXp(true);
             } else {
+                setLoadingStatus(true)
 
-                const response = await axios.post('http://localhost:2000/buy-theme', dataToSend, {
+                const response = await axios.post('/buy-theme', dataToSend, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 });
 
+                setLoadingStatus(false)
+
                 document.getElementById('buyThemeConfirmation').close();
                 document.querySelector('html').setAttribute('data-theme', userData.activeTheme.toLocaleLowerCase());
 
                 getDataThemeUser()
+                getDataDetailUser();
+
             }
         } catch (error) {
             console.error('Error:', error);
+            localStorage.removeItem('token');
+            navigate('/login');
         }
     };
 
@@ -532,34 +484,49 @@ export default function DetailAccount() {
 
     const handleSetAsActiveTheme = async () => {
         const activePreviews = themeItem.filter(item => item.preview === 'active');
+
         const dataToSend = {
-            activeTheme: activePreviews[0].bodySend,
+            activeTheme: activePreviews[0].title,
             username: username,
         };
 
-
         try {
 
-            const response = await axios.post('http://localhost:2000/update-theme', dataToSend, {
+            const response = await axios.post('/update-theme', dataToSend, {
                 headers: {
-                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                    Authorization: `Bearer ${token}`
                 }
             });
 
-            setTheme(activePreviews[0].bodySend);
+            setTheme(activePreviews[0].title);
             setUserData({
                 ...userData,
-                activeTheme: activePreviews[0].bodySend
+                activeTheme: activePreviews[0].title
             });
 
         } catch (error) {
             console.error('Error:', error);
+            localStorage.removeItem('token');
+            navigate('/login');
         }
+    };
+
+    const handleRadioBreathStatus = (status) => {
+        setBreathStatus(status);
+    };
+
+    const handleNavigateJournal = (pageName) => {
+        navigate(`${pageName}`);
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        navigate('/login');
     };
 
     useEffect(() => {
         const filteredItems = ThemeItemData.map(item => {
-            if (themeItem1.some(ownedItem => ownedItem.theme === item.bodySend)) {
+            if (themeItem1.some(ownedItem => ownedItem.theme === item.title)) {
                 return { ...item, status: 'active' };
             }
             return item;
@@ -575,37 +542,38 @@ export default function DetailAccount() {
             }
             return item;
         });
-        console.log('filteredItems x', filteredItems);
+        console.log('filteredItems avatar', filteredItems);
         setAvatarItem(filteredItems);
     }, [avatarOwnedItem]);
 
-
     useEffect(() => {
-        document.querySelector('html').setAttribute('data-theme', userData.activeTheme.toLocaleLowerCase());
-        setTheme(userData.activeTheme.toLocaleLowerCase());
-        const updatedThemeItemData = themeItemShop.map(item => {
-            if (item.bodySend === userData.activeTheme) {
-                return { ...item, preview: 'active' };
-            } else {
-                return { ...item, preview: 'non-active' };
-            }
-        });
-        console.log('updatedThemeItemData updatedThemeItemData', updatedThemeItemData)
-        setThemeItem(updatedThemeItemData)
+        if (userData) {
+            document.querySelector('html').setAttribute('data-theme', userData.activeTheme.toLocaleLowerCase());
+            setTheme(userData.activeTheme.toLocaleLowerCase());
+            setAvatar(userData.activeAvatar);
 
 
-        setAvatar(userData.activeAvatar);
-        const updatedAvatarItemData = avatarItem.map(item => {
-            if (item.icon === userData.activeAvatar) {
-                return { ...item, preview: 'active' };
-            } else {
-                return { ...item, preview: 'non-active' };
-            }
-        });
+            const updatedAvatarItemData = avatarItem.map(item => {
+                if (item.icon === userData.activeAvatar) {
+                    return { ...item, preview: 'active' };
+                } else {
+                    return { ...item, preview: 'non-active' };
+                }
+            });
 
-        console.log('updatedAvatarItemData', updatedAvatarItemData)
+            setAvatarItemSetting(updatedAvatarItemData)
 
-        setAvatarItemSetting(updatedAvatarItemData)
+
+            const updatedThemeItemData = themeItemShop.map(item => {
+                if (item.title === userData.activeTheme) {
+                    return { ...item, preview: 'active' };
+                } else {
+                    return { ...item, preview: 'non-active' };
+                }
+            });
+            setThemeItem(updatedThemeItemData)
+
+        }
 
     }, [userData, avatarItem, themeItemShop]);
 
@@ -642,7 +610,6 @@ export default function DetailAccount() {
                     </button>
                 </div>
             </div>
-
 
             <dialog id="leaderboardModal" className="modal">
                 <div className="modal-box">
@@ -779,361 +746,341 @@ export default function DetailAccount() {
                 </form>
             </dialog>
 
-            <div className="mx-10 mt-5 mb-5 text-neutral-content">
-
-                <div className="collapse collapse-arrow bg-neutral ">
-                    <input type="checkbox" />
-                    <div className="collapse-title text-xl font-medium ">
-                        <div className="grid grid-cols-4">
-                            <div className="col-span-3">
-                                <p className="">Detail Account</p>
-                            </div>
-                            <div className="justify-self-end self-center">
-                                <FaRegUser />
-                            </div>
-                        </div>
-
-                    </div>
-                    <div className="collapse-content">
-                        <div className="grid grid-cols-1">
-                            <div className="mt-3">
-                                <button className="btn btn-block  cursor-default">Username:  {userData.username}
-                                    <span className="bg-neutral rounded-full">
-                                        <AvatarIcon avatar={userData.avatar} fontSize={"32px"} className="text-neutral-content p-0.5" />
-                                    </span>
-                                </button>
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-1">
-                            <div className="mt-3">
-                                <button className="btn btn-block cursor-default">Rank:
-                                    {userData.hp <= 100 ?
-                                        <div className=" rounded">
-                                            <GiRank2 color="#eccc55" fontSize="30px" />
-                                        </div> :
-                                        userData.hp > 100 && userData.hp <= 200 ?
-                                            <div className=" rounded">
-                                                <GiRank2 color="#3ba8ba" fontSize="30px" />
-                                            </div> :
-                                            userData.hp > 200 ? <div className=" rounded">
-                                                <GiRank2 color="#a46ced" fontSize="30px" />
-                                            </div> :
-                                                null}</button>
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-1">
-                            <div className="mt-3">
-                                <button className="btn btn-block cursor-default">XP: {userData.xp}</button>
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-1">
-                            <div className="mt-3">
-                                <button className="btn btn-block cursor-default">HP:  {userData.hp}</button>
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-1">
-                            <div className="mt-3">
-                                <button className="btn btn-block cursor-default">Krakatau Coin:  {userData.coin}</button>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-                <div className="collapse collapse-arrow bg-neutral mt-3">
-                    <input type="checkbox" />
-                    <div className="collapse-title text-xl font-medium text-neutral-content">
-                        <div className="grid grid-cols-4">
-                            <div className="col-span-3">
-                                <p>Statistic</p>
-                            </div>
-                            <div className="justify-self-end self-center">
-                                <LiaChartBarSolid />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="collapse-content   ">
-                        <div className="grid grid-cols-1">
-                            <div className="mt-3">
-                                <button className="btn btn-block" >Total Hour Workout:   {statisticData?.totalMinuteWorkout} hour</button>
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-1">
-                            <div className="mt-3">
-                                <button className="btn btn-block">Most Sport Played:  {statisticData?.mostPlayedSport}</button>
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-1">
-                            <div className="mt-3">
-                                <button className="btn btn-block">Type Sport:  {statisticData?.typeSport}</button>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-                <div className="collapse collapse-arrow bg-neutral mt-3">
-                    <input type="checkbox" />
-                    <div className="collapse-title text-xl font-medium text-neutral-content">
-                        <div className="grid grid-cols-4">
-                            <div className="col-span-3">
-                                <p>Achievement</p>
-                            </div>
-                            <div className="justify-self-end self-center">
-                                <TbTargetArrow />
-                            </div>
-                        </div>
-                    </div>
-                    {achievement && (
-                        <div className="collapse-content">
-                            <div className="grid grid-cols-3 mt-2">
-                                {achievement.slice(0, 3).map((achievement, index) => (
-                                    <button
-                                        key={index}
-                                        className={`btn btn-active btn-sm overflow-hidden ${achievement.status === true ? 'btn-success ' : 'btn-error cursor-default'} me-2 text-xs`
-                                        }
-                                        onClick={() => handleDetailAchievement(achievement.id)}
-                                    >
-                                        {achievement.status === true && (<span className="hidden sm:block  "><GiAchievement fontSize={'20px'} className="text-success-content" /></span>)}
-                                        {achievement.name} {achievement.index}
-                                    </button>
-                                ))}
-                            </div>
-                            <div className="grid grid-cols-3 mt-2">
-                                {achievement.slice(3, 6).map((achievement, index) => (
-                                    <button
-                                        key={index}
-                                        className={`btn btn-active btn-sm overflow-hidden ${achievement.status === true ? 'btn-success' : 'btn-error'} me-2 text-xs`}
-                                        onClick={() => handleDetailAchievement(achievement.id)}
-                                    >
-                                        {achievement.status === true && (<span className="hidden sm:block"><GiAchievement fontSize={'20px'} /></span>)}
-                                        {achievement.name} {achievement.index}
-                                    </button>
-                                ))}
-                            </div>
-                            <div className="grid grid-cols-3 mt-2">
-                                {achievement.slice(6, 9).map((achievement, index) => (
-                                    <button key={index} className={`btn btn-active btn-sm overflow-hidden ${achievement.status === true ? 'btn-success' : 'btn-error'} me-2 text-xs`}
-                                        onClick={() => handleDetailAchievement(achievement.id)}>
-                                        {achievement.status === true && (<span className="hidden sm:block"><GiAchievement fontSize={'20px'} /></span>)}
-                                        {achievement.name} {achievement.index}
-                                    </button>
-                                ))}
-                            </div>
-                            <div className="grid grid-cols-3 mt-2">
-                                {achievement.slice(9, 12).map((achievement, index) => (
-                                    <button key={index} className={`btn btn-active btn-sm overflow-hidden ${achievement.status === true ? 'btn-success' : 'btn-error'} me-2 text-xs`}
-                                        onClick={() => handleDetailAchievement(achievement.id)}>
-                                        {achievement.status === true && (<span className="hidden sm:block"><GiAchievement fontSize={'20px'} /></span>)}
-                                        {achievement.name} {achievement.index}
-                                    </button>
-                                ))}
-                            </div>
-                            <div className="grid grid-cols-3 mt-2">
-                                {achievement.slice(12, 15).map((achievement, index) => (
-                                    <button key={index} className={`btn btn-active btn-sm overflow-hidden ${achievement.status === true ? 'btn-success' : 'btn-error'} me-2 text-xs`}
-                                        onClick={() => handleDetailAchievement(achievement.id)}>
-                                        {achievement.status === true && (<span className="hidden sm:block"><GiAchievement fontSize={'20px'} /></span>)}
-                                        {achievement.name} {achievement.index}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                </div>
-                <div className="collapse collapse-arrow bg-neutral mt-3">
-                    <input type="checkbox" />
-                    <div className="collapse-title text-xl font-medium text-neutral-content">
-                        <div className="grid grid-cols-4">
-                            <div className="col-span-3">
-                                <p>Memberships</p>
-                            </div>
-                            <div className="justify-self-end self-center">
-                                <FaRegAddressCard />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="collapse-content">
-                        <div>
-                            {membership && (
-                                membership.map((item, index) => (
-                                    <div key={index}>
-                                        <div className="card bg-accent shadow-xl text-accent-content">
-                                            <div className="card-body">
-                                                <h2 className="card-title">{item.productName}</h2>
-                                                {/* <p>{item.date}</p> */}
-                                                <p>Start Date &nbsp;:  <span className="font-medium">{item.date.split(' - ')[0]} </span></p>
-                                                <p>End Date&nbsp;&nbsp;&nbsp;: <span className="font-medium">{item.date.split(' - ')[1]} </span> </p>
-                                                <div className="card-actions justify-end">
-                                                    <button className="btn btn-primary cursor-default">Active</button>
-                                                </div>
-                                            </div>
-                                        </div>
+            {userData && statisticData && achievement && membership ? (
+                <>
+                    <div className="mx-10 mt-5 mb-5 text-neutral-content">
+                        <div className="collapse collapse-arrow bg-neutral ">
+                            <input type="checkbox" />
+                            <div className="collapse-title text-xl font-medium ">
+                                <div className="grid grid-cols-4">
+                                    <div className="col-span-3">
+                                        <p className="">Detail Account</p>
                                     </div>
-                                ))
+                                    <div className="justify-self-end self-center">
+                                        <FaRegUser />
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div className="collapse-content">
+                                <div className="grid grid-cols-1">
+                                    <div className="mt-3">
+                                        <button className="btn btn-block  cursor-default">Username:  {userData.username}
+                                            <span className="bg-neutral rounded-full">
+                                                <AvatarIcon avatar={userData.avatar} fontSize={"32px"} className="text-neutral-content p-0.5" />
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-1">
+                                    <div className="mt-3">
+                                        <button className="btn btn-block cursor-default">Rank:
+                                            {userData.hp <= 100 ?
+                                                <div className=" rounded">
+                                                    <GiRank2 color="#eccc55" fontSize="30px" />
+                                                </div> :
+                                                userData.hp > 100 && userData.hp <= 200 ?
+                                                    <div className=" rounded">
+                                                        <GiRank2 color="#3ba8ba" fontSize="30px" />
+                                                    </div> :
+                                                    userData.hp > 200 ? <div className=" rounded">
+                                                        <GiRank2 color="#a46ced" fontSize="30px" />
+                                                    </div> :
+                                                        null}</button>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-1">
+                                    <div className="mt-3">
+                                        <button className="btn btn-block cursor-default">XP: {userData.xp}</button>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-1">
+                                    <div className="mt-3">
+                                        <button className="btn btn-block cursor-default">HP:  {userData.hp}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="collapse collapse-arrow bg-neutral mt-3">
+                            <input type="checkbox" />
+                            <div className="collapse-title text-xl font-medium text-neutral-content">
+                                <div className="grid grid-cols-4">
+                                    <div className="col-span-3">
+                                        <p>Statistic</p>
+                                    </div>
+                                    <div className="justify-self-end self-center">
+                                        <LiaChartBarSolid />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="collapse-content   ">
+                                <div className="grid grid-cols-1">
+                                    <div className="mt-3">
+                                        <button className="btn btn-block" >Total Hour Workout:   {statisticData?.totalMinuteWorkout} hour</button>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-1">
+                                    <div className="mt-3">
+                                        <button className="btn btn-block">Most Sport Played:  {statisticData?.mostPlayedSport}</button>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-1">
+                                    <div className="mt-3">
+                                        <button className="btn btn-block">Type Sport:  {statisticData?.typeSport}</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div className="collapse collapse-arrow bg-neutral mt-3">
+                            <input type="checkbox" />
+                            <div className="collapse-title text-xl font-medium text-neutral-content">
+                                <div className="grid grid-cols-4">
+                                    <div className="col-span-3">
+                                        <p>Achievement</p>
+                                    </div>
+                                    <div className="justify-self-end self-center">
+                                        <TbTargetArrow />
+                                    </div>
+                                </div>
+                            </div>
+                            {achievement && (
+                                <div className="collapse-content">
+                                    <div className="grid grid-cols-3 mt-2">
+                                        {achievement.slice(0, 3).map((achievement, index) => (
+                                            <button
+                                                key={index}
+                                                className={`btn btn-active btn-sm overflow-hidden ${achievement.status === true ? 'btn-success ' : 'btn-error '} me-2 text-xs`
+                                                }
+                                                onClick={() => handleDetailAchievement(achievement.id)}
+                                            >
+                                                {achievement.status === true && (<span className="hidden sm:block  "><GiAchievement fontSize={'20px'} className="text-success-content" /></span>)}
+                                                {achievement.name} {achievement.index}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    <div className="grid grid-cols-3 mt-2">
+                                        {achievement.slice(3, 6).map((achievement, index) => (
+                                            <button
+                                                key={index}
+                                                className={`btn btn-active btn-sm overflow-hidden ${achievement.status === true ? 'btn-success' : 'btn-error'} me-2 text-xs`}
+                                                onClick={() => handleDetailAchievement(achievement.id)}
+                                            >
+                                                {achievement.status === true && (<span className="hidden sm:block"><GiAchievement fontSize={'20px'} /></span>)}
+                                                {achievement.name} {achievement.index}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    <div className="grid grid-cols-3 mt-2">
+                                        {achievement.slice(6, 9).map((achievement, index) => (
+                                            <button key={index} className={`btn btn-active btn-sm overflow-hidden ${achievement.status === true ? 'btn-success' : 'btn-error'} me-2 text-xs`}
+                                                onClick={() => handleDetailAchievement(achievement.id)}>
+                                                {achievement.status === true && (<span className="hidden sm:block"><GiAchievement fontSize={'20px'} /></span>)}
+                                                {achievement.name} {achievement.index}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    <div className="grid grid-cols-3 mt-2">
+                                        {achievement.slice(9, 12).map((achievement, index) => (
+                                            <button key={index} className={`btn btn-active btn-sm overflow-hidden ${achievement.status === true ? 'btn-success' : 'btn-error'} me-2 text-xs`}
+                                                onClick={() => handleDetailAchievement(achievement.id)}>
+                                                {achievement.status === true && (<span className="hidden sm:block"><GiAchievement fontSize={'20px'} /></span>)}
+                                                {achievement.name} {achievement.index}
+                                            </button>
+                                        ))}
+                                    </div>
+                                    <div className="grid grid-cols-3 mt-2">
+                                        {achievement.slice(12, 15).map((achievement, index) => (
+                                            <button key={index} className={`btn btn-active btn-sm overflow-hidden ${achievement.status === true ? 'btn-success' : 'btn-error'} me-2 text-xs`}
+                                                onClick={() => handleDetailAchievement(achievement.id)}>
+                                                {achievement.status === true && (<span className="hidden sm:block"><GiAchievement fontSize={'20px'} /></span>)}
+                                                {achievement.name} {achievement.index}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
                             )}
                         </div>
-                    </div>
-                </div>
-                <div className="collapse collapse-arrow bg-neutral mt-3">
-                    <input type="checkbox" />
-                    <div className="collapse-title text-xl font-medium text-neutral-content">
-                        <div className="grid grid-cols-4">
-                            <div className="col-span-3">
-                                <p>Shop</p>
-                            </div>
-                            <div className="justify-self-end self-center">
-                                <BiStore />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="collapse-content">
-                        <div className="grid grid-cols-2 gap-1 ">
-                            <div>
-                                <button
-                                    className="btn btn-primary min-w-full"
-                                    onClick={() => document.getElementById('shopAvatarModal').showModal()}>
-                                    Avatar
-                                    <MdOutlineShoppingCart />
-                                </button>
-
-                            </div>
-                            <div>
-                                <button
-                                    className="btn btn-primary min-w-full"
-                                    onClick={() => document.getElementById('shopThemeModal').showModal()}>
-                                    Theme
-                                    <MdOutlineShoppingCart />
-                                </button>
-
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-                <div className="collapse collapse-arrow bg-neutral mt-3 ">
-                    <input type="checkbox" />
-                    <div className="collapse-title text-xl font-medium text-neutral-content">
-                        <div className="grid grid-cols-4">
-                            <div className="col-span-3">
-                                <p>Setting</p>
-                            </div>
-                            <div className="justify-self-end self-center">
-                                <TbSettings />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="collapse-content">
-                        <div className="grid grid-cols-2 gap-1 ">
-                            <div>
-                                {/* Open the modal using document.getElementById('ID').showModal() method */}
-                                <button className="btn btn-primary min-w-full" onClick={() => document.getElementById('avatarModal').showModal()}>
-                                    Avatar
-                                    <span className="bg-neutral rounded-full">
-                                        <AvatarIcon avatar={userData.activeAvatar} fontSize={"32px"} className="text-neutral-content p-1" />
-                                    </span>
-                                </button>
-                            </div>
-                            <div>
-                                <button
-                                    className="btn btn-primary min-w-full"
-                                    onClick={() => document.getElementById('themeModal').showModal()}>Theme
-                                    <div className="text-2xl bg-neutral rounded-full">
-                                        {userData.activeTheme === 'light' ? (
-                                            <span>☀️</span>
-                                        ) : userData.activeTheme === 'autumn' ? (
-                                            <span>🍂</span>
-                                        ) : userData.activeTheme === 'lemonade' ? (
-                                            <span>🍋</span>
-                                        ) : userData.activeTheme === 'winter' ? (
-                                            <span>🏂</span>
-                                        ) : userData.activeTheme === 'dark' ? (
-                                            <span>🌑</span>
-                                        ) : userData.activeTheme === 'halloween' ? (
-                                            <span>🎃</span>
-                                        ) : userData.activeTheme === 'forest' ? (
-                                            <span>🌲</span>
-                                        ) : userData.activeTheme === 'coffee' ? (
-                                            <span>☕</span>
-                                        ) : userData.activeTheme === 'dracula' ? (
-                                            <span>🦇</span>
-                                        ) : (
-                                            <span>xxx</span>
-                                        )}
+                        <div className="collapse collapse-arrow bg-neutral mt-3">
+                            <input type="checkbox" />
+                            <div className="collapse-title text-xl font-medium text-neutral-content">
+                                <div className="grid grid-cols-4">
+                                    <div className="col-span-3">
+                                        <p>Memberships</p>
                                     </div>
-                                </button>
+                                    <div className="justify-self-end self-center">
+                                        <FaRegAddressCard />
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="collapse-content">
+                                <div>
+                                    {membership && membership.length > 0 ? (
+                                        membership.map((item, index) => (
+                                            <div key={index}>
+                                                <div className="card bg-accent shadow-xl text-accent-content">
+                                                    <div className="card-body">
+                                                        <h2 className="card-title">{item.productName}</h2>
+                                                        {/* <p>{item.date}</p> */}
+                                                        <p>Start Date &nbsp;:  <span className="font-medium">{item.date.split(' - ')[0]} </span></p>
+                                                        <p>End Date&nbsp;&nbsp;&nbsp;: <span className="font-medium">{item.date.split(' - ')[1]} </span> </p>
+                                                        <div className="card-actions justify-end">
+                                                            <button className="btn btn-primary cursor-default">Active</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p>No membership yet...</p>
+                                    )}
+                                </div>
                             </div>
                         </div>
-
-                        <div className="grid grid-cols-2 mt-2 gap-1">
-                            <div>
-                                <button className="btn btn-primary min-w-full " onClick={() => handleNavigateJournal('/journal')}>Journal <FaRegMap />
-                                </button>
-
+                        <div className="collapse collapse-arrow bg-neutral mt-3">
+                            <input type="checkbox" />
+                            <div className="collapse-title text-xl font-medium text-neutral-content">
+                                <div className="grid grid-cols-4">
+                                    <div className="col-span-3">
+                                        <p>Shop</p>
+                                    </div>
+                                    <div className="justify-self-end self-center">
+                                        <BiStore />
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <button className="btn btn-primary min-w-full " onClick={handleLogout}>Log Out <IoMdLogOut /></button>
+                            <div className="collapse-content">
+                                <div className="grid grid-cols-2 gap-1 ">
+                                    <div>
+                                        <button
+                                            className="btn btn-primary min-w-full"
+                                            onClick={() => document.getElementById('shopAvatarModal').showModal()}>
+                                            Avatar
+                                            <MdOutlineShoppingCart />
+                                        </button>
 
+                                    </div>
+                                    <div>
+                                        <button
+                                            className="btn btn-primary min-w-full"
+                                            onClick={() => document.getElementById('shopThemeModal').showModal()}>
+                                            Theme
+                                            <MdOutlineShoppingCart />
+                                        </button>
+
+                                    </div>
+
+                                </div>
                             </div>
-
                         </div>
-                    </div>
-                </div >
-                <div className="collapse collapse-arrow bg-neutral mt-3 mb-40">
-                    <input type="checkbox" />
-                    <div className="collapse-title text-xl font-medium text-neutral-content">
-                        <div className="grid grid-cols-4">
-                            <div className="col-span-3">
-                                <p>Reward</p>
+                        <div className="collapse collapse-arrow bg-neutral mt-3 mb-32">
+                            <input type="checkbox" />
+                            <div className="collapse-title text-xl font-medium text-neutral-content">
+                                <div className="grid grid-cols-4">
+                                    <div className="col-span-3">
+                                        <p>Setting</p>
+                                    </div>
+                                    <div className="justify-self-end self-center">
+                                        <TbSettings />
+                                    </div>
+                                </div>
                             </div>
-                            <div className="justify-self-end self-center">
-                                <FaGifts />
+                            <div className="collapse-content">
+                                <div className="grid grid-cols-2 gap-1 ">
+                                    <div>
+                                        <button className="btn btn-primary min-w-full" onClick={() => document.getElementById('avatarModal').showModal()}>
+                                            Avatar
+                                            <span className="bg-neutral rounded-full">
+                                                <AvatarIcon avatar={userData.activeAvatar} fontSize={"32px"} className="text-neutral-content p-1" />
+                                            </span>
+                                        </button>
+                                    </div>
+                                    <div>
+                                        <button
+                                            className="btn btn-primary min-w-full"
+                                            onClick={() => document.getElementById('themeModal').showModal()}>Theme
+                                            <div className="text-2xl bg-neutral rounded-full">
+                                                {userData.activeTheme === 'Light' ? (
+                                                    <span>☀️</span>
+                                                ) : userData.activeTheme === 'Autumn' ? (
+                                                    <span>🍂</span>
+                                                ) : userData.activeTheme === 'Lemonade' ? (
+                                                    <span>🍋</span>
+                                                ) : userData.activeTheme === 'Winter' ? (
+                                                    <span>🏂</span>
+                                                ) : userData.activeTheme === 'Dark' ? (
+                                                    <span>🌑</span>
+                                                ) : userData.activeTheme === 'Halloween' ? (
+                                                    <span>🎃</span>
+                                                ) : userData.activeTheme === 'Forest' ? (
+                                                    <span>🌲</span>
+                                                ) : userData.activeTheme === 'Coffee' ? (
+                                                    <span>☕</span>
+                                                ) : userData.activeTheme === 'Dracula' ? (
+                                                    <span>🦇</span>
+                                                ) : (
+                                                    <span>xxx</span>
+                                                )}
+                                            </div>
+                                        </button>
+                                    </div>
+                                </div>
 
+                                <div className="grid grid-cols-2 mt-2 gap-1">
+                                    <div>
+                                        <button className="btn btn-primary min-w-full " onClick={() => handleNavigateJournal('/journal')}>Journal <FaRegMap />
+                                        </button>
+
+                                    </div>
+                                    <div>
+                                        <button className="btn btn-primary min-w-full " onClick={handleLogout}>Log Out <IoMdLogOut /></button>
+
+                                    </div>
+
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div className="collapse-content">
-                        <button className="btn btn-secondary min-w-full btn-circle" onClick={() => document.getElementById('shopAvatarModal').showModal()}>
-                            <FaGift /> Voucher 100.000 Lapangan Badminton
+                        </div >
+                    </div >
 
 
-                        </button>
-                        <button className="btn btn-secondary min-w-full btn-circle mt-2" onClick={() => document.getElementById('shopAvatarModal').showModal()}>
-                            <FaGift /> Voucher 100.000 Lapangan Badminton
-
-
-                        </button>
-                        <button className="btn btn-secondary min-w-full btn-circle mt-2" onClick={() => document.getElementById('shopAvatarModal').showModal()}>
-                            <FaGift /> Voucher 100.000 Lapangan Badminton
-
-
-                        </button>
-
-
+                </>
+            ) : (
+                <div className="flex justify-center items-center h-screen  ">
+                    <div>
+                        <p className="text-base font-mono">Loading...</p>
                     </div>
                 </div>
-
-
-
-            </div >
+            )}
 
             <dialog id="achievementModal" className="modal">
-                <div className="modal-box bg-neutral text-neutral-content">
-                    <div className="grid grid-cols-5">
-                        <div className="col-span-4  flex items-center">
-                            <p className="text-sm">{achievementDetail.description}</p>
+                {achievementDetail ? (
+                    <>
+                        <div className="modal-box bg-neutral text-neutral-content">
+                            <div className="grid grid-cols-5">
+                                <div className="col-span-4  flex items-center">
+                                    <p className="text-sm">{achievementDetail.description}</p>
+
+                                </div>
+                                <div className="flex justify-center">
+                                    {achievementDetail.status ?
+                                        <IoIosCheckmarkCircle color="green" fontSize={'30px'} />
+                                        : <IoIosCloseCircle color="red" fontSize={'30px'} />
+                                    }
+                                </div>
+                            </div>
 
                         </div>
-                        <div className="flex justify-center">
-                            {achievementDetail.status ?
-                                <IoIosCheckmarkCircle color="green" fontSize={'30px'} />
-                                : <IoIosCloseCircle color="red" fontSize={'30px'} />
-                            }
+                        <form method="dialog" className="modal-backdrop">
+                            <button>Close</button>
+                        </form>
+                    </>
+                ) : (
+                    <>
+                        <div className="modal-box bg-neutral text-neutral-content skeleton">
                         </div>
-                    </div>
+                    </>
+                )}
 
-                </div>
-                <form method="dialog" className="modal-backdrop">
-                    <button>Close</button>
-                </form>
             </dialog>
 
             <dialog id="shopAvatarModal" className="modal">
@@ -1143,39 +1090,41 @@ export default function DetailAccount() {
                     </form>
                     <h3 className="font-bold text-lg">Avatar Store</h3>
                     <div className="grid grid-cols-4 gap-2 mt-3">
-                        {avatarItem.map((item, index) => (
-                            <div
-                                key={index}
-                                className={`${item.status === 'non-active' ? 'cursor-pointer' : ''}`}
-                                onClick={() => {
-                                    if (item.status === 'non-active') {
-                                        handleDetailAvatar(item.id)
-                                    }
-                                }}>
-                                <div className="bg-neutral-content rounded-t-lg grid grid-rows-1 place-items-center h-20">
-                                    <div className="">
-                                        <div>
-                                            <AvatarIcon avatar={item.icon} fontSize={"50px"} className="text-neutral" />
+                        {avatarItem && (
+                            avatarItem.map((item, index) => (
+                                <div
+                                    key={index}
+                                    className={`${item.status === 'non-active' ? 'cursor-pointer' : ''}`}
+                                    onClick={() => {
+                                        if (item.status === 'non-active') {
+                                            handleDetailAvatar(item.id)
+                                        }
+                                    }}>
+                                    <div className="bg-neutral-content rounded-t-lg grid grid-rows-1 place-items-center h-20">
+                                        <div className="">
+                                            <div>
+                                                <AvatarIcon avatar={item.icon} fontSize={"50px"} className="text-neutral" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="border">
+                                        <p className="text-xs font-semibold truncate">{item.title}</p>
+                                        <div className="grid grid-cols-2">
+                                            <div className="grid content-center">
+                                                {item.status === 'active' ? (
+                                                    <IoIosCheckmarkCircle color="green" />
+                                                ) : (
+                                                    <IoIosCloseCircle color="red" />
+                                                )}
+                                            </div>
+                                            <div className="flex justify-end place-self-center">
+                                                <p className="text-base"><span className="font-bold">XP</span> {item.xp}</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="border">
-                                    <p className="text-xs font-semibold truncate">{item.title}</p>
-                                    <div className="grid grid-cols-2">
-                                        <div className="grid content-center">
-                                            {item.status === 'active' ? (
-                                                <IoIosCheckmarkCircle color="green" />
-                                            ) : (
-                                                <IoIosCloseCircle color="red" />
-                                            )}
-                                        </div>
-                                        <div className="flex justify-end place-self-center">
-                                            <p className="text-base"><span className="font-bold">XP</span> {item.xp}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
+                            ))
+                        )}
                     </div>
                     <div className="modal-action">
                         <form method="dialog">
@@ -1195,39 +1144,42 @@ export default function DetailAccount() {
                     </form>
                     <h3 className="font-bold text-lg">Theme Store</h3>
                     <div className="grid grid-cols-3 gap-2">
-                        {themeItemShop.map((item, index) => (
-                            <div
-                                key={index}
-                                className={`${item.status === 'non-active' ? 'cursor-pointer' : ''}`}
-                                onClick={() => {
-                                    if (item.status === 'non-active') {
-                                        handleDetailTheme(item.id)
-                                    }
-                                }}>
-                                <div className="bg-neutral-content rounded-t-lg grid grid-rows-1 place-items-center h-20">
-                                    <div className="text-5xl">
-                                        <div>
-                                            {item.icon}
+                        {themeItemShop && (
+                            themeItemShop.map((item, index) => (
+                                <div
+                                    key={index}
+                                    className={`${item.status === 'non-active' ? 'cursor-pointer' : ''}`}
+                                    onClick={() => {
+                                        if (item.status === 'non-active') {
+                                            handleDetailTheme(item.id)
+                                        }
+                                    }}>
+                                    <div className="bg-neutral-content rounded-t-lg grid grid-rows-1 place-items-center h-20">
+                                        <div className="text-5xl">
+                                            <div>
+                                                {item.icon}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="border">
+                                        <p className="text-sm font-semibold truncate">{item.title}</p>
+                                        <div className="grid grid-cols-2">
+                                            <div className="grid content-center">
+                                                {item.status === 'active' ? (
+                                                    <IoIosCheckmarkCircle color="green" />
+                                                ) : (
+                                                    <IoIosCloseCircle color="red" />
+                                                )}
+                                            </div>
+                                            <div className="flex justify-end place-self-center">
+                                                <p className="text-base"><span className="font-bold">XP</span> {item.xp}</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="border">
-                                    <p className="text-sm font-semibold truncate">{item.title}</p>
-                                    <div className="grid grid-cols-2">
-                                        <div className="grid content-center">
-                                            {item.status === 'active' ? (
-                                                <IoIosCheckmarkCircle color="green" />
-                                            ) : (
-                                                <IoIosCloseCircle color="red" />
-                                            )}
-                                        </div>
-                                        <div className="flex justify-end place-self-center">
-                                            <p className="text-base"><span className="font-bold">XP</span> {item.xp}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
+                            ))
+                        )}
+
                     </div>
                     <div className="modal-action">
                         <form method="dialog">
@@ -1240,6 +1192,60 @@ export default function DetailAccount() {
                 </form>
             </dialog>
 
+            <dialog id="buyAvatarConfirmation" className="modal modal-bottom sm:modal-middle ">
+                <div className="modal-box">
+                    {avatarDetail && (
+                        <>
+                            <h3 className="font-bold text-lg">Buy Avatar {avatarDetail.name} </h3>
+                            <div className="grid grid-cols-2 gap-1 mt-3">
+                                <button
+                                    className={`btn btn-primary  ${loadingStatus ? 'btn-disabled skeleton' : ''}`}
+                                    onClick={() => handleBuyAvatar(avatarDetail.title, avatarDetail.xp)}
+
+                                >XP {avatarDetail.xp} Points</button>
+                                <button
+                                    className="btn"
+                                    onClick={() => {
+                                        document.getElementById('buyAvatarConfirmation').close();
+                                        setCheckXp(false)
+                                    }}>
+                                    Cancel
+                                </button>
+                            </div>
+                            {checkXp && <p className="text-error mt-2">{`You don't have enough XP`}</p>}
+                        </>
+                    )}
+                </div>
+            </dialog >
+
+            <dialog id="buyThemeConfirmation" className="modal">
+                <div className="modal-box bg-neutral text-neutral-content">
+                    {themeDetail && (
+                        <>
+                            <h3 className="font-bold text-lg">Buy  {themeDetail.name} Theme {themeDetail.title} </h3>
+                            <div className="grid grid-cols-2 gap-1 mt-3">
+                                <button
+                                    className={`btn btn-primary  ${loadingStatus ? 'btn-disabled skeleton' : ''}`}
+                                    onClick={() => handleBuyTheme(themeDetail.name, themeDetail.xp)}
+
+                                >XP {themeDetail.xp} Points</button>
+                                <button
+                                    className="btn"
+                                    onClick={() => {
+                                        document.getElementById('buyThemeConfirmation').close();
+                                        document.querySelector('html').setAttribute('data-theme', userData.activeTheme.toLocaleLowerCase());
+                                        setCheckXp(false)
+                                    }}>
+                                    Cancel
+                                </button>
+                            </div>
+                            {checkXp && <p className="text-error mt-2">{`You don't have enough XP`}</p>}
+                        </>
+                    )}
+
+                </div>
+            </dialog>
+
             <dialog id="avatarModal" className="modal">
                 <div className="modal-box bg-neutral text-neutral-content">
                     <form method="dialog">
@@ -1250,30 +1256,35 @@ export default function DetailAccount() {
                     </form>
                     <h3 className="font-bold text-lg">Change Avatar</h3>
                     <div className="grid grid-cols-4 gap-2 mt-3">
-                        {avatarItemSetting
-                            .filter(item => item.status === 'active')
-                            .map((item, index) => (
-                                <div
-                                    key={index}
-                                    className={`${item.status === 'active' ? 'cursor-pointer' : ''}`}
-                                    onClick={() => {
-                                        if (item.status === 'active') {
-                                            handlePreviewAvatar(item.id)
-                                        }
-                                    }}
-                                >
-                                    <div className="bg-neutral-content rounded-t-lg grid grid-rows-1 place-items-center h-20">
-                                        <div className="">
-                                            <div>
-                                                <AvatarIcon avatar={item.icon} fontSize={"50px"} className="text-neutral" />
+                        {avatarItemSetting && (
+                            <>
+                                {avatarItemSetting
+                                    .filter(item => item.status === 'active')
+                                    .map((item, index) => (
+                                        <div
+                                            key={index}
+                                            className={`${item.status === 'active' ? 'cursor-pointer' : ''}`}
+                                            onClick={() => {
+                                                if (item.status === 'active') {
+                                                    handlePreviewAvatar(item.id)
+                                                }
+                                            }}
+                                        >
+                                            <div className="bg-neutral-content rounded-t-lg grid grid-rows-1 place-items-center h-20">
+                                                <div className="">
+                                                    <div>
+                                                        <AvatarIcon avatar={item.icon} fontSize={"50px"} className="text-neutral" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="border">
+                                                <p className={`text-sm font-semibold truncate ${item.preview === 'active' ? 'text-primary' : ''}`}>{item.title}</p>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="border">
-                                        <p className={`text-sm font-semibold truncate ${item.preview === 'active' ? 'text-primary' : ''}`}>{item.title}</p>
-                                    </div>
-                                </div>
-                            ))}
+                                    ))}
+                            </>
+                        )}
+
                     </div>
                     <div className="modal-action">
                         <form method="dialog">
@@ -1295,30 +1306,34 @@ export default function DetailAccount() {
                 <div className="modal-box bg-neutral text-neutral-content ">
                     <h3 className="font-bold text-lg ">Change Theme</h3>
                     <div className="grid grid-cols-3 gap-2 mt-3">
-                        {themeItem
-                            .filter(item => item.status === 'active')
-                            .map((item, index) => (
-                                <div
-                                    key={index}
-                                    className={`${item.status === 'active' ? 'cursor-pointer' : ''}`}
-                                    onClick={() => {
-                                        if (item.status === 'active') {
-                                            handlePreviewTheme(item.id)
-                                        }
-                                    }}
-                                >
-                                    <div className="bg-neutral-content rounded-t-lg grid grid-rows-1 place-items-center h-20">
-                                        <div className="">
-                                            <div className="text-5xl">
-                                                {item.icon}
+                        {themeItem && (
+                            <>
+                                {themeItem
+                                    .filter(item => item.status === 'active')
+                                    .map((item, index) => (
+                                        <div
+                                            key={index}
+                                            className={`${item.status === 'active' ? 'cursor-pointer' : ''}`}
+                                            onClick={() => {
+                                                if (item.status === 'active') {
+                                                    handlePreviewTheme(item.id)
+                                                }
+                                            }}
+                                        >
+                                            <div className="bg-neutral-content rounded-t-lg grid grid-rows-1 place-items-center h-20">
+                                                <div className="">
+                                                    <div className="text-5xl">
+                                                        {item.icon}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="border">
+                                                <p className={`text-sm font-semibold truncate ${item.preview === 'active' ? 'text-primary' : ''}`}>{item.title}</p>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className="border">
-                                        <p className={`text-sm font-semibold truncate ${item.preview === 'active' ? 'text-primary' : ''}`}>{item.title}</p>
-                                    </div>
-                                </div>
-                            ))}
+                                    ))}
+                            </>
+                        )}
                     </div>
                     <div className="modal-action">
                         <form method="dialog">
@@ -1332,53 +1347,6 @@ export default function DetailAccount() {
                             >Save</button>
                         </form>
                     </div>
-                </div>
-            </dialog>
-
-            <dialog id="buyAvatarConfirmation" className="modal modal-bottom sm:modal-middle ">
-                <div className="modal-box">
-                    <h3 className="font-bold text-lg">Buy Avatar {avatarDetail.name} </h3>
-                    <div className="grid grid-cols-2 gap-1 mt-3">
-                        <button
-                            className="btn btn-primary"
-                            onClick={() => handleBuyAvatar(avatarDetail.title, avatarDetail.xp)}
-
-                        >XP {avatarDetail.xp} Points</button>
-                        <button
-                            className="btn"
-                            onClick={() => {
-                                document.getElementById('buyAvatarConfirmation').close();
-                                setCheckXp(false)
-                            }}>
-                            Cancel
-                        </button>
-                    </div>
-                    {checkXp && <p className="text-error mt-2">{`You don't have enough XP`}</p>}
-
-                </div>
-            </dialog >
-
-            <dialog id="buyThemeConfirmation" className="modal">
-                <div className="modal-box bg-neutral text-neutral-content">
-                    <h3 className="font-bold text-lg">Buy  {themeDetail.name} Theme {themeDetail.title} </h3>
-                    <div className="grid grid-cols-2 gap-1 mt-3">
-                        <button
-                            className="btn btn-primary"
-                            onClick={() => handleBuyTheme(themeDetail.bodySend, themeDetail.xp)}
-
-                        >XP {themeDetail.xp} Points</button>
-                        <button
-                            className="btn"
-                            onClick={() => {
-                                document.getElementById('buyThemeConfirmation').close();
-                                document.querySelector('html').setAttribute('data-theme', userData.activeTheme.toLocaleLowerCase());
-                                setCheckXp(false)
-                            }}>
-                            Cancel
-                        </button>
-                    </div>
-                    {checkXp && <p className="text-error mt-2">{`You don't have enough XP`}</p>}
-
                 </div>
             </dialog>
 

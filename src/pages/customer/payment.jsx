@@ -1,55 +1,71 @@
 import Navbar from "../../components/navbar";
 import Header from '../../components/header';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { useState, useEffect, useContext } from 'react';
+import axios from '../../api/axios';
+import { useState, useEffect } from 'react';
 import Alert from '@mui/material/Alert';
 import { BsQrCode } from "react-icons/bs";
 import { FaSackDollar } from "react-icons/fa6";
-import { CiCoins1 } from "react-icons/ci";
 import { RiCopperCoinLine } from "react-icons/ri";
 import { TbListDetails } from "react-icons/tb";
 
 export default function Payment() {
 
     const navigate = useNavigate();
-    const [arrPayment, setArrPayment] = useState([]);
-    const [orderStatus, setOrderStatus] = useState(null);
+    const [arrPayment, setArrPayment] = useState(null);
+    const [pageBefore, setPageBefore] = useState(null);
     const [detailOrder, setDetailOrder] = useState(null)
     const token = localStorage.getItem('token');
     const username = localStorage.getItem('username');
 
     const handleDetailRating = (idPayment, idProduct) => {
         const path = `/product/give-rating/${idPayment}/${idProduct}`;
-        localStorage.setItem('detailPath', `/payment`);
         navigate(path);
     };
 
-
-    const getDataPayment = async () => {
+    const getDataDetailUser = async () => {
         try {
-            const token = localStorage.getItem('token');
 
-            const response = await axios.get(`http://localhost:2000/payment/${username}`, {
+            const response = await axios.get(`/user/detail/${username}`, {
                 headers: {
-                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                    Authorization: `Bearer ${token}`
                 }
             });
 
-            console.log('response', response);
-            console.log('response', response.data);
+            const responseData = response.data;
+
+            document.querySelector('html').setAttribute('data-theme', responseData.activeTheme.toLocaleLowerCase());
+
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            localStorage.removeItem('token');
+            navigate('/login');
+
+
+        }
+    };
+
+    const getDataPayment = async () => {
+        try {
+
+            const response = await axios.get(`/payment/${username}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
 
             setArrPayment(response.data)
 
-
         } catch (error) {
             console.error('Error:', error);
+            localStorage.removeItem('token');
+            navigate('/login');
         }
     }
 
     const handleDetailJamOrder = async (id) => {
         try {
-            const response = await axios.get(`http://localhost:2000/order/detail/${id}`, {
+            const response = await axios.get(`/order/detail/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -62,32 +78,36 @@ export default function Payment() {
 
         } catch (error) {
             console.log('error:', error);
+            if (error.response.data.status === 'fail') {
+                alert(error.response.data.message)
+            } else {
+                localStorage.removeItem('token');
+                navigate('/login');
+            }
         }
     }
 
     useEffect(() => {
         if (detailOrder) {
             document.getElementById('detailJamOrderModal').showModal();
-            console.log(detailOrder.length > 1)
-            console.log(detailOrder[0].hour)
-
-
         }
     }, [detailOrder]);
 
     useEffect(() => {
-        const fromOrder = localStorage.getItem('fromOrder');
-        if (fromOrder === 'true') {
-            setOrderStatus('success');
-            setTimeout(() => {
-                setOrderStatus(null);
-            }, 2000);
-            localStorage.setItem('fromOrder', 'false');
+        window.scrollTo(0, 0);
+
+        const lastPage = localStorage.getItem('lastPage');
+        if (lastPage) {
+            setPageBefore(lastPage);
+            localStorage.removeItem('lastPage');
         }
 
-
+        setTimeout(() => {
+            setPageBefore(null);
+        }, 2000);
 
         getDataPayment()
+        getDataDetailUser()
     }, []);
 
     return (
@@ -96,54 +116,82 @@ export default function Payment() {
                 <Header title={'Recently Transaction'} />
             </div>
             <div className="flex justify-center mt-2">
-                {orderStatus === 'success' && (
-                    <Alert severity="success" onClose={() => setOrderStatus(null)}>Order Successfully Added</Alert>
+                {pageBefore === 'order' && (
+                    <Alert severity="success" onClose={() => setPageBefore(null)}>Order Successfully Added</Alert>
+                )}
+                {pageBefore === 'rating' && (
+                    <Alert severity="success" onClose={() => setPageBefore(null)}>Rating Successfully Added</Alert>
                 )}
             </div>
 
             <div className="mx-10 mt-5 mb-10">
-                {arrPayment.length === 0 ? (
-                    <p>No payment yet...</p>
-                ) : (
-                    arrPayment.map((payment, index) => (
-                        <div key={index}>
-                            <div className="card mb-3 flex justify-center shadow-xl bg-neutral">
-                                <div className="card-body">
-                                    <p className="text-neutral-content">{payment.productName}</p>
-                                    <div className="grid grid-cols-2">
-                                        <div className="grid content-center">
-                                            <p className="text-neutral-content font-bold">Rp. {payment.totalPrice}</p>
-                                        </div>
-                                        <div className="grid content-center">
-                                            <div className="rounded-lg bg-neutral-content tooltip-info p-1 w-10 tooltip tooltip-right text-neutral cursor-pointer" data-tip={payment.paymentMethod === "krakataucoin" ? "Paid by krakatau coin" : ("Paid by " + payment.paymentMethod)}>
-                                                {payment.paymentMethod === 'qris' && (
-                                                    <BsQrCode fontSize="19px" className="text-neutral w-full" />
-                                                )}
-                                                {payment.paymentMethod === 'cash' && (
-                                                    <FaSackDollar fontSize="19px" className="text-neutral w-full" />
-                                                )}
-                                                {payment.paymentMethod === 'krakataucoin' && (
-                                                    <RiCopperCoinLine fontSize="19px" className="text-neutral w-full" />
-                                                )}
+                {arrPayment ? (
+                    <>
+                        {arrPayment.length === 0 ? (
+                            <p>No payment yet...</p>
+                        ) : (
+                            arrPayment.map((payment, index) => (
+                                <div key={index}>
+                                    <div className="card mb-3 flex justify-center shadow-xl bg-neutral">
+                                        <div className="card-body">
+                                            <p className="text-neutral-content">{payment.fullProductName}</p>
+                                            <div className="grid grid-cols-2">
+                                                <div className="grid content-center">
+                                                    <p className="text-neutral-content font-bold">Rp. {payment.totalPrice}</p>
+                                                </div>
+                                                <div className="grid content-center">
+                                                    <div className="rounded-lg bg-neutral-content tooltip-info p-1 w-10 tooltip tooltip-right text-neutral cursor-pointer" data-tip={payment.paymentMethod === "krakataucoin" ? "Paid by krakatau coin" : ("Paid by " + payment.paymentMethod)}>
+                                                        {payment.paymentMethod === 'qris' && (
+                                                            <BsQrCode fontSize="19px" className="text-neutral w-full" />
+                                                        )}
+                                                        {payment.paymentMethod === 'cash' && (
+                                                            <FaSackDollar fontSize="19px" className="text-neutral w-full" />
+                                                        )}
+                                                        {payment.paymentMethod === 'krakataucoin' && (
+                                                            <RiCopperCoinLine fontSize="19px" className="text-neutral w-full" />
+                                                        )}
+                                                    </div>
+                                                </div>
                                             </div>
+                                            <p className="text-neutral-content">{payment.date.split(' - ')[0]}</p>
+                                            <div className={`grid grid-cols-1  ${payment.paymentStatus === 'Batal' && 'hidden'}`}>
+                                                <button className="btn btn-info btn-sm " onClick={() => handleDetailJamOrder(payment.connectHistory)}>
+                                                    Detail
+                                                    <TbListDetails fontSize="20px" className="text-neutral" />
+                                                </button>
+                                            </div>
+                                            {payment.paymentStatus === 'Lunas' ? (
+                                                <div className="grid grid-cols-5  ">
+                                                    <button className="btn btn-primary me-2 col-span-2 " onClick={() => handleDetailRating(payment.id, payment.idProduct)}>Rate</button>
+                                                    <button className={`btn col-span-3 cursor-default
+                                      ${payment.paymentStatus === 'Belum dibayar' || payment.paymentStatus === 'Batal' ? 'btn-error' :
+                                                            payment.paymentStatus === 'Sedang diverifikasi' ? 'btn-warning' :
+                                                                payment.paymentStatus === 'Lunas' ? 'btn-success' : 'btn-primary'}`}>{payment.paymentStatus}</button>
+
+                                                </div>
+                                            ) : (
+                                                <div className="grid grid-cols-1  ">
+                                                    <button className={`btn col-span-3 cursor-default
+                                    ${payment.paymentStatus === 'Belum dibayar' || payment.paymentStatus === 'Batal' ? 'btn-error' :
+                                                            payment.paymentStatus === 'Sedang diverifikasi' ? 'btn-warning' :
+                                                                payment.paymentStatus === 'Lunas' ? 'btn-success' : 'btn-primary'}`}>{payment.paymentStatus}</button>
+
+                                                </div>
+                                            )}
+
                                         </div>
                                     </div>
-                                    <p className="text-neutral-content">{payment.date.split(' - ')[0]}</p>
-                                    <div className="grid grid-cols-1">
-                                        <button className="btn btn-info btn-sm " onClick={() => handleDetailJamOrder(payment.connectHistory)}>
-                                            Detail
-                                            <TbListDetails fontSize="20px" className="text-neutral" />
-                                        </button>
-                                    </div>
-                                    <div className="card-actions justify-end">
-                                        <button className="btn btn-primary  " onClick={() => handleDetailRating(payment.id, payment.idProduct)}>Rate</button>
-                                        <button className="btn btn-primary btn-wide">{payment.paymentStatus}</button>
-                                    </div>
+                                    <div className="divider"></div>
                                 </div>
-                            </div>
-                            <div className="divider"></div>
+                            ))
+                        )}
+                    </>
+                ) : (
+                    <div className="flex justify-center items-center h-screen  ">
+                        <div>
+                            <p className="text-base font-mono">Loading...</p>
                         </div>
-                    ))
+                    </div>
                 )}
 
             </div>
@@ -154,15 +202,12 @@ export default function Payment() {
                     {detailOrder && (
                         <>
                             <div>
-                                {/* Check if the date string contains a hyphen */}
                                 {detailOrder[0].date.split('-').length > 3 ? (
-                                    // If it contains a hyphen, display start and end dates separately
                                     <>
                                         <p className='text-lg'>Start date: <span className="font-semibold">{detailOrder[0].date.split(' - ')[0]}</span></p>
                                         <p className='text-lg'>End date:  <span className="font-semibold">{detailOrder[0].date.split(' - ')[1]}</span></p>
                                     </>
                                 ) : (
-                                    // If it doesn't contain a hyphen, display the date as is
                                     <p className='text-lg'>Tanggal : {detailOrder[0].date}</p>
                                 )}
                             </div>

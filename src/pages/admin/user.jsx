@@ -12,8 +12,7 @@ import {
     GridToolbarExport,
 } from '@mui/x-data-grid';
 import { useForm } from "react-hook-form";
-import { IoMdAddCircleOutline } from "react-icons/io";
-import axios from 'axios';
+import axios from '../../api/axios';
 
 function CustomToolbar() {
     return (
@@ -26,38 +25,53 @@ function CustomToolbar() {
 
 export default function ActiveOrder() {
 
-    const [tableData, setTableData] = useState([])
+    const token = localStorage.getItem('token');
+
+    const [tableData, setTableData] = useState(null)
     const [challangeData, setChallangeData] = useState(null)
     const [deleteStatus, setDeleteStatus] = useState(null);
     const [updateStatus, setUpdateStatus] = useState(null);
-    const [addStatus, setAddStatus] = useState(null);
+    const [loadingStatus, setLoadingStatus] = useState(null);
     const [deleteId, setDeleteId] = useState(null);
-    const [theme, setTheme] = useState(null);
     const navigate = useNavigate();
-    const location = useLocation();
-
-
 
     const fetchData = async () => {
         try {
-            const response = await axios.get('/user')
+            const response = await axios.get('/user', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            console.log('response', response);
             setTableData(response.data);
 
         } catch (error) {
             console.error('Error fetching data:', error);
-            navigate('/login', { state: { from: location }, replace: true });
+            if (error.message === 'Request failed with status code 401') {
+                navigate('/unauthorized')
+            } else {
+                navigate('/login');
+            }
 
         }
     };
 
     const handleDeleteProduct = async (id) => {
+
         try {
-            await axios.delete(`/user/${id}`)
+            setLoadingStatus(true)
+            await axios.delete(`/user/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             fetchData();
             setDeleteStatus('success');
             setTimeout(() => {
                 setDeleteStatus(null);
             }, 2000);
+
+            setLoadingStatus(false)
 
         } catch (error) {
             setDeleteStatus('error');
@@ -69,12 +83,25 @@ export default function ActiveOrder() {
     };
 
     const handleUpdateChallenge = async (data) => {
+        console.log('data', data)
         try {
-            await axios.post(`/user/${data.id}/update`, {
+            setLoadingStatus(true)
+
+            const dataToSend = {
                 username: data.username,
-                password: data.password,
-                phoneNumber: data.phoneNumber
-            });
+                phoneNumber: data.phoneNumber,
+                biayaPendaftaranMembershipGym: data.membershipGym,
+                biayaPendaftaranMembershipBadminton: data.membershipBadminton,
+            };
+
+            const response = await axios.post(`/user/${data.id}/update`, dataToSend, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+
+            console.log(response);
+            setLoadingStatus(false)
             fetchData();
             setUpdateStatus('success');
             setTimeout(() => {
@@ -91,8 +118,14 @@ export default function ActiveOrder() {
 
     const handleDetailChallenge = async (id) => {
         try {
-            const response = await axios.get(`/user/${id}`);
+
+            const response = await axios.get(`/user/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             setChallangeData(response)
+
 
         } catch (error) {
             console.log('error:', error);
@@ -104,7 +137,6 @@ export default function ActiveOrder() {
         setDeleteId(id);
     }
 
-    // Create separate instances of useForm for each form
     const form1 = useForm({
         defaultValues: {
             id: '',
@@ -113,61 +145,22 @@ export default function ActiveOrder() {
             phoneNumber: '',
         },
     });
-    const form2 = useForm({
-        defaultValues: {
-            usernameAdd: '',
-            passwordAdd: '',
-            phoneNumberAdd: '',
-        },
-    });
 
-    // Destructure register and handleSubmit functions from each form
     const { register: register1, handleSubmit: handleSubmit1, watch: watch1, setValue: setValue1, formState: { errors: errors1 } } = form1;
-    const { register: register2, handleSubmit: handleSubmit2, watch: watch2, setValue: setValue2, formState: { errors: errors2 } } = form2;
-
-
-    const handleAddChallenge = async () => {
-        document.getElementById('addChallange').showModal()
-        setValue2("usernameAdd", '')
-        setValue2("passwordAdd", '')
-        setValue2("phoneNumberAdd", '')
-    }
-
-    const handleAddSubmitChallenge = async (data) => {
-        try {
-            await axios.post(`/user/add`, {
-                username: data.usernameAdd,
-                password: data.passwordAdd,
-                phoneNumber: data.phoneNumberAdd,
-            });
-            fetchData();
-            setAddStatus('success');
-            setTimeout(() => {
-                setAddStatus(null);
-            }, 2000);
-            document.getElementById('addChallange').close();
-
-        } catch (error) {
-            setAddStatus('error');
-            setTimeout(() => {
-                setAddStatus(null);
-            }, 2000);
-
-        }
-
-    }
 
     const handleCloseModal = async () => {
         document.getElementById('detailChallange').close();
-        document.getElementById('addChallange').close();
     }
 
     useEffect(() => {
         if (challangeData) {
+            console.log('challangeData', challangeData)
             setValue1("username", challangeData.data.username)
-            setValue1("password", challangeData.data.password)
             setValue1("phoneNumber", challangeData.data.phoneNumber)
+            setValue1("membershipGym", challangeData.data.biayaPendaftaranMembershipGym)
+            setValue1("membershipBadminton", challangeData.data.biayaPendaftaranMembershipBadminton)
             setValue1("id", challangeData.data.id)
+
             document.getElementById('detailChallange').showModal()
 
         }
@@ -176,17 +169,15 @@ export default function ActiveOrder() {
 
     useEffect(() => {
         fetchData();
-
     }, []);
 
-    const isDarkTheme = document.documentElement.getAttribute("data-theme") === 'dracula' || document.documentElement.getAttribute("data-theme") === 'dark'
-    console.log('isDarkTheme', isDarkTheme)
+
 
     const columns = [
         {
             field: 'id',
             headerName: 'Id',
-            flex: 1,
+            flex: 0.5,
         },
         {
             field: 'username',
@@ -194,13 +185,36 @@ export default function ActiveOrder() {
             flex: 1,
         },
         {
-            field: 'password',
-            headerName: 'Password',
+            field: 'phoneNumber',
+            headerName: 'Phone Number',
             flex: 1,
         },
         {
-            field: 'phoneNumber',
-            headerName: 'Phone Number',
+            field: 'biayaPendaftaranMembershipGym',
+            headerName: 'Biaya Pendaftaran Membership Gym',
+            renderCell: (params) => (
+                <div>
+                    {params.row.biayaPendaftaranMembershipGym === false ? (
+                        <p>Non Aktif</p>
+                    ) : (
+                        <p>Aktif</p>
+                    )}
+                </div>
+            ),
+            flex: 1,
+        },
+        {
+            field: 'biayaPendaftaranMembershipBadminton',
+            headerName: 'Biaya Pendaftaran Membership Badminton',
+            renderCell: (params) => (
+                <div>
+                    {params.row.biayaPendaftaranMembershipBadminton === false ? (
+                        <p>Non Aktif</p>
+                    ) : (
+                        <p>Aktif</p>
+                    )}
+                </div>
+            ),
             flex: 1,
         },
         {
@@ -241,16 +255,10 @@ export default function ActiveOrder() {
                                 <Alert severity="error" onClose={() => setDeleteStatus(null)}>Failed to delete user</Alert>
                             )}
                             {updateStatus === 'success' && (
-                                <Alert severity="success" onClose={() => setDeleteStatus(null)}>User updated successfully</Alert>
+                                <Alert severity="success" onClose={() => setUpdateStatus(null)}>User updated successfully</Alert>
                             )}
                             {updateStatus === 'error' && (
-                                <Alert severity="error" onClose={() => setDeleteStatus(null)}>Failed to update user</Alert>
-                            )}
-                            {addStatus === 'success' && (
-                                <Alert severity="success" onClose={() => setDeleteStatus(null)}>User added successfully</Alert>
-                            )}
-                            {addStatus === 'error' && (
-                                <Alert severity="error" onClose={() => setDeleteStatus(null)}>Failed to add user</Alert>
+                                <Alert severity="error" onClose={() => setUpdateStatus(null)}>Failed to update user</Alert>
                             )}
                         </div>
                     </div>
@@ -258,72 +266,53 @@ export default function ActiveOrder() {
 
             </div>
 
-            <div className="mx-10 mt-5">
-                <button className="btn btn-primary mx-1" onClick={handleAddChallenge}>
-                    <IoMdAddCircleOutline fontSize="1.5em" color='white' />
-                </button>
-            </div>
-
-            <div className="mx-10 mt-5 mb-20">
-                <DataGrid
-                    rows={tableData}
-                    columns={columns}
-                    initialState={{
-                        pagination: {
-                            paginationModel: {
-                                pageSize: 8,
-                            },
-                        },
-                    }}
-                    pageSizeOptions={[8]}
-                    disableRowSelectionOnClick
-                    disableColumnMenu
-                    slots={{ toolbar: CustomToolbar }}
-                    sx={{
-                        color: isDarkTheme ? 'white' : 'black', // Set the overall font color to white
-                        '& .MuiDataGrid-cell': { // Target individual cells for more granular control
-                            color: 'inherit', // Inherit the white color from the parent
-                        },
-                    }}
-                />
-            </div>
+            {tableData ? (
+                <>
+                    <div className="mx-10 mt-5 mb-20">
+                        <DataGrid
+                            rows={tableData}
+                            columns={columns}
+                            initialState={{
+                                pagination: {
+                                    paginationModel: {
+                                        pageSize: 8,
+                                    },
+                                },
+                            }}
+                            pageSizeOptions={[8]}
+                            disableRowSelectionOnClick
+                            slots={{ toolbar: CustomToolbar }}
+                        />
+                    </div>
+                </>
+            ) : (
+                <div className="flex justify-center items-center h-screen  ">
+                    <div>
+                        <p className="text-base font-mono">Loading...</p>
+                    </div>
+                </div>
+            )}
 
             <dialog id="detailChallange" className="modal">
                 <div className="modal-box">
 
                     <h3 className="font-bold text-lg">Update User</h3>
-                    <div className="label">
-                        <span className="label-text">Username</span>
-                    </div>
+
                     {challangeData && (
                         <form className="" onSubmit={handleSubmit1(handleUpdateChallenge)}>
-                            <textarea
+
+                            <div className="label">
+                                <span className="label-text">Username</span>
+                            </div>
+                            <input
                                 className="textarea textarea-bordered w-full"
                                 {...register1("username",
                                     { required: 'Username harus diisi' }
                                 )}
+                                disabled
                             />
 
                             {errors1.username && <p className="text-error mt-2">{errors1.username.message}</p>}
-
-                            <div className="label">
-                                <span className="label-text">Password</span>
-                            </div>
-                            <input
-                                type="text"
-                                className="input input-bordered w-full"
-                                {...register1("password",
-                                    { required: 'Password harus diisi' }
-                                )}
-                            />
-
-                            <input
-                                type="text"
-                                className="input input-bordered w-full hidden"
-                                {...register1("id")}
-                            />
-
-                            {errors1.password && <p className="text-error mt-2">{errors1.password.message}</p>}
 
                             <div className="label">
                                 <span className="label-text">Phone Number</span>
@@ -337,9 +326,37 @@ export default function ActiveOrder() {
                             />
                             {errors1.phoneNumber && <p className="text-error mt-2">{errors1.phoneNumber.message}</p>}
 
+                            <div className="label">
+                                <span className="label-text">Biaya Pendaftaran Membership Gym</span>
+                            </div>
+
+                            <select
+                                className="select select-bordered w-full"
+                                {...register1("membershipGym")} >
+                                <option disabled >What kind of status ?</option>
+                                <option value={true}>Aktif</option>
+                                <option value={false}>Non aktif</option>
+                            </select>
+
+                            {errors1.membershipGym && <p className="text-error mt-2">{errors1.membershipGym.message}</p>}
+
+                            <div className="label">
+                                <span className="label-text">Biaya Pendaftaran Membership Badminton</span>
+                            </div>
+
+                            <select
+                                className="select select-bordered w-full"
+                                {...register1("membershipBadminton")} >
+                                <option disabled >What kind of status ?</option>
+                                <option value={true}>Aktif</option>
+                                <option value={false}>Non aktif</option>
+                            </select>
+
+                            {errors1.membershipBadminton && <p className="text-error mt-2">{errors1.membershipBadminton.message}</p>}
+
                             <div className="modal-action">
                                 <button
-                                    className="btn btn-accent mx-1"
+                                    className={`btn btn-accent mx-1  ${loadingStatus ? 'btn-disabled skeleton' : ''}`}
                                     type='submit'
                                 >Update</button>
                                 <button className="btn btn-primary" type='button' onClick={handleCloseModal}>Cancel</button>
@@ -352,79 +369,18 @@ export default function ActiveOrder() {
                 </div>
             </dialog >
 
-            <dialog id="addChallange" className="modal">
-                <div className="modal-box">
-
-                    <h3 className="font-bold text-lg">Add User</h3>
-                    <div className="label">
-                        <span className="label-text">Username</span>
-                    </div>
-
-                    <form className="" onSubmit={handleSubmit2(handleAddSubmitChallenge)}>
-
-                        <textarea
-                            className="textarea textarea-bordered w-full"
-                            {...register2("usernameAdd",
-                                { required: 'Username harus diisi' }
-                            )}
-                        />
-
-                        {errors2.usernameAdd && <p className="text-error mt-2">{errors2.usernameAdd.message}</p>}
-
-                        <div className="label">
-                            <span className="label-text">Password</span>
-                        </div>
-                        <input
-                            type="text"
-                            className="input input-bordered w-full"
-                            {...register2("passwordAdd",
-                                { required: 'Password harus diisi' }
-                            )}
-                        />
-
-                        {errors2.passwordAdd && <p className="text-error mt-2">{errors2.passwordAdd.message}</p>}
-
-                        <div className="label">
-                            <span className="label-text">Phone Number</span>
-                        </div>
-                        <input
-                            type="text"
-                            className="input input-bordered w-full"
-                            {...register2("phoneNumberAdd",
-                                { required: 'Phone Number harus diisi' }
-                            )}
-                        />
-
-                        {errors2.phoneNumberAdd && <p className="text-error mt-2">{errors2.phoneNumberAdd.message}</p>}
-
-                        <div className="modal-action">
-                            <button
-                                className="btn btn-accent mx-1"
-                                type='submit'
-                            >
-                                Add
-                            </button>
-                            <button className="btn btn-primary" type='button' onClick={handleCloseModal}>Cancel</button>
-
-                        </div>
-
-                    </form>
-                </div>
-            </dialog >
-
             <dialog id="deleteModal" className="modal">
                 <div className="modal-box">
                     <h3 className="font-bold text-lg">Are you sure?</h3>
                     <p className="py-4">This action cannot be undone</p>
                     <div className="modal-action">
                         <form method="dialog" >
-                            <button onClick={() => handleDeleteProduct(deleteId)} className="btn btn-error mx-1">Delete</button>
+                            <button onClick={() => handleDeleteProduct(deleteId)} className={`btn btn-error mx-1  ${loadingStatus ? 'btn-disabled skeleton' : ''}`}>Delete</button>
                             <button className="btn btn-primary">Cancel</button>
                         </form>
                     </div>
                 </div>
             </dialog>
-
 
             <Navbar />
         </>

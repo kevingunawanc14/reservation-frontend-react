@@ -13,14 +13,10 @@ export default function Login() {
     const [registerStatusMessage, setRegisterStatusMessage] = useState(null);
     const navigate = useNavigate();
     const [mode, setMode] = useState('login');
+    const [loadingStatus, setLoadingStatus] = useState(null);
+
     const { register, handleSubmit, formState: { errors }, reset, clearErrors,
-    } = useForm({
-        defaultValues: {
-            username: '',
-            password: '',
-            phoneNumber: ''
-        }
-    });
+    } = useForm();
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -29,9 +25,7 @@ export default function Login() {
             navigate('/')
         }
 
-
     }, [])
-
 
     const toggleMode = () => {
         setMode(prevMode => prevMode === 'login' ? 'register' : 'login');
@@ -42,12 +36,13 @@ export default function Login() {
     const login = async (data) => {
         const dataToSend = { username: data.username, password: data.password };
         try {
+            setLoadingStatus(true)
             const response = await axios.post('/login', dataToSend);
-            const token = response.data.token; // Ambil token dari respons
-            const username = response.data.username; // Ambil token dari respons
+            const token = response.data.token;
+            const username = response.data.username;
 
-            localStorage.setItem('token', token); // Simpan token ke local storage
-            localStorage.setItem('username', username); // Simpan token ke local storage
+            localStorage.setItem('token', token);
+            localStorage.setItem('username', username);
 
             navigate('/');
 
@@ -55,8 +50,10 @@ export default function Login() {
             setTimeout(() => {
                 setLoginStatus(null);
             }, 2000);
+            setLoadingStatus(false)
 
         } catch (error) {
+            setLoadingStatus(false)
             setLoginStatus('error');
             setLoginStatusMessage(`Your login credentials don't match an account in our system`)
             setTimeout(() => {
@@ -68,6 +65,7 @@ export default function Login() {
     const registerAccount = async (data) => {
         const dataToSend = { username: data.username, password: data.password, phoneNumber: data.phoneNumber };
         try {
+            setLoadingStatus(true)
 
             await axios.post('/register', dataToSend);
 
@@ -78,8 +76,10 @@ export default function Login() {
             setMode('login');
 
             reset();
+            setLoadingStatus(false)
 
         } catch (error) {
+            setLoadingStatus(false)
             setRegisterStatus('error');
             setRegisterStatusMessage('Username already taken')
             setTimeout(() => {
@@ -143,7 +143,7 @@ export default function Login() {
                             </label>
                         </div>
                         <div className="grid justify-items-center">
-                            <button className="btn btn-primary mt-3 " type='submit'>Login</button>
+                            <button className={`btn btn-primary mt-3 ${loadingStatus ? 'btn-disabled skeleton' : ''}`} type='submit'>Login</button>
                             <p className="cursor-pointer mt-2" onClick={toggleMode}>Don't have an account? Sign up</p>
                         </div>
 
@@ -213,7 +213,7 @@ export default function Login() {
                             </label>
                         </div>
                         <div className="grid justify-items-center">
-                            <button className="btn btn-primary mt-3 " type='submit'>Register</button>
+                            <button className={`btn btn-primary mt-3  ${loadingStatus ? 'btn-disabled skeleton' : ''}`} type='submit'>Register</button>
                             <p className="cursor-pointer mt-2" onClick={toggleMode}>Have an account? Sign In</p>
                         </div>
                     </form>

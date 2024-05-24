@@ -3,57 +3,57 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { useEffect, useState } from 'react';
 import Header from '../../components/header';
-import Navbar from '../../components/navbar.jsx';
 import { IoArrowBackOutline } from "react-icons/io5";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import dayjs from 'dayjs';
-import axios from 'axios';
+import axios from '../../api/axios';
 import { BsCash } from "react-icons/bs";
 import { BsQrCode } from "react-icons/bs";
 import { MdOutlineLocalOffer } from "react-icons/md";
 import { RiCopperCoinLine } from "react-icons/ri";
 import qris from '../../assets/QRIS_KRAKATAU.png';
 import { useForm } from "react-hook-form";
-import { data } from 'autoprefixer';
-import { TbHealthRecognition } from "react-icons/tb";
 import { LuSword } from "react-icons/lu";
 import { IoShieldOutline } from "react-icons/io5";
 import { BsTrophy } from "react-icons/bs";
-import { GiHealthPotion } from "react-icons/gi";
 import { LuHeartPulse } from "react-icons/lu";
 import { FaWalking } from "react-icons/fa";
 import { FaRunning } from "react-icons/fa";
 import { FaPerson } from "react-icons/fa6";
-import { RxAvatar } from "react-icons/rx";
 import { GiRank2 } from "react-icons/gi";
 
 
 export default function DetailLapangan() {
 
-    const [valueCalendar, setValueCalendar] = useState(dayjs())
-    const [scheduleData, setScheduleData] = useState(null)
-    const [namaProduct, setNamaProduct] = useState(null)
+    const token = localStorage.getItem('token');
+    const username = localStorage.getItem('username');
+
     const currentUrl = window.location.href;
     const idProduct = currentUrl.split('/').pop()
     const navigate = useNavigate();
-    const [arrOfOrderSummary, setArrOfOrderSummary] = useState([]);
-    const [statusAllowPlaceOrder, setStatusAllowPlaceOrder] = useState(false);
-    const [subtotal, setSubtotal] = useState(0);
-    const [total, setTotal] = useState(0);
+
+    const [valueCalendar, setValueCalendar] = useState(dayjs())
+    const [scheduleData, setScheduleData] = useState(null)
+
+    const [namaProduct, setNamaProduct] = useState(null)
     const [productPrice, setProductPrice] = useState(0);
+
+    const [arrOfOrderSummary, setArrOfOrderSummary] = useState([]);
+
     const { register, handleSubmit, watch, formState: { errors } } = useForm({
         defaultValues: {
             paymentMethod: "cash",
             breathStatus: "normal"
         }
     });
-    const username = localStorage.getItem('username');
-    const [breathStatus, setBreathStatus] = useState('normal');
+    const [breathStatus, setBreathStatus] = useState(null);
     const theme = document.documentElement.getAttribute("data-theme");
+
+    const [loadingStatus, setLoadingStatus] = useState(null);
+
     const handleRadioBreathStatus = (status) => {
         setBreathStatus(status);
     };
-
 
     const hours = [
         '6.00-7.00', '7.00-8.00', '8.00-9.00',
@@ -73,24 +73,44 @@ export default function DetailLapangan() {
         'free', 'free', 'free'
     ]);
 
+    const getDataDetailUser = async () => {
+        try {
+
+            const response = await axios.get(`/user/detail/${username}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            const responseData = response.data;
+
+            document.querySelector('html').setAttribute('data-theme', responseData.activeTheme.toLocaleLowerCase());
+
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            navigate('/login');
+        }
+    };
+
     const getProductDetail = async () => {
         try {
             const token = localStorage.getItem('token');
 
-            const response = await axios.get(`http://localhost:2000/detail/${idProduct}`, {
+            const response = await axios.get(`/detail/${idProduct}`, {
                 headers: {
-                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                    Authorization: `Bearer ${token}`
                 }
             });
 
 
             setNamaProduct(response.data.nameDetail);
             const number = parseInt(response.data.priceInt);
-            console.log(number);
             setProductPrice(number);
 
         } catch (error) {
             console.error('Error:', error);
+            localStorage.removeItem('token');
+            navigate('/login');
         }
     }
 
@@ -117,7 +137,7 @@ export default function DetailLapangan() {
                     const newStatus = [...updatedStatus];
                     newStatus[index] = 'info';
                     setHoursWithStatus(newStatus);
-                    addToOrderSummary(hour); // Call the function to add hour to arrOfOrderSummary
+                    addToOrderSummary(hour);
                 }}>{hour}</button>;
             } else if (updatedStatus[index] === 'reserved') {
                 button = <button className="btn btn-xs btn-error" onClick={() => document.getElementById('my_modal_2').showModal()}>{hour}</button>;
@@ -126,7 +146,7 @@ export default function DetailLapangan() {
                     const newStatus = [...updatedStatus];
                     newStatus[index] = 'free';
                     setHoursWithStatus(newStatus);
-                    removeFromOrderSummary(hour); // Call the function to remove hour from arrOfOrderSummary
+                    removeFromOrderSummary(hour);
                 }}>{hour}</button>;
             } else if (updatedStatus[index] === 'passed') {
                 button = <button className="btn btn-xs btn-disabled">{hour}</button>;
@@ -141,20 +161,16 @@ export default function DetailLapangan() {
     };
 
     function addToOrderSummary(hour) {
-        // Assuming arrOfOrderSummary is a state variable
         setArrOfOrderSummary(prevState => [...prevState, hour]);
-
     }
 
     function removeFromOrderSummary(hour) {
         const index = hours.indexOf(hour)
 
-        // Update hoursWithStatus[index] to 'success'
         const newStatus = [...hoursWithStatus];
         newStatus[index] = 'free';
         setHoursWithStatus(newStatus);
 
-        // Remove hour from arrOfOrderSummary
         setArrOfOrderSummary(prevState => prevState.filter(item => item !== hour));
 
     }
@@ -164,12 +180,7 @@ export default function DetailLapangan() {
     }
 
     const handleBack = () => {
-        const detailPath = localStorage.getItem('detailPath');
-        if (detailPath) {
-            navigate(`${detailPath}`);
-        } else {
-            navigate('/');
-        }
+        navigate(-1);
     };
 
     const shouldDisableDate = (date) => {
@@ -180,35 +191,30 @@ export default function DetailLapangan() {
 
         const selectedDate = new Date(date);
 
-        // Disable dates before yesterday
         if (selectedDate < yesterday) {
             return true;
         }
 
-        // Disable dates two weeks after today
         if (selectedDate > new Date(today.getTime() + 13 * 24 * 60 * 60 * 1000)) {
             return true;
         }
 
-        // Enable other dates
         return false;
     };
 
     const getDataOrder = async () => {
         try {
-            const token = localStorage.getItem('token');
 
-            const response = await axios.get('http://localhost:2000/order/reserved', {
+            const response = await axios.get('/order/reserved', {
                 headers: {
-                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                    Authorization: `Bearer ${token}`
                 }
             });
 
             const filteredArray = response.data.filter(item => {
-                const itemDate = dayjs(item.date);  // Convert item.createdAt to dayjs object
+                const itemDate = dayjs(item.date);
                 return itemDate.isSame(valueCalendar, 'day') && item.idProduct === parseInt(idProduct);  // Check if day matches today
             });
-            console.log('filteredArray', filteredArray);
             setScheduleData(filteredArray)
             resetHoursWithStatus();
             setArrOfOrderSummary([]);
@@ -227,7 +233,8 @@ export default function DetailLapangan() {
             }
         } catch (error) {
             console.error('Error fetching data:', error);
-            navigate('/login', { state: { from: location }, replace: true });
+            localStorage.removeItem('token');
+            navigate('/login');
 
         }
     };
@@ -242,19 +249,34 @@ export default function DetailLapangan() {
         }
     };
 
-    const [showRewards, setShowRewards] = useState(false);
-
-    const handleRadioClickRewards = (value) => {
-        if (!value) {
-            setShowRewards(true);
-        } else {
-            setShowRewards(false);
-        }
-
-        console.log('value', value);
-    };
-
     const handleOrder = async () => {
+        // console.log('watch("filePaymentProve")', watch("filePaymentProve"))
+        // console.log('watch("filePaymentProve")', watch("filePaymentProve")[0])
+        // console.log('watch("filePaymentProve")', watch("filePaymentProve")[0].size)
+        // console.log('watch("filePaymentProve")', watch("filePaymentProve")[0].type)
+        // console.log('watch("filePaymentProve")', watch("filePaymentProve")[0].name)
+        // console.log('watch("filePaymentProve")', watch("filePaymentProve")[0].size)
+        // Create FormData and append file and data
+        const formData = new FormData();
+
+        if (watch("paymentMethod") === 'qris') {
+            const allowedExtensions = ['jpg', 'jpeg', 'png'];
+            const fileExtension = watch("filePaymentProve")[0].name.split('.').pop().toLowerCase();
+            console.log('fileExtension', fileExtension)
+            if (!allowedExtensions.includes(fileExtension)) {
+                return alert('Invalid file type. Please select a JPG, JPEG, or PNG file.');
+            }
+
+            const maxFileSize = 1024 * 1024 * 5;
+            console.log('maxFileSize', maxFileSize)
+
+            if (watch("filePaymentProve")[0].size > maxFileSize) {
+                return alert('File size exceeds limit (5 MB). Please select a smaller file.');
+            }
+
+            formData.append('filePaymentProve', watch("filePaymentProve")[0]);
+
+        }
 
         const dataToSend = {
             idProduct: idProduct,
@@ -270,25 +292,54 @@ export default function DetailLapangan() {
                             undefined,
             paymentMethod: watch("paymentMethod"),
             totalPrice: (productPrice * arrOfOrderSummary.length),
-            connectHistory: crypto.randomUUID()
+            typeBreath: watch("breathStatus"),
+            minuteBreath: (arrOfOrderSummary.length * 60),
+            totalXp: Math.floor(productPrice * arrOfOrderSummary.length / 10000),
+            totalHp: watch("breathStatus") === 'normal' ? Math.floor((Math.random() * 5) + 5) : watch("breathStatus") === 'medium' ? Math.floor((Math.random() * 10) + 10) : watch("breathStatus") === 'high' ? Math.floor((Math.random() * 10) + 20) : undefined,
+            totalAttack: 1,
+            totalDefense: 1,
+            connectHistory: crypto.randomUUID(),
+            cancelId: crypto.randomUUID(),
         };
 
-        try {
-            const token = localStorage.getItem('token');
 
-            const response = await axios.post('http://localhost:2000/order', dataToSend, {
+        // Append each key-value pair from dataToSend to formData
+        Object.keys(dataToSend).forEach(key => {
+            formData.append(key, dataToSend[key]);
+        });
+        console.log('dataToSend.hour', dataToSend.hour);
+        // Log the FormData content
+        for (let pair of formData.entries()) {
+            console.log(pair[0] + ':', pair[1]);
+        }
+        try {
+            setLoadingStatus(true)
+
+            const response = await axios.post('/order', formData, {
                 headers: {
-                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${token}`
                 }
             });
 
-            localStorage.setItem('fromOrder', 'true');
+            console.log('response', response);
+            console.log('response.data', response.data);
+            setLoadingStatus(false)
+
+                localStorage.setItem('lastPage', 'order');  // Set lastPage to 'order'
 
             navigate('/payment');
 
         } catch (error) {
             console.error('Error fetching data:', error);
-            navigate('/login', { state: { from: location }, replace: true });
+            console.error('Error fetching data:', error.response.data.status);
+            if (error.response.data.status === 'fail') {
+                alert(error.response.data.message)
+            } else {
+                localStorage.removeItem('token');
+                navigate('/login');
+            }
+
 
         }
     }
@@ -296,7 +347,8 @@ export default function DetailLapangan() {
     useEffect(() => {
         window.scrollTo(0, 0);
         getDataOrder();
-        getProductDetail()
+        getProductDetail();
+        getDataDetailUser();
     }, [valueCalendar]);
 
     return (
@@ -347,7 +399,66 @@ export default function DetailLapangan() {
 
             <div className="mx-5 mt-[-10px]">
                 <div className="grid grid-cols-3 gap-4">
-                    {scheduleData && renderButtons(hoursWithStatus, setHoursWithStatus, scheduleData)}
+                    {scheduleData ?
+                        renderButtons(hoursWithStatus, setHoursWithStatus, scheduleData) :
+                        <>
+                            <div className="grid">
+                                <button className="btn btn-xs btn-disabled skeleton">6.00-7.00</button>
+                            </div>
+                            <div className="grid">
+                                <button className="btn btn-xs btn-disabled skeleton">7.00-8.00</button>
+                            </div>
+                            <div className="grid">
+                                <button className="btn btn-xs btn-disabled skeleton">8.00-9.00</button>
+                            </div>
+                            <div className="grid">
+                                <button className="btn btn-xs btn-disabled skeleton">9.00-10.00</button>
+                            </div>
+                            <div className="grid">
+                                <button className="btn btn-xs btn-disabled skeleton">10.00-11.00</button>
+                            </div>
+                            <div className="grid">
+                                <button className="btn btn-xs btn-disabled skeleton">11.00-12.00</button>
+                            </div>
+                            <div className="grid">
+                                <button className="btn btn-xs btn-disabled skeleton">12.00-13.00</button>
+                            </div>
+                            <div className="grid">
+                                <button className="btn btn-xs btn-disabled skeleton">13.00-14.00</button>
+                            </div>
+                            <div className="grid">
+                                <button className="btn btn-xs btn-disabled skeleton">14.00-15.00</button>
+                            </div>
+                            <div className="grid">
+                                <button className="btn btn-xs btn-disabled skeleton">15.00-16.00</button>
+                            </div>
+                            <div className="grid">
+                                <button className="btn btn-xs btn-disabled skeleton">16.00-17.00</button>
+                            </div>
+                            <div className="grid">
+                                <button className="btn btn-xs btn-disabled skeleton">17.00-18.00</button>
+                            </div>
+                            <div className="grid">
+                                <button className="btn btn-xs btn-disabled skeleton">18.00-19.00</button>
+                            </div>
+                            <div className="grid">
+                                <button className="btn btn-xs btn-disabled skeleton">19.00-20.00</button>
+                            </div>
+                            <div className="grid">
+                                <button className="btn btn-xs btn-disabled skeleton">20.00-21.00</button>
+                            </div>
+                            <div className="grid">
+                                <button className="btn btn-xs btn-disabled skeleton">21.00-22.00</button>
+                            </div>
+                            <div className="grid">
+                                <button className="btn btn-xs btn-disabled skeleton">22.00-23.00</button>
+                            </div>
+                            <div className="grid">
+                                <button className="btn btn-xs btn-disabled skeleton">23.00-24.00</button>
+                            </div>
+                        </>
+                    }
+
                 </div>
             </div>
 
@@ -367,7 +478,7 @@ export default function DetailLapangan() {
                                         <p className='font-semibold'>{hour}</p>
                                     </div>
                                     <div className='col-span-2'>
-                                        <p>{productPrice}</p> {/* Assuming this value is static */}
+                                        <p>{productPrice}</p>
                                     </div>
                                     <div className='col-span-1'>
                                         <button className="btn btn-error btn-circle btn-sm " onClick={() => removeFromOrderSummary(hour)}>
@@ -479,65 +590,19 @@ export default function DetailLapangan() {
                         </div>
 
                     )}
-                    <div className="grid grid-cols-8">
-                        <div className='self-center'>
-                            <RiCopperCoinLine
-                                fontSize="20px"
-                            />
-                        </div>
-                        <div className='col-span-7'>
-                            <label className="label cursor-pointer">
-                                <span className="label-text">67.000</span>
-                                <input
-                                    {...register("paymentMethod")}
-                                    value="krakataucoin"
-                                    type="radio"
-                                    className="radio radio-primary"
-                                    onClick={() => handleRadioClickPayment('Krakatau Coin')}
-                                />
-                            </label>
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-8">
-                        <div className='self-center'>
-                            <MdOutlineLocalOffer
-                                fontSize="20px"
-                            />
-                        </div>
-                        <div className='col-span-7'>
-                            <label className="label cursor-pointer">
-                                <span className="label-text">Use Rewards to get discounts</span>
-                                <input
-                                    type="checkbox"
-                                    name="radio-11"
-                                    className="radio radio-primary"
-                                    onClick={() => handleRadioClickRewards(showRewards)}
-                                />
-                            </label>
-                        </div>
-                    </div>
-                    {showRewards && (
-                        <div className="collapse collapse-arrow border border-base-300 bg-neutral">
-                            <input type="checkbox" />
-                            <div className="collapse-title text-xl font-medium text-neutral-content">
-                                Rewards
-                            </div>
-                            <div className="collapse-content">
-                                <p className='text-neutral-content'>You don't have any reward yet</p>
-                            </div>
-                        </div>
-                    )}
                 </div>
 
             </div>
 
 
             <div className="flex justify-center  mx-5 mt-5">
-                {watch("paymentMethod") === 'cash' || watch("paymentMethod") === 'krakataucoin' ? (
-                    <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 ? '' : 'btn-disabled'}`} onClick={handleOrder}>Place Order</button>
+                {watch("paymentMethod") === 'cash' ? (
+                    <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 ? '' : 'btn-disabled'} ${loadingStatus ? 'btn-disabled skeleton' : ''}`} onClick={handleOrder}>
+                        {loadingStatus ? 'Processing' : 'Place Order'}
+                    </button>
 
                 ) : (
-                    <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 && watch('filePaymentProve')?.length > 0 ? '' : 'btn-disabled'}`} onClick={handleOrder} >Place Order</button>
+                    <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 && watch('filePaymentProve')?.length > 0 ? '' : 'btn-disabled'} ${loadingStatus ? 'btn-disabled skeleton' : ''}`} onClick={handleOrder} > {loadingStatus ? 'Processing' : 'Place Order'}</button>
 
                 )}
             </div>
@@ -558,7 +623,6 @@ export default function DetailLapangan() {
                     </button>
                 </div>
             </div>
-
 
             <dialog id="leaderboardModal" className="modal">
                 <div className="modal-box">
@@ -617,7 +681,7 @@ export default function DetailLapangan() {
                     <div>
                         <div>
                             <div className='grid grid-cols-3'>
-                                <p className='col-span-2' ><FaPerson className={`${breathStatus === 'normal' ? 'animate-pulse' : ''}`} />Normal Breath <span className='text-xs font-thin'>(10 HP)</span></p>
+                                <p className='col-span-2' ><FaPerson className={`${breathStatus === 'normal' ? 'animate-pulse' : ''}`} />Normal Breath <span className='text-xs font-thin'>(5 - 10 HP)</span></p>
                                 <input
                                     {...register("breathStatus")}
                                     value="normal"
@@ -698,15 +762,11 @@ export default function DetailLapangan() {
             <dialog id="my_modal_2" className="modal">
                 <div className="modal-box">
                     <h3 className="font-bold text-lg text-center">Already Booked</h3>
-                    {/* <p className="py-4">Already Booked</p> */}
                 </div>
                 <form method="dialog" className="modal-backdrop">
                     <button>close</button>
                 </form>
             </dialog>
-
-
-
 
         </>
     );

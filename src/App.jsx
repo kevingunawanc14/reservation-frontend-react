@@ -13,8 +13,6 @@ import Leaderboard from './pages/customer/leaderboard';
 import Dashboard from './pages/admin/dashboard';
 import Report from './pages/admin/report';
 import User from './pages/admin/user';
-import Challange from './pages/admin/challange';
-import Product from './pages/admin/product';
 
 import './index.css';
 import { Routes, Route } from "react-router-dom"
@@ -28,10 +26,8 @@ function App() {
   return (
     <div className="App">
       <Routes>
-        {/* if tidak ada token can go to this page */}
         <Route path="/login" element={<Login />} />
 
-        {/* if ada token & role user can go to this page */}
         <Route path="/" element={<Home />} />
         <Route path="/journal" element={<Journal />} />
         <Route path="/product/:namaProduct" element={<ListLapangan />} />
@@ -43,12 +39,9 @@ function App() {
         <Route path="/setting" element={<Setting />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
 
-        {/* if ada token & role admin or user can go to this page */}
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/report" element={<Report />} />
         <Route path="/user" element={<User />} />
-        <Route path="/challange" element={<Challange />} />
-        <Route path="/product" element={<Product />} />
 
 
         <Route path="*" element={<Missing />} />/

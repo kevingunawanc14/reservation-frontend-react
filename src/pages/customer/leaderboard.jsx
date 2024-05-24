@@ -17,9 +17,11 @@ import {
 } from '@mui/x-data-grid';
 import { useForm } from "react-hook-form";
 import { IoMdAddCircleOutline } from "react-icons/io";
-import axios from 'axios';
+import axios from '../../api/axios';
 import { GiTigerHead } from "react-icons/gi";
 import AvatarIcon from '../../components/avatar';
+import { FaQuestion } from "react-icons/fa6";
+import Alert from '@mui/material/Alert';
 
 function CustomToolbar() {
     return (
@@ -34,184 +36,122 @@ function CustomToolbar() {
 
 export default function Leaderboard() {
 
-    const [tableData, setTableData] = useState([])
-    const [challangeData, setChallangeData] = useState(null)
-    const [deleteStatus, setDeleteStatus] = useState(null);
-    const [updateStatus, setUpdateStatus] = useState(null);
-    const [addStatus, setAddStatus] = useState(null);
-    const [deleteId, setDeleteId] = useState(null);
-    const [theme, setTheme] = useState(null);
+    const token = localStorage.getItem('token');
+    const username = localStorage.getItem('username');
     const navigate = useNavigate();
-    const location = useLocation();
 
+    const theme = document.documentElement.getAttribute("data-theme");
+
+    const [tableData, setTableData] = useState(null)
+    const [attackUsername, setAttackUsername] = useState(null);
+
+    const [attackStatus, setAttackStatus] = useState(null);
+
+    const [userData, setUserData] = useState(null);
+
+    const [loadingStatus, setLoadingStatus] = useState(null);
 
 
     const fetchData = async () => {
         try {
-            const token = localStorage.getItem('token');
 
-            const response = await axios.get('http://localhost:2000/user/ranked', {
+            const response = await axios.get('/user/ranked', {
                 headers: {
-                    Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
+                    Authorization: `Bearer ${token}`
                 }
             });
             setTableData(response.data);
 
         } catch (error) {
             console.error('Error fetching data:', error);
-            // navigate('/login', { state: { from: location }, replace: true });
-
+            localStorage.removeItem('token');
+            navigate('/login');
         }
     };
 
-    const getData = async () => {
+    const getDataDetailUser = async () => {
         try {
-            const token = localStorage.getItem('token');
 
-            const response = await axios.get('http://localhost:2000/user', {
+            const response = await axios.get(`/user/detail/${username}`, {
                 headers: {
                     Authorization: `Bearer ${token}` // Use Bearer scheme for JWTs
                 }
             });
 
-            console.log('responsex', response);
+            const responseData = response.data; // Assuming the response contains the user details
+
+            console.log(responseData)
+
+            // Update the state with the fetched data
+            setUserData({
+                username: responseData.username,
+                rank: responseData.rank,
+                xp: responseData.experiencePoint,
+                hp: responseData.healthPoint,
+                coin: responseData.krakatauCoin,
+                activeAvatar: responseData.activeAvatar,
+                activeTheme: responseData.activeTheme,
+                attackAttempt: responseData.attackPoint
+            });
+
+            document.querySelector('html').setAttribute('data-theme', responseData.activeTheme.toLocaleLowerCase());
+
+
+            console.log('response', response)
 
         } catch (error) {
-            console.error('Error:', error);
-        }
-    }
-
-    const handleDeleteProduct = async (id) => {
-        try {
-            await axiosPrivate.delete(`/user/${id}`)
-            fetchData();
-            setDeleteStatus('success');
-            setTimeout(() => {
-                setDeleteStatus(null);
-            }, 2000);
-
-        } catch (error) {
-            setDeleteStatus('error');
-            setTimeout(() => {
-                setDeleteStatus(null);
-            }, 2000);
+            console.error('Error fetching data:', error);
+            localStorage.removeItem('token');
+            navigate('/login');;
 
         }
     };
 
-    const handleUpdateChallenge = async (data) => {
+    const handleAttackModal = async (username) => {
+        document.getElementById('attackModal').showModal();
+        setAttackUsername(username);
+    }
+
+    const handleAttackUser = async (username) => {
+        console.log('username', username)
+        let dataToSend = {}
         try {
-            await axiosPrivate.post(`/user/${data.id}/update`, {
-                username: data.username,
-                password: data.password,
-                phoneNumber: data.phoneNumber
+            setLoadingStatus(true)
+
+            const response = await axios.post(`/attack/${username}`, dataToSend, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
             });
+
+            setLoadingStatus(false)
+            document.getElementById('attackModal').close()
+
+            console.log('response', response);
             fetchData();
-            setUpdateStatus('success');
+            getDataDetailUser();
+            setAttackStatus('success');
             setTimeout(() => {
-                setUpdateStatus(null);
+                setAttackStatus(null);
             }, 2000);
-            document.getElementById('detailChallange').close();
-        } catch (error) {
-            setUpdateStatus('error');
-            setTimeout(() => {
-                setUpdateStatus(null);
-            }, 2000);
-        }
-    }
-
-    const handleDetailChallenge = async (id) => {
-        try {
-            const response = await axiosPrivate.get(`/user/${id}`);
-            setChallangeData(response)
 
         } catch (error) {
-            console.log('error:', error);
-        }
-    }
-
-    const handleDeleteModal = async (id) => {
-        document.getElementById('deleteModal').showModal();
-        setDeleteId(id);
-    }
-
-    // Create separate instances of useForm for each form
-    const form1 = useForm({
-        defaultValues: {
-            id: '',
-            username: '',
-            password: '',
-            phoneNumber: '',
-        },
-    });
-    const form2 = useForm({
-        defaultValues: {
-            usernameAdd: '',
-            passwordAdd: '',
-            phoneNumberAdd: '',
-        },
-    });
-
-    // Destructure register and handleSubmit functions from each form
-    const { register: register1, handleSubmit: handleSubmit1, watch: watch1, setValue: setValue1, formState: { errors: errors1 } } = form1;
-    const { register: register2, handleSubmit: handleSubmit2, watch: watch2, setValue: setValue2, formState: { errors: errors2 } } = form2;
-
-
-    const handleAddChallenge = async () => {
-        document.getElementById('addChallange').showModal()
-        setValue2("usernameAdd", '')
-        setValue2("passwordAdd", '')
-        setValue2("phoneNumberAdd", '')
-    }
-
-    const handleAddSubmitChallenge = async (data) => {
-        try {
-            await axiosPrivate.post(`/user/add`, {
-                username: data.usernameAdd,
-                password: data.passwordAdd,
-                phoneNumber: data.phoneNumberAdd,
-            });
-            fetchData();
-            setAddStatus('success');
+            setAttackStatus('error');
             setTimeout(() => {
-                setAddStatus(null);
+                setAttackStatus(null);
             }, 2000);
-            document.getElementById('addChallange').close();
-
-        } catch (error) {
-            setAddStatus('error');
-            setTimeout(() => {
-                setAddStatus(null);
-            }, 2000);
+            localStorage.removeItem('token');
+            navigate('/login');
 
         }
-
-    }
-
-    const handleCloseModal = async () => {
-        document.getElementById('detailChallange').close();
-        document.getElementById('addChallange').close();
-    }
-
-    useEffect(() => {
-        if (challangeData) {
-            setValue1("username", challangeData.data.username)
-            setValue1("password", challangeData.data.password)
-            setValue1("phoneNumber", challangeData.data.phoneNumber)
-            setValue1("id", challangeData.data.id)
-            document.getElementById('detailChallange').showModal()
-
-        }
-    }, [challangeData]);
-
+    };
 
     useEffect(() => {
         fetchData();
+        getDataDetailUser();
 
     }, []);
 
-    const isDarkTheme = document.documentElement.getAttribute("data-theme") === 'dracula' || document.documentElement.getAttribute("data-theme") === 'dark'
-    console.log('isDarkTheme', isDarkTheme)
 
     const columns = [
         {
@@ -274,14 +214,15 @@ export default function Leaderboard() {
         },
         {
             field: 'Action',
-            headerName: <LuSwords fontSize="20px" />,
+            renderHeader: () => <LuSwords fontSize="20px" />,
             renderCell: (params) => (
                 <div className="flex justify-around ">
                     <div>
-                        <button className="btn btn-error btn-sm sm:btn">
+                        <button
+                            className={`btn btn-error btn-sm sm:btn ${params.row.username === username || userData.attackAttempt < 1 ? 'btn-disabled' : ''}`}
+                            onClick={() => handleAttackModal(params.row.username)}>
                             <LuSword fontSize="20px" className="hover:animate-bounce" />
                         </button>
-
                     </div>
                 </div >
             ),
@@ -290,107 +231,93 @@ export default function Leaderboard() {
         },
     ];
 
-    const rows = [
-        {
-            id: 1,
-            username: '@MUI',
-            age: 20,
-        },
-    ];
-
-
-
     return (
         <>
             <div className="mx-10 mt-5">
-                <Header title={'Leaderboard'} />
+                <div className="grid grid-cols-3 gap-4">
+                    <Header title={'Leaderboard'} />
+                </div>
+                <div>
+                    <div className="flex justify-end">
+                        {attackStatus === 'success' && (
+                            <Alert severity="success" onClose={() => setAttackStatus(null)}>Success to attack user</Alert>
+                        )}
+                        {attackStatus === 'error' && (
+                            <Alert severity="error" onClose={() => setAttackStatus(null)}>Failed to attack user</Alert>
+                        )}
+                    </div>
+                </div>
             </div>
 
             <div className="mx-10 mt-5 mb-5">
-                <DataGrid
-                    rows={tableData}
-                    columns={columns}
-                    initialState={{
-                        pagination: {
-                            paginationModel: {
-                                pageSize: 8,
-                            },
-                        },
-                    }}
-                    pageSizeOptions={[8]}
-                    disableRowSelectionOnClick
-                    disableColumnMenu
-                    slots={{ toolbar: CustomToolbar }}
-                    sx={{
-                        color: isDarkTheme ? 'white' : 'black', // Set the overall font color to white
-                        '& .MuiDataGrid-cell': { // Target individual cells for more granular control
-                            color: 'inherit', // Inherit the white color from the parent
-                        },
-                    }}
-                />
-                {/* 
-                <GiRank2
-                    color="#3ba8ba"
-                    fontSize="30px"
-                />
+                <div className="grid grid-cols-3 gap-4">
+                    <div className="m-4">
+                        <button className="btn btn-circle btn-outline btn-sm hover:animate-bounce " onClick={() => document.getElementById('my_modal_5').showModal()}>
+                            <FaQuestion />
+                        </button>
+                    </div>
+                    <div className="col-span-2 mt-4">
+                        {userData && (
+                            <>
+                                <p className="font-medium text-sm">Attack remaining ⚔️ {userData.attackAttempt} </p>
+                            </>
+                        )}
 
-                <GiRank2
-                    color="#a46ced"
-                    fontSize="30px"
-                />
+                    </div>
+                </div>
 
-                <GiRank2
-                    color="#9c2444"
-                    fontSize="30px"
-                /> */}
-
-                {/* <div className="flex justify-center ">
-                    <div className="grid grid-rows-2 grid-flow-col ">
-                        <GiRank2
-                            color="#9c2444"
-                            fontSize="30px"
+                {tableData && userData ? (
+                    <>
+                        <DataGrid
+                            rows={tableData}
+                            columns={columns}
+                            initialState={{
+                                pagination: {
+                                    paginationModel: {
+                                        pageSize: 8,
+                                    },
+                                },
+                            }}
+                            pageSizeOptions={[8]}
+                            disableRowSelectionOnClick
+                            disableColumnMenu
+                            slots={{ toolbar: CustomToolbar }}
+                            sx={{
+                                "& .MuiDataGrid-columnHeaders": {
+                                    color: theme === 'light'
+                                        || theme === 'autumn'
+                                        || theme === 'lemonade'
+                                        || theme === 'winter' ? '' : '#94a3b8',
+                                },
+                                "& .MuiDataGrid-virtualScroller": {
+                                    color: theme === 'light'
+                                        || theme === 'autumn'
+                                        || theme === 'lemonade'
+                                        || theme === 'winter' ? '' : '#f1f5f9',
+                                },
+                                "& .MuiToolbar-root": {
+                                    color: theme === 'light'
+                                        || theme === 'autumn'
+                                        || theme === 'lemonade'
+                                        || theme === 'winter' ? '' : '#94a3b8',
+                                },
+                                "& .MuiButtonBase-root.Mui-disabled": {
+                                    color: theme === 'light'
+                                        || theme === 'autumn'
+                                        || theme === 'lemonade'
+                                        || theme === 'winter' ? '' : '#94a3b8',
+                                }
+                            }}
                         />
-
-
-                    </div>
-                    <div className="grid grid-rows-2 grid-flow-col ">
-                        <div className="avatar justify-self-center ">
-                            <div className="w-8 rounded-full  border-2 hover:border-black cursor-pointer">
-                                <img src={Avatar1} />
-                            </div>
+                    </>
+                ) : (
+                    <div className="flex justify-center items-center h-screen  ">
+                        <div>
+                            <p className="text-base font-mono">Loading...</p>
                         </div>
-                        <div className="text-center">username ?</div>
-
-
                     </div>
-                    <div className="grid grid-rows-2 grid-flow-col ">
-                        <div className="place-self-center">
-                            <FaHeart color="red" fontSize="20px" />
-                        </div>
-                        <div className="text-center font-bold">123</div>
-                    </div>
-                    <div className="grid grid-rows-2 grid-flow-col ">
-                        <div className="place-self-center">
-                            <BiSolidShieldAlt2 color="#c2cccd" fontSize="22px" className="" />
-                        </div>
-                        <div className="text-center font-bold">10</div>
+                )}
 
-                    </div>
-
-                </div> */}
-
-                {/* <div>
-                    <button className="btn btn-primary">
-                        <LuSword fontSize="20px" />
-                    </button>
-
-                </div> */}
-
-                {/* <p>1<FaHeart color="red" />
-                </p>
-                <p>1 <BiSolidShieldAlt2 color="#c2cccd" />
-                </p>
-                <p>username ?</p> */}
 
 
 
@@ -398,7 +325,77 @@ export default function Leaderboard() {
 
 
 
+            <dialog id="my_modal_5" className="modal modal-bottom sm:modal-middle">
+                <div className="modal-box">
+                    <h3 className="font-bold text-lg">Hello!</h3>
+                    <p className="font-medium text-justify">This is leaderboard page</p>
+                    <ul className="list-disc mx-4">
+                        <li>Rank order by most health point</li>
+                        <li>You can reduce other user health point by attack</li>
+                        <li>Per attack will reduce 1 user health point</li>
+                    </ul>
+                    {/* <div className='grid grid-rows-3 mt-3'>
+                        <div className='grid grid-cols-5'>
+                            <div className='col-span-1'>
+                                <GiRank2 color="#eccc55" fontSize="25px" />
 
+                            </div>
+                            <div className='col-span-2'>
+                                <p style={{ color: "#eccc55" }} className='font-bold'>Gold</p>
+
+                            </div>
+                            <div className='col-span-2 text-start flex items-center'>
+                                <p className='text-base font-thin'>0 - 100 XP</p>
+
+                            </div>
+                        </div>
+                        <div className='grid grid-cols-5'>
+                            <div className='col-span-1' >
+                                <GiRank2 color="#3ba8ba" fontSize="25px" />
+
+                            </div>
+                            <div className='col-span-2'  >
+                                <p style={{ color: "#3ba8ba" }} className='font-bold'>Platinum</p>
+
+                            </div>
+                            <div className='col-span-2 text-start flex items-center'>
+                                <p className='text-base font-thin'>101 - 200 XP</p>
+
+                            </div>
+                        </div>
+                        <div className='grid grid-cols-5'>
+                            <div className='col-span-1' >
+                                <GiRank2 color="#a46ced" fontSize="25px" />
+
+                            </div>
+                            <div className='col-span-2' >
+                                <p style={{ color: "#a46ced" }} className='font-bold'>Diamond</p>
+
+                            </div>
+                            <div className='col-span-2 text-start flex items-center' >
+                                <p className='text-base font-thin'>201 - 1000 XP</p>
+
+                            </div>
+                        </div>
+                    </div> */}
+
+                    <div className="modal-action">
+                        <form method="dialog">
+                            <button className="btn">Close</button>
+                        </form>
+                    </div>
+                </div>
+            </dialog>
+
+            <dialog id="attackModal" className="modal">
+                <div className="modal-box">
+                    <h3 className="font-bold text-lg">Attack Now?</h3>
+                    <div className="modal-action">
+                        <button onClick={() => handleAttackUser(attackUsername)} className={`btn btn-error mx-1 ${loadingStatus ? 'btn-disabled skeleton' : ''}`}>Attack</button>
+                        <button className="btn btn-primary" onClick={() => document.getElementById('attackModal').close()}>Cancel</button>
+                    </div>
+                </div>
+            </dialog>
 
 
             <Navbar />
