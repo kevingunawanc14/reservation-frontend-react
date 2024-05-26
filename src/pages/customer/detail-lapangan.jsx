@@ -256,7 +256,6 @@ export default function DetailLapangan() {
         // console.log('watch("filePaymentProve")', watch("filePaymentProve")[0].type)
         // console.log('watch("filePaymentProve")', watch("filePaymentProve")[0].name)
         // console.log('watch("filePaymentProve")', watch("filePaymentProve")[0].size)
-        // Create FormData and append file and data
         const formData = new FormData();
 
         if (watch("paymentMethod") === 'qris') {
@@ -303,12 +302,10 @@ export default function DetailLapangan() {
         };
 
 
-        // Append each key-value pair from dataToSend to formData
         Object.keys(dataToSend).forEach(key => {
             formData.append(key, dataToSend[key]);
         });
         console.log('dataToSend.hour', dataToSend.hour);
-        // Log the FormData content
         for (let pair of formData.entries()) {
             console.log(pair[0] + ':', pair[1]);
         }
@@ -326,7 +323,7 @@ export default function DetailLapangan() {
             console.log('response.data', response.data);
             setLoadingStatus(false)
 
-                localStorage.setItem('lastPage', 'order');  // Set lastPage to 'order'
+            localStorage.setItem('lastPage', 'order');  // Set lastPage to 'order'
 
             navigate('/payment');
 
@@ -391,7 +388,7 @@ export default function DetailLapangan() {
                             color: theme === 'light'
                                 || theme === 'autumn'
                                 || theme === 'lemonade'
-                                || theme === 'winter' ? '' : '#64748b',
+                                || theme === 'winter' ? '' : '#cbd5e1',
                         }
                     }}
                 />

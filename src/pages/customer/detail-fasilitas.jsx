@@ -133,12 +133,10 @@ export default function DetailFasilitas() {
             cancelId: crypto.randomUUID(),
         };
 
-        // Append each key-value pair from dataToSend to formData
         Object.keys(dataToSend).forEach(key => {
             formData.append(key, dataToSend[key]);
         });
         console.log('dataToSend.hour', dataToSend.hour);
-        // Log the FormData content
         for (let pair of formData.entries()) {
             console.log(pair[0] + ':', pair[1]);
         }

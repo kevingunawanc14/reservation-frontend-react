@@ -140,7 +140,9 @@ export default function ActiveOrder() {
     const handleDetailPaymentProve = async (imagePath) => {
         document.getElementById('paymentProve').showModal()
         console.log('imagePath', imagePath)
-        setImagePaymentProve('http://localhost:2000/Images/' + imagePath);
+        // setImagePaymentProve('http://localhost:2000/api/images/' + imagePath);
+        setImagePaymentProve('https://krakatausportcentrejombang.cloud/api/images/' + imagePath);
+
     }
 
     useEffect(() => {
