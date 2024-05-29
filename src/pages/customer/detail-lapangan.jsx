@@ -394,7 +394,7 @@ export default function DetailLapangan() {
                                     || theme === 'nord'
                                     || theme === 'winter' ? '' : '#f8fafc',
                             },
-                            '& .css-1u23akw-MuiButtonBase-root-MuiPickersDay-root.Mui-disabled:not(.Mui-selected)': {
+                            '& .MuiPickersDay-root.Mui-disabled': {
                                 color: theme === 'light'
                                     || theme === 'autumn'
                                     || theme === 'lemonade'
