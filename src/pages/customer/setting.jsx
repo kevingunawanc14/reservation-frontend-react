@@ -932,7 +932,8 @@ export default function DetailAccount() {
                                                             <div className="justify-self-end ">
                                                                 <div className="avatar">
                                                                     <div className="w-20 rounded">
-                                                                        <img src={'http://localhost:2000/api/images/' + item.membershipKTPImagePath} />
+                                                                        <img src={'https://krakatausportcentrejombang.cloud/api/images/' + item.membershipKTPImagePath} />
+                                                                        {/* <img src={'http://localhost:2000/api/images/' + item.membershipKTPImagePath} /> */}
                                                                     </div>
                                                                 </div>
                                                             </div>
