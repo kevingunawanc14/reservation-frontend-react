@@ -141,8 +141,8 @@ export default function ActiveOrder() {
     const handleDetailPaymentProve = async (imagePath) => {
         document.getElementById('paymentProve').showModal()
         console.log('imagePath', imagePath)
-        setImagePaymentProve('http://localhost:2000/api/images/' + imagePath);
-        // setImagePaymentProve('https://krakatausportcentrejombang.cloud/api/images/' + imagePath);
+        // setImagePaymentProve('http://localhost:2000/api/images/' + imagePath);
+        setImagePaymentProve('https://krakatausportcentrejombang.cloud/api/images/' + imagePath);
 
     }
 
@@ -240,8 +240,8 @@ export default function ActiveOrder() {
                     {params.row.membershipKTPImagePath !== null ? (
                         <div className="avatar">
                             <div className="w-20 rounded">
-                                {/* <img src={'https://krakatausportcentrejombang.cloud/api/images/' + params.row.membershipKTPImagePath} /> */}
-                                <img src={'http://localhost:2000/api/images/' + params.row.membershipKTPImagePath} />
+                                <img src={'https://krakatausportcentrejombang.cloud/api/images/' + params.row.membershipKTPImagePath} />
+                                {/* <img src={'http://localhost:2000/api/images/' + params.row.membershipKTPImagePath} /> */}
 
                             </div>
                         </div>
