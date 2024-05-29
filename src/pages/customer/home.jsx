@@ -379,13 +379,13 @@ export default function Home() {
 
                 {userData && challenges && progressiveChallangeUser ? (
                     <>
-                        <div className='grid grid-rows-3 gap-4 mb-20'>
+                        <div className='grid grid-rows-3 gap-4 mb-20 text-accent-content'>
                             <div className="card lg:card-side bg-accent shadow-xl m-4">
                                 <div className="card-body">
-                                    <h2 className="card-title text-neutral">Tantangan Mingguan</h2>
+                                    <h2 className="card-title ">Tantangan Mingguan</h2>
                                     <div className="grid grid-cols-12">
                                         <div className='sm:col-span-1 col-span-2 justify-self-center'>
-                                            <p className='text-neutral font-semibold'>
+                                            <p className=' font-semibold'>
                                                 {progressiveChallangeUser.hourWeekly >= 2 ? 2 : progressiveChallangeUser.hourWeekly}/2</p>
                                         </div>
                                         <div className='sm:col-span-11 col-span-9'>
@@ -399,7 +399,7 @@ export default function Home() {
                                     <div className="grid grid-cols-4">
                                         <div className='sm:col-span-2 col-span-4'>
                                             {challenges.filter(challenge => challenge.id === 1).map((challenge) => (
-                                                <p key={challenge.id} className='font-semibold text-neutral'>
+                                                <p key={challenge.id} className='font-semibold '>
                                                     {challenge.description}
                                                 </p>
                                             ))}
@@ -441,10 +441,10 @@ export default function Home() {
                             </div>
                             <div className="card lg:card-side bg-accent shadow-xl m-4">
                                 <div className="card-body">
-                                    <h2 className="card-title text-neutral">Tantangan Bulanan</h2>
+                                    <h2 className="card-title ">Tantangan Bulanan</h2>
                                     <div className="grid grid-cols-12">
                                         <div className='sm:col-span-1 col-span-2 justify-self-center'>
-                                            <p className='text-neutral font-semibold'> {progressiveChallangeUser.hourWeekly >= 10 ? 10 : progressiveChallangeUser.hourWeekly}/10</p>
+                                            <p className=' font-semibold'> {progressiveChallangeUser.hourMonthly >= 10 ? 10 : progressiveChallangeUser.hourMonthly}/10</p>
                                         </div>
                                         <div className='sm:col-span-11 col-span-9'>
                                             <progress
@@ -456,7 +456,7 @@ export default function Home() {
                                     <div className="grid grid-cols-4">
                                         <div className='sm:col-span-2 col-span-4'>
                                             {challenges.filter(challenge => challenge.id === 2).map((challenge) => (
-                                                <p key={challenge.id} className='text-base text-neutral font-semibold'>
+                                                <p key={challenge.id} className='text-base  font-semibold'>
                                                     {challenge.description}
                                                 </p>
                                             ))}
@@ -479,7 +479,7 @@ export default function Home() {
                                                 ) : (
                                                     <div className='cursor-pointer '
                                                         onClick={() => {
-                                                            if (progressiveChallangeUser.hourWeekly < 10) {
+                                                            if (progressiveChallangeUser.hourMonthly < 10) {
                                                                 document.getElementById('challangeInfo').showModal();
                                                             }
                                                         }}>
@@ -496,10 +496,10 @@ export default function Home() {
                             </div>
                             <div className="card lg:card-side bg-accent shadow-xl m-4">
                                 <div className="card-body">
-                                    <h2 className="card-title text-neutral">Tantangan 6 Bulan</h2>
+                                    <h2 className="card-title ">Tantangan 6 Bulan</h2>
                                     <div className="grid grid-cols-12">
                                         <div className='sm:col-span-1 col-span-2 justify-self-center'>
-                                            <p className='text-neutral font-semibold'> {progressiveChallangeUser.hourWeekly >= 50 ? 50 : progressiveChallangeUser.hourWeekly}/50</p>
+                                            <p className=' font-semibold'> {progressiveChallangeUser.hour6Month >= 50 ? 50 : progressiveChallangeUser.hour6Month}/50</p>
                                         </div>
                                         <div className='sm:col-span-11 col-span-9'>
                                             <progress
@@ -512,7 +512,7 @@ export default function Home() {
                                     <div className="grid grid-cols-4">
                                         <div className='sm:col-span-2 col-span-4'>
                                             {challenges.filter(challenge => challenge.id === 3).map((challenge) => (
-                                                <p key={challenge.id} className='text-base text-neutral font-semibold'>
+                                                <p key={challenge.id} className='text-base  font-semibold'>
                                                     {challenge.description}
                                                 </p>
                                             ))}
@@ -528,7 +528,7 @@ export default function Home() {
 
                                                 ) : (
                                                     <div className='cursor-pointer ' onClick={() => {
-                                                        if (progressiveChallangeUser.hourWeekly < 50) {
+                                                        if (progressiveChallangeUser.hour6Month < 50) {
                                                             document.getElementById('challangeInfo').showModal();
                                                         }
                                                     }}>
@@ -548,13 +548,13 @@ export default function Home() {
                         </div>
                     </>
                 ) : (
-                    <div className='grid grid-rows-3 gap-4 mb-20'>
+                    <div className='grid grid-rows-3 gap-4 mb-20 text-accent-content'>
                         <div className="card lg:card-side bg-accent shadow-xl m-4 ">
                             <div className="card-body skeleton">
-                                <h2 className="card-title text-neutral">Tantangan Mingguan</h2>
+                                <h2 className="card-title ">Tantangan Mingguan</h2>
                                 <div className="grid grid-cols-12 ">
                                     <div className='sm:col-span-1 col-span-2 justify-self-center'>
-                                        <p className='text-neutral font-semibold  '>
+                                        <p className=' font-semibold  '>
                                         </p>
                                     </div>
                                     <div className='sm:col-span-11 col-span-9'>
@@ -588,10 +588,10 @@ export default function Home() {
                         </div>
                         <div className="card lg:card-side bg-accent shadow-xl m-4">
                             <div className="card-body skeleton">
-                                <h2 className="card-title text-neutral">Tantangan Bulanan</h2>
+                                <h2 className="card-title ">Tantangan Bulanan</h2>
                                 <div className="grid grid-cols-12">
                                     <div className='sm:col-span-1 col-span-2 justify-self-center'>
-                                        <p className='text-neutral font-semibold'> </p>
+                                        <p className=' font-semibold'> </p>
                                     </div>
                                     <div className='sm:col-span-11 col-span-9'>
                                         <progress
@@ -623,10 +623,10 @@ export default function Home() {
                         </div>
                         <div className="card lg:card-side bg-accent shadow-xl m-4">
                             <div className="card-body skeleton">
-                                <h2 className="card-title text-neutral">Tantangan 6 Bulan</h2>
+                                <h2 className="card-title ">Tantangan 6 Bulan</h2>
                                 <div className="grid grid-cols-12">
                                     <div className='sm:col-span-1 col-span-2 justify-self-center'>
-                                        <p className='text-neutral font-semibold'></p>
+                                        <p className=' font-semibold'></p>
                                     </div>
                                     <div className='sm:col-span-11 col-span-9'>
                                         <progress
@@ -752,26 +752,26 @@ export default function Home() {
             </dialog>
 
             <dialog id="rewardModal" className="modal modal-bottom sm:modal-middle">
-                <div className="modal-box bg-secondary">
+                <div className="modal-box bg-secondary text-secondary-content">
                     <form method="dialog">
-                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 text-secondary-content">✕</button>
+                        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 ">✕</button>
                     </form>
                     <div className='grid grid-cols-2'>
                         <div>
-                            {statusClaimReward.type === 1 && <GiSecretBook className='w-full h-20 text-neutral-content' />}
-                            {statusClaimReward.type === 2 && <RiHeartAddFill className='w-full h-20 text-neutral-content' />}
-                            {statusClaimReward.type === 3 && <LuSwords className='w-full h-20 text-neutral-content' />}
-                            {statusClaimReward.type === 4 && <TbShieldPlus className='w-full h-20 text-neutral-content' />}
-                            {statusClaimReward.type === 5 && <FaSkull className='w-full h-20 text-neutral-content' />}
+                            {statusClaimReward.type === 1 && <GiSecretBook className='w-full h-20' />}
+                            {statusClaimReward.type === 2 && <RiHeartAddFill className='w-full h-20' />}
+                            {statusClaimReward.type === 3 && <LuSwords className='w-full h-20' />}
+                            {statusClaimReward.type === 4 && <TbShieldPlus className='w-full h-20' />}
+                            {statusClaimReward.type === 5 && <FaSkull className='w-full h-20' />}
                         </div>
                         <div>
-                            <p className='text-lg font-bold mt-2 ms-[-10px] text-neutral-content'>Reward Points</p>
+                            <p className='text-lg font-bold mt-2 ms-[-10px]'>Reward Points</p>
                             {statusClaimReward.type == 5 ? (
-                                <p className='font-semibold ms-[-10px] text-neutral-content'>
+                                <p className='font-semibold ms-[-10px]'>
                                     You got nothing...
                                 </p>
                             ) : (
-                                <p className='font-semibold ms-[-10px] text-neutral-content'>
+                                <p className='font-semibold ms-[-10px]'>
                                     {statusClaimReward.type === 1 && `You got + ${statusClaimReward.point} experience point`}
                                     {statusClaimReward.type === 2 && `You got + ${statusClaimReward.point} heart point`}
                                     {statusClaimReward.type === 3 && `You got + ${statusClaimReward.point} attack point`}

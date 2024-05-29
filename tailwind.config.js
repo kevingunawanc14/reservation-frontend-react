@@ -8,7 +8,8 @@ export default {
     extend: {},
   },
   daisyui: {
-    themes: ["light", "autumn", "lemonade", "winter", "dark", "halloween", "forest", "coffee", "dracula"],
+    themes: ["light", "autumn", "lemonade", "winter", "dark", "halloween", "forest", "coffee", "dracula", "aqua", "nord",
+      "sunset",],
   },
   // eslint-disable-next-line no-undef
   plugins: [require("daisyui")],

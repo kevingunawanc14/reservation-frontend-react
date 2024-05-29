@@ -9,6 +9,7 @@ import { FaSackDollar } from "react-icons/fa6";
 import { RiCopperCoinLine } from "react-icons/ri";
 import { TbListDetails } from "react-icons/tb";
 
+
 export default function Payment() {
 
     const navigate = useNavigate();
@@ -134,7 +135,7 @@ export default function Payment() {
                                 <div key={index}>
                                     <div className="card mb-3 flex justify-center shadow-xl bg-neutral">
                                         <div className="card-body">
-                                            <p className="text-neutral-content">{payment.fullProductName}</p>
+                                            <p className="text-neutral-content">{payment.fullProductName} {payment.note ? ` - ( a.n. ${payment.note} )` : ''}</p>
                                             <div className="grid grid-cols-2">
                                                 <div className="grid content-center">
                                                     <p className="text-neutral-content font-bold">Rp. {payment.totalPrice}</p>
@@ -153,7 +154,8 @@ export default function Payment() {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <p className="text-neutral-content">{payment.date.split(' - ')[0]}</p>
+                                            <p className="text-neutral-content">Tanggal Pemesanan: {payment.createdAtDateFull}</p>
+                                            <p className="text-neutral-content">Tanggal Bermain: {payment.date}</p>
                                             <div className={`grid grid-cols-1  ${payment.paymentStatus === 'Batal' && 'hidden'}`}>
                                                 <button className="btn btn-info btn-sm " onClick={() => handleDetailJamOrder(payment.connectHistory)}>
                                                     Detail

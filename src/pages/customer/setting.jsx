@@ -67,6 +67,10 @@ export default function DetailAccount() {
         { id: 7, xp: 160, icon: "🌲", title: "Forest", status: 'non-active', preview: 'non-active', bodySend: "forest" },
         { id: 8, xp: 170, icon: "☕", title: "Coffee", status: 'non-active', preview: 'non-active', bodySend: "coffee" },
         { id: 9, xp: 180, icon: "🦇", title: "Dracula", status: 'non-active', preview: 'non-active', bodySend: "dracula" },
+        { id: 10, xp: 190, icon: "💧", title: "Aqua", status: 'non-active', preview: 'non-active', bodySend: "aqua" },
+        { id: 11, xp: 200, icon: "🗻", title: "Nord", status: 'non-active', preview: 'non-active', bodySend: "nord" },
+        { id: 12, xp: 210, icon: "🌇", title: "Sunset", status: 'non-active', preview: 'non-active', bodySend: "sunset" },
+
     ];
 
     const achievementData = [
@@ -918,12 +922,22 @@ export default function DetailAccount() {
                                     {membership && membership.length > 0 ? (
                                         membership.map((item, index) => (
                                             <div key={index}>
-                                                <div className="card bg-accent shadow-xl text-accent-content">
+                                                <div className="card bg-accent shadow-xl text-accent-content mt-3">
                                                     <div className="card-body">
-                                                        <h2 className="card-title">{item.productName}</h2>
-                                                        {/* <p>{item.date}</p> */}
-                                                        <p>Start Date &nbsp;:  <span className="font-medium">{item.date.split(' - ')[0]} </span></p>
-                                                        <p>End Date&nbsp;&nbsp;&nbsp;: <span className="font-medium">{item.date.split(' - ')[1]} </span> </p>
+                                                        <div className="grid grid-cols-2 gap-4">
+                                                            <div>
+                                                                <h2 className="card-title">{item.productName}</h2>
+                                                                <p>Start Date &nbsp;:  <span className="font-medium">{item.date.split(' - ')[0]} </span></p>
+                                                                <p>End Date&nbsp;&nbsp;&nbsp;: <span className="font-medium">{item.date.split(' - ')[1]} </span> </p></div>
+                                                            <div className="justify-self-end ">
+                                                                <div className="avatar">
+                                                                    <div className="w-20 rounded">
+                                                                        <img src={'http://localhost:2000/api/images/' + item.membershipKTPImagePath} />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
                                                         <div className="card-actions justify-end">
                                                             <button className="btn btn-primary cursor-default">Active</button>
                                                         </div>
@@ -1018,6 +1032,12 @@ export default function DetailAccount() {
                                                     <span>☕</span>
                                                 ) : userData.activeTheme === 'Dracula' ? (
                                                     <span>🦇</span>
+                                                ) : userData.activeTheme === 'Aqua' ? (
+                                                    <span>💧</span>
+                                                ) : userData.activeTheme === 'Nord' ? (
+                                                    <span>🗻</span>
+                                                ) : userData.activeTheme === 'Sunset' ? (
+                                                    <span>🌇</span>
                                                 ) : (
                                                     <span>xxx</span>
                                                 )}

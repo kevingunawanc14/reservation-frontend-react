@@ -21,6 +21,8 @@ import { FaWalking } from "react-icons/fa";
 import { FaRunning } from "react-icons/fa";
 import { FaPerson } from "react-icons/fa6";
 import { GiRank2 } from "react-icons/gi";
+import { SlNote } from "react-icons/sl";
+import { IoIosAlert } from "react-icons/io";
 
 
 export default function DetailLapangan() {
@@ -37,24 +39,30 @@ export default function DetailLapangan() {
 
     const [namaProduct, setNamaProduct] = useState(null)
     const [productPrice, setProductPrice] = useState(0);
+    const [biayaDaftarGym, setBiayaDaftarGym] = useState(null);
+    const [membershipBadminton, setMembershipBadminton] = useState(null);
+
+    const [theme, setTheme] = useState(null);
+
 
     const [arrOfOrderSummary, setArrOfOrderSummary] = useState([]);
 
-    const { register, handleSubmit, watch, formState: { errors } } = useForm({
+    const { register, handleSubmit, watch, formState: { errors }, resetField } = useForm({
         defaultValues: {
             paymentMethod: "cash",
             breathStatus: "normal"
         }
     });
     const [breathStatus, setBreathStatus] = useState(null);
-    const theme = document.documentElement.getAttribute("data-theme");
-
+    // const theme = document.documentElement.getAttribute("data-theme");
+    console.log('theme', theme)
     const [loadingStatus, setLoadingStatus] = useState(null);
 
     const handleRadioBreathStatus = (status) => {
         setBreathStatus(status);
     };
 
+    console.log('watch("filePaymentProve").length', watch("filePaymentProve")?.length);
     const hours = [
         '6.00-7.00', '7.00-8.00', '8.00-9.00',
         '9.00-10.00', '10.00-11.00', '11.00-12.00',
@@ -85,7 +93,7 @@ export default function DetailLapangan() {
             const responseData = response.data;
 
             document.querySelector('html').setAttribute('data-theme', responseData.activeTheme.toLocaleLowerCase());
-
+            setTheme(document.documentElement.getAttribute("data-theme"))
         } catch (error) {
             console.error('Error fetching data:', error);
             navigate('/login');
@@ -246,11 +254,12 @@ export default function DetailLapangan() {
             setShowQr(true);
         } else {
             setShowQr(false);
+            resetField("filePaymentProve")
         }
     };
 
     const handleOrder = async () => {
-        // console.log('watch("filePaymentProve")', watch("filePaymentProve"))
+        console.log('watch("filePaymentProve")', watch("filePaymentProve"))
         // console.log('watch("filePaymentProve")', watch("filePaymentProve")[0])
         // console.log('watch("filePaymentProve")', watch("filePaymentProve")[0].size)
         // console.log('watch("filePaymentProve")', watch("filePaymentProve")[0].type)
@@ -282,7 +291,6 @@ export default function DetailLapangan() {
             username: username,
             price: productPrice,
             date: valueCalendar.format('YYYY-MM-DD'),
-            detailDate: valueCalendar.format('YYYY-MM-DD HH:mm:ss'),
             hour: arrOfOrderSummary,
             paymentStatus:
                 watch("paymentMethod") === 'cash' ? 'Belum dibayar' :
@@ -290,6 +298,7 @@ export default function DetailLapangan() {
                         watch("paymentMethod") === 'qris' ? 'Sedang diverifikasi' :
                             undefined,
             paymentMethod: watch("paymentMethod"),
+            note: watch("note"),
             totalPrice: (productPrice * arrOfOrderSummary.length),
             typeBreath: watch("breathStatus"),
             minuteBreath: (arrOfOrderSummary.length * 60),
@@ -299,8 +308,13 @@ export default function DetailLapangan() {
             totalDefense: 1,
             connectHistory: crypto.randomUUID(),
             cancelId: crypto.randomUUID(),
+            createdAtDate: dayjs().format('YYYY-MM-DD'),
+            createdAtDateFull: dayjs().format('YYYY-MM-DD HH:mm:ss')
         };
 
+        console.log('dataToSend', dataToSend)
+        console.log('daysjs date only ', dayjs().format('YYYY-MM-DD'))
+        console.log('daysjs date and time ', dayjs().format('YYYY-MM-DD HH:mm:ss'))
 
         Object.keys(dataToSend).forEach(key => {
             formData.append(key, dataToSend[key]);
@@ -366,33 +380,48 @@ export default function DetailLapangan() {
 
             </div>
 
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DateCalendar
-                    value={valueCalendar}
-                    onChange={(newValue) => setValueCalendar(newValue)}
-                    shouldDisableDate={shouldDisableDate}
-                    sx={{
-                        "& .MuiButtonBase-root": {
-                            color: theme === 'light'
-                                || theme === 'autumn'
-                                || theme === 'lemonade'
-                                || theme === 'winter' ? 'black' : 'white',
-                        },
-                        "& .MuiButtonBase-root.Mui-disabled": {
-                            color: theme === 'light'
-                                || theme === 'autumn'
-                                || theme === 'lemonade'
-                                || theme === 'winter' ? '' : '#94a3b8',
-                        },
-                        "& .MuiTypography-root": {
-                            color: theme === 'light'
-                                || theme === 'autumn'
-                                || theme === 'lemonade'
-                                || theme === 'winter' ? '' : '#cbd5e1',
-                        }
-                    }}
-                />
-            </LocalizationProvider>
+            {scheduleData ? (
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DateCalendar
+                        value={valueCalendar}
+                        onChange={(newValue) => setValueCalendar(newValue)}
+                        shouldDisableDate={shouldDisableDate}
+                        sx={{
+                            '& .MuiTypography-root': {
+                                color: theme === 'light'
+                                    || theme === 'autumn'
+                                    || theme === 'lemonade'
+                                    || theme === 'nord'
+                                    || theme === 'winter' ? '' : '#f8fafc',
+                            },
+                            '& .css-1u23akw-MuiButtonBase-root-MuiPickersDay-root.Mui-disabled:not(.Mui-selected)': {
+                                color: theme === 'light'
+                                    || theme === 'autumn'
+                                    || theme === 'lemonade'
+                                    || theme === 'nord'
+                                    || theme === 'winter' ? '' : '#94a3b8',
+                            },
+                            '& .MuiButtonBase-root': {
+                                color: theme === 'light'
+                                    || theme === 'autumn'
+                                    || theme === 'lemonade'
+                                    || theme === 'nord'
+                                    || theme === 'winter' ? '' : '#f1f5f9',
+                            },
+
+
+                        }}
+                    />
+                </LocalizationProvider>
+            ) : (
+                <div className='mb-10'>
+                    <LocalizationProvider dateAdapter={AdapterDayjs} >
+                        <DateCalendar
+                            className='skeleton'
+                        />
+                    </LocalizationProvider>
+                </div>
+            )}
 
             <div className="mx-5 mt-[-10px]">
                 <div className="grid grid-cols-3 gap-4">
@@ -565,19 +594,38 @@ export default function DetailLapangan() {
                     </div>
                     {showQr && (
                         <div className=''>
-                            <div className="collapse collapse-arrow border border-base-300 bg-neutral justify-self-center ">
+                            <div className="collapse collapse-arrow border border-base-300 bg-neutral justify-self-center collapse-open">
                                 <input type="checkbox" />
                                 <div className="collapse-title text-xl font-medium text-neutral-content">
-                                    Show QRIS
+                                    <div className="grid grid-cols-2 ">
+                                        {/* <div>Show QRIS</div> */}
+                                    </div>
+
+
                                 </div>
                                 <div className="collapse-content grid ">
                                     <div className='justify-self-center '>
                                         <img src={qris} alt="" className=' ' />
-                                        <input
-                                            {...register("filePaymentProve", { required: true })}
-                                            type="file"
-                                            className="file-input file-input-bordered w-full mt-3"
-                                        />
+
+                                        <div className="grid grid-cols-12 ">
+                                            <input
+                                                {...register("filePaymentProve", { required: true })}
+                                                type="file"
+                                                className="file-input file-input-bordered w-full mt-3 col-span-11"
+                                            />
+
+                                            {!watch('filePaymentProve')?.length > 0 && (
+                                                <div className='animate-bounce place-self-center mt-3 ms-3'>
+                                                    <IoIosAlert color='red' size={25} />
+                                                </div>
+                                            )}
+
+
+                                        </div>
+
+
+
+
 
                                     </div>
 
@@ -587,19 +635,43 @@ export default function DetailLapangan() {
                         </div>
 
                     )}
+                    <div className="grid grid-cols-9">
+                        <div className='self-center'>
+                            <SlNote
+                                fontSize="20px"
+                            />
+                        </div>
+                        <div className='col-span-7'>
+                            <label className="label cursor-pointer">
+                                {/* <span className="label-text">QRIS</span> */}
+                                <input
+                                    {...register("note", { required: true })}
+                                    type="text"
+                                    className="input input-bordered w-full"
+                                    placeholder="atas nama ?"
+                                />
+                                {errors.note && <p className="text-red-500 mt-2">{errors.note.message}</p>}
+
+                            </label>
+                        </div>
+                        {watch('note') == '' && (
+                            <div className='animate-bounce place-self-center mt-3 ms-3'> <IoIosAlert color='red' size={25} /></div>
+                        )}
+
+                    </div>
                 </div>
 
-            </div>
+            </div >
 
 
             <div className="flex justify-center  mx-5 mt-5">
-                {watch("paymentMethod") === 'cash' ? (
+                {watch("paymentMethod") === 'cash' && watch('note') != '' ? (
                     <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 ? '' : 'btn-disabled'} ${loadingStatus ? 'btn-disabled skeleton' : ''}`} onClick={handleOrder}>
                         {loadingStatus ? 'Processing' : 'Place Order'}
                     </button>
 
                 ) : (
-                    <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 && watch('filePaymentProve')?.length > 0 ? '' : 'btn-disabled'} ${loadingStatus ? 'btn-disabled skeleton' : ''}`} onClick={handleOrder} > {loadingStatus ? 'Processing' : 'Place Order'}</button>
+                    <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 && watch('filePaymentProve')?.length > 0 && watch('note') != '' ? '' : 'btn-disabled'} ${loadingStatus ? 'btn-disabled skeleton' : ''}`} onClick={handleOrder} > {loadingStatus ? 'Processing' : 'Place Order'}</button>
 
                 )}
             </div>

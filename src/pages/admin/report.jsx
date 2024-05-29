@@ -15,6 +15,7 @@ import axios from '../../api/axios';
 import { TbListDetails } from "react-icons/tb";
 import { GiTakeMyMoney } from "react-icons/gi";
 import { BsQrCodeScan } from "react-icons/bs";
+import dayjs from 'dayjs';
 
 function CustomToolbar() {
     return (
@@ -140,8 +141,8 @@ export default function ActiveOrder() {
     const handleDetailPaymentProve = async (imagePath) => {
         document.getElementById('paymentProve').showModal()
         console.log('imagePath', imagePath)
-        // setImagePaymentProve('http://localhost:2000/api/images/' + imagePath);
-        setImagePaymentProve('https://krakatausportcentrejombang.cloud/api/images/' + imagePath);
+        setImagePaymentProve('http://localhost:2000/api/images/' + imagePath);
+        // setImagePaymentProve('https://krakatausportcentrejombang.cloud/api/images/' + imagePath);
 
     }
 
@@ -152,7 +153,7 @@ export default function ActiveOrder() {
             setValue1("productName", challangeData.productName)
             setValue1("paymentStatus", challangeData.paymentStatus)
             setValue1("paymentMethod", challangeData.paymentMethod)
-            setValue1("createdAt", challangeData.detailDate)
+            setValue1("createdAt", challangeData.createdAtDateFull)
             setValue1("id", challangeData.id)
 
             document.getElementById('detailChallange').showModal()
@@ -207,8 +208,47 @@ export default function ActiveOrder() {
             flex: 0.5,
         },
         {
-            field: 'detailDate',
+            field: 'date',
+            headerName: 'Tanggal Bermain',
+            renderCell: (params) => (
+                <div>
+                    {params.row.date.split(" - ")[0] === dayjs().format('YYYY-MM-DD') ? (
+                        <p className='text-error animate-pulse'>{params.row.date}</p>
+                    ) : (
+                        <p>{params.row.date}</p>
+
+                    )}
+                </div>
+            ),
+            flex: 1,
+        },
+        {
+            field: 'createdAtDateFull',
             headerName: 'Tanggal Order',
+            flex: 1,
+        },
+        {
+            field: 'note',
+            headerName: 'Note',
+            flex: 1,
+        },
+        {
+            field: 'membershipKTPImagePath',
+            headerName: 'Foto',
+            renderCell: (params) => (
+                <div>
+                    {params.row.membershipKTPImagePath !== null ? (
+                        <div className="avatar">
+                            <div className="w-20 rounded">
+                                <img src={'http://localhost:2000/api/images/' + params.row.membershipKTPImagePath} />
+                            </div>
+                        </div>
+                    ) : (
+                        <p></p>
+                    )
+                    }
+                </div >
+            ),
             flex: 1,
         },
         {
@@ -345,7 +385,7 @@ export default function ActiveOrder() {
                             {errors1.paymentMethod && <p className="text-error mt-2">{errors1.paymentMethod.message}</p>}
 
                             <div className="label">
-                                <span className="label-text">Created At</span>
+                                <span className="label-text">Tanggal Order</span>
                             </div>
 
                             <input
@@ -355,7 +395,7 @@ export default function ActiveOrder() {
                                 disabled
                             />
 
-                            {errors1.createdAt && <p className="text-error mt-2">{errors1.createdAt.message}</p>}
+                            {errors1.createdAtDateFull && <p className="text-error mt-2">{errors1.createdAtDateFull.message}</p>}
 
                             <div className="modal-action">
                                 <button

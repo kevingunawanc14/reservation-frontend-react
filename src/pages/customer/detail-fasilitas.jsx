@@ -15,6 +15,8 @@ import { FaWalking } from "react-icons/fa";
 import { FaRunning } from "react-icons/fa";
 import { FaPerson } from "react-icons/fa6";
 import { GiRank2 } from "react-icons/gi";
+import { TbUpload } from "react-icons/tb";
+import { IoIosAlert } from "react-icons/io";
 import qris from '../../assets/QRIS_KRAKATAU.png';
 
 
@@ -34,7 +36,7 @@ export default function DetailFasilitas() {
 
     const [arrOfOrderSummary, setArrOfOrderSummary] = useState([]);
 
-    const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm({
+    const { register, handleSubmit, setValue, watch, formState: { errors }, resetField } = useForm({
         defaultValues: {
             paymentMethod: "cash",
             breathStatus: "normal"
@@ -83,8 +85,10 @@ export default function DetailFasilitas() {
             setShowQr(true);
         } else {
             setShowQr(false);
+            resetField("filePaymentProve")
         }
     };
+
 
     const handleOrder = async () => {
 
@@ -109,6 +113,26 @@ export default function DetailFasilitas() {
 
         }
 
+        if (watch("subscriptionType") === 'membership') {
+            const allowedExtensions = ['jpg', 'jpeg', 'png'];
+            const fileExtension = watch("foto")[0].name.split('.').pop().toLowerCase();
+            console.log('fileExtension', fileExtension)
+            if (!allowedExtensions.includes(fileExtension)) {
+                return alert('Invalid file type. Please select a JPG, JPEG, or PNG file.');
+            }
+
+            const maxFileSize = 1024 * 1024 * 5;
+            console.log('maxFileSize', maxFileSize)
+
+            if (watch("foto")[0].size > maxFileSize) {
+                return alert('File size exceeds limit (5 MB). Please select a smaller file.');
+            }
+
+            formData.append('foto', watch("foto")[0]);
+
+        }
+
+
         const dataToSend = {
             idProduct: idProduct,
             username: username,
@@ -122,6 +146,7 @@ export default function DetailFasilitas() {
                         watch("paymentMethod") === 'qris' ? 'Sedang diverifikasi' :
                             undefined,
             paymentMethod: watch("paymentMethod"),
+            note: "",
             totalPrice: (productPrice * arrOfOrderSummary.length),
             typeBreath: watch("breathStatus"),
             minuteBreath: (arrOfOrderSummary.length * 60),
@@ -131,6 +156,9 @@ export default function DetailFasilitas() {
             totalDefense: 1,
             connectHistory: crypto.randomUUID(),
             cancelId: crypto.randomUUID(),
+            createdAtDate: dayjs().format('YYYY-MM-DD'),
+            createdAtDateFull: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+            subscriptionType: watch("subscriptionType")
         };
 
         Object.keys(dataToSend).forEach(key => {
@@ -187,12 +215,12 @@ export default function DetailFasilitas() {
             setValue("productType", 'gym');
             setValue("subscriptionType", 'membership');
             const newOrderSummary = {
-                price: 100000,
+                price: 170000,
                 startDate: `${dayjs().format('YYYY-MM-DD')}`,
                 endDate: `${dayjs().add(1, 'month').format('YYYY-MM-DD')}`,
                 name: 'Gym'
             };
-            setProductPrice(100000)
+            setProductPrice(170000)
             setArrOfOrderSummary(prevState => [...prevState, newOrderSummary]);
         } else if (idProduct == 16) {
             setNamaProduct('Kolam Renang Anak')
@@ -403,7 +431,7 @@ export default function DetailFasilitas() {
                     </div>
                     {showQr && (
                         <div className=''>
-                            <div className="collapse collapse-arrow border border-base-300 bg-neutral justify-self-center ">
+                            <div className="collapse collapse-arrow border border-base-300 bg-neutral justify-self-center collapse-open ">
                                 <input type="checkbox" />
                                 <div className="collapse-title text-xl font-medium text-neutral-content">
                                     Show QRIS
@@ -411,11 +439,21 @@ export default function DetailFasilitas() {
                                 <div className="collapse-content grid ">
                                     <div className='justify-self-center '>
                                         <img src={qris} alt="" className=' ' />
-                                        <input
-                                            {...register("filePaymentProve", { required: true })}
-                                            type="file"
-                                            className="file-input file-input-bordered w-full mt-3"
-                                        />
+                                        <div className="grid grid-cols-12 ">
+                                            <input
+                                                {...register("filePaymentProve", { required: true })}
+                                                type="file"
+                                                className="file-input file-input-bordered w-full mt-3 col-span-11"
+                                            />
+
+                                            {!watch('filePaymentProve')?.length > 0 && (
+                                                <div className='animate-bounce place-self-center mt-3 ms-3'>
+                                                    <IoIosAlert color='red' size={25} />
+                                                </div>
+                                            )}
+
+
+                                        </div>
 
                                     </div>
 
@@ -429,14 +467,65 @@ export default function DetailFasilitas() {
 
             </div>
 
+            {watch("subscriptionType") === 'membership' && (
+                <>
+                    <div className="">
+                        <Header
+                            title={'Foto KTP / Selfie '}
+                            className={'text-center mt-5 text-xl font-semibold bg-primary-content py-2'}
+                        />
+                        <div className='mx-5'>
+                            <div className="form-control">
+                                <div className="grid grid-cols-9">
+                                    <div className='self-center'>
+                                        <TbUpload
+                                            fontSize="20px"
+                                        />
+
+                                    </div>
+                                    <div className='col-span-7'>
+                                        <label className="label cursor-pointer">
+                                            <input
+                                                {...register("foto")}
+                                                type="file"
+                                                className="file-input file-input-bordered w-full mt-3 col-span-11"
+                                            />
+                                        </label>
+                                    </div>
+                                    {!watch('foto')?.length > 0 && (
+                                        <div className='animate-bounce place-self-center mt-3 ms-3'> <IoIosAlert color='red' size={25} /></div>
+                                    )}
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </>
+            )}
+
             <div className="flex justify-center  mx-5 mt-5">
-                {watch("paymentMethod") === 'cash' || watch("paymentMethod") === 'krakataucoin' ? (
-                    <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 ? '' : 'btn-disabled'} ${loadingStatus ? 'btn-disabled skeleton' : ''}`} onClick={handleOrder}> {loadingStatus ? 'Processing' : 'Place Order'}</button>
+                {watch("subscriptionType") === 'membership' ? (
+                    watch("paymentMethod") === 'cash' && watch('foto')?.length > 0 ? (
+                        <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 ? '' : 'btn-disabled'} ${loadingStatus ? 'btn-disabled skeleton' : ''}`} onClick={handleOrder}> {loadingStatus ? 'Processing' : 'Place Order'}</button>
+
+                    ) : (
+                        <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 && watch('filePaymentProve')?.length > 0 && watch('foto')?.length > 0 ? '' : 'btn-disabled'} ${loadingStatus ? 'btn-disabled skeleton' : ''}`} onClick={handleOrder} > {loadingStatus ? 'Processing' : 'Place Order'}</button>
+
+                    )
 
                 ) : (
-                    <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 && watch('filePaymentProve')?.length > 0 ? '' : 'btn-disabled'} ${loadingStatus ? 'btn-disabled skeleton' : ''}`} onClick={handleOrder} > {loadingStatus ? 'Processing' : 'Place Order'}</button>
+                    watch("paymentMethod") === 'cash' ? (
+                        <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 ? '' : 'btn-disabled'} ${loadingStatus ? 'btn-disabled skeleton' : ''}`} onClick={handleOrder}> {loadingStatus ? 'Processing' : 'Place Order'}</button>
+
+                    ) : (
+                        <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 && watch('filePaymentProve')?.length > 0 ? '' : 'btn-disabled'} ${loadingStatus ? 'btn-disabled skeleton' : ''}`} onClick={handleOrder} > {loadingStatus ? 'Processing' : 'Place Order'}</button>
+
+                    )
 
                 )}
+
+
             </div>
 
             <div className="flex justify-center mt-3 mb-3">

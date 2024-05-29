@@ -189,34 +189,34 @@ export default function ActiveOrder() {
             headerName: 'Phone Number',
             flex: 1,
         },
-        {
-            field: 'biayaPendaftaranMembershipGym',
-            headerName: 'Biaya Pendaftaran Membership Gym',
-            renderCell: (params) => (
-                <div>
-                    {params.row.biayaPendaftaranMembershipGym === false ? (
-                        <p>Non Aktif</p>
-                    ) : (
-                        <p>Aktif</p>
-                    )}
-                </div>
-            ),
-            flex: 1,
-        },
-        {
-            field: 'biayaPendaftaranMembershipBadminton',
-            headerName: 'Biaya Pendaftaran Membership Badminton',
-            renderCell: (params) => (
-                <div>
-                    {params.row.biayaPendaftaranMembershipBadminton === false ? (
-                        <p>Non Aktif</p>
-                    ) : (
-                        <p>Aktif</p>
-                    )}
-                </div>
-            ),
-            flex: 1,
-        },
+        // {
+        //     field: 'biayaPendaftaranMembershipGym',
+        //     headerName: 'Biaya Pendaftaran Membership Gym',
+        //     renderCell: (params) => (
+        //         <div>
+        //             {params.row.biayaPendaftaranMembershipGym === false ? (
+        //                 <p>Non Aktif</p>
+        //             ) : (
+        //                 <p>Aktif</p>
+        //             )}
+        //         </div>
+        //     ),
+        //     flex: 1,
+        // },
+        // {
+        //     field: 'biayaPendaftaranMembershipBadminton',
+        //     headerName: 'Biaya Pendaftaran Membership Badminton',
+        //     renderCell: (params) => (
+        //         <div>
+        //             {params.row.biayaPendaftaranMembershipBadminton === false ? (
+        //                 <p>Non Aktif</p>
+        //             ) : (
+        //                 <p>Aktif</p>
+        //             )}
+        //         </div>
+        //     ),
+        //     flex: 1,
+        // },
         {
             field: 'Action',
             headerName: 'Action',

@@ -287,24 +287,28 @@ export default function Leaderboard() {
                                     color: theme === 'light'
                                         || theme === 'autumn'
                                         || theme === 'lemonade'
+                                        || theme === 'nord'
                                         || theme === 'winter' ? '' : '#94a3b8',
                                 },
                                 "& .MuiDataGrid-virtualScroller": {
                                     color: theme === 'light'
                                         || theme === 'autumn'
                                         || theme === 'lemonade'
+                                        || theme === 'nord'
                                         || theme === 'winter' ? '' : '#f1f5f9',
                                 },
                                 "& .MuiToolbar-root": {
                                     color: theme === 'light'
                                         || theme === 'autumn'
                                         || theme === 'lemonade'
+                                        || theme === 'nord'
                                         || theme === 'winter' ? '' : '#94a3b8',
                                 },
                                 "& .MuiButtonBase-root.Mui-disabled": {
                                     color: theme === 'light'
                                         || theme === 'autumn'
                                         || theme === 'lemonade'
+                                        || theme === 'nord'
                                         || theme === 'winter' ? '' : '#94a3b8',
                                 }
                             }}
