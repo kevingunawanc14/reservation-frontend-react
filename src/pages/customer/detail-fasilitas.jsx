@@ -95,41 +95,11 @@ export default function DetailFasilitas() {
         const formData = new FormData();
 
         if (watch("paymentMethod") === 'qris') {
-            const allowedExtensions = ['jpg', 'jpeg', 'png'];
-            const fileExtension = watch("filePaymentProve")[0].name.split('.').pop().toLowerCase();
-            console.log('fileExtension', fileExtension)
-            if (!allowedExtensions.includes(fileExtension)) {
-                return alert('Invalid file type. Please select a JPG, JPEG, or PNG file.');
-            }
-
-            const maxFileSize = 1024 * 1024 * 5;
-            console.log('maxFileSize', maxFileSize)
-
-            if (watch("filePaymentProve")[0].size > maxFileSize) {
-                return alert('File size exceeds limit (5 MB). Please select a smaller file.');
-            }
-
             formData.append('filePaymentProve', watch("filePaymentProve")[0]);
-
         }
 
         if (watch("subscriptionType") === 'membership') {
-            const allowedExtensions = ['jpg', 'jpeg', 'png'];
-            const fileExtension = watch("foto")[0].name.split('.').pop().toLowerCase();
-            console.log('fileExtension', fileExtension)
-            if (!allowedExtensions.includes(fileExtension)) {
-                return alert('Invalid file type. Please select a JPG, JPEG, or PNG file.');
-            }
-
-            const maxFileSize = 1024 * 1024 * 5;
-            console.log('maxFileSize', maxFileSize)
-
-            if (watch("foto")[0].size > maxFileSize) {
-                return alert('File size exceeds limit (5 MB). Please select a smaller file.');
-            }
-
             formData.append('foto', watch("foto")[0]);
-
         }
 
 
@@ -332,7 +302,7 @@ export default function DetailFasilitas() {
             <div className="">
                 <Header
                     title={'Order Summary'}
-                    className={'text-center mt-5 text-xl font-semibold bg-primary-content py-2'}
+                    className={'text-center mt-5 text-xl font-semibold bg-primary-content py-2 text-neutral-content'}
                 />
 
                 <div className='mx-5'>
@@ -385,7 +355,7 @@ export default function DetailFasilitas() {
             <div className="">
                 <Header
                     title={'Payment Details'}
-                    className={'text-center mt-5 text-xl font-semibold bg-primary-content py-2'}
+                    className={'text-center mt-5 text-xl font-semibold bg-primary-content py-2 text-neutral-content'}
                 />
                 <div className='mx-5'>
                     <div className="form-control">
@@ -433,9 +403,6 @@ export default function DetailFasilitas() {
                         <div className=''>
                             <div className="collapse collapse-arrow border border-base-300 bg-neutral justify-self-center collapse-open ">
                                 <input type="checkbox" />
-                                <div className="collapse-title text-xl font-medium text-neutral-content">
-                                    Show QRIS
-                                </div>
                                 <div className="collapse-content grid ">
                                     <div className='justify-self-center '>
                                         <img src={qris} alt="" className=' ' />
@@ -454,6 +421,16 @@ export default function DetailFasilitas() {
 
 
                                         </div>
+                                        {watch('filePaymentProve')?.length > 0 && (
+                                            <>
+                                                {!['jpg', 'jpeg', 'png'].includes(watch("filePaymentProve")[0].name.split('.').pop().toLowerCase()) && (
+                                                    <p className="text-red-500 text-sm text-center">Invalid file type. Please select a JPG, JPEG, or PNG file</p>
+                                                )}
+                                                {watch("filePaymentProve")[0].size > 1024 * 1024 * 5 && (
+                                                    <p className="text-red-500 text-sm text-center">File size exceeds limit (5 MB). Please select a smaller file</p>
+                                                )}
+                                            </>
+                                        )}
 
                                     </div>
 
@@ -472,7 +449,7 @@ export default function DetailFasilitas() {
                     <div className="">
                         <Header
                             title={'Foto KTP / Selfie '}
-                            className={'text-center mt-5 text-xl font-semibold bg-primary-content py-2'}
+                            className={'text-center mt-5 text-xl font-semibold bg-primary-content py-2 text-neutral-content'}
                         />
                         <div className='mx-5'>
                             <div className="form-control">
@@ -495,7 +472,18 @@ export default function DetailFasilitas() {
                                     {!watch('foto')?.length > 0 && (
                                         <div className='animate-bounce place-self-center mt-3 ms-3'> <IoIosAlert color='red' size={25} /></div>
                                     )}
+
                                 </div>
+                                {watch('foto')?.length > 0 && (
+                                    <>
+                                        {!['jpg', 'jpeg', 'png'].includes(watch("foto")[0].name.split('.').pop().toLowerCase()) && (
+                                            <p className="text-red-500 text-sm text-center">Invalid file type. Please select a JPG, JPEG, or PNG file</p>
+                                        )}
+                                        {watch("foto")[0].size > 1024 * 1024 * 5 && (
+                                            <p className="text-red-500 text-sm text-center">File size exceeds limit (5 MB). Please select a smaller file</p>
+                                        )}
+                                    </>
+                                )}
 
                             </div>
                         </div>
@@ -506,20 +494,28 @@ export default function DetailFasilitas() {
 
             <div className="flex justify-center  mx-5 mt-5">
                 {watch("subscriptionType") === 'membership' ? (
-                    watch("paymentMethod") === 'cash' && watch('foto')?.length > 0 ? (
-                        <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 ? '' : 'btn-disabled'} ${loadingStatus ? 'btn-disabled skeleton' : ''}`} onClick={handleOrder}> {loadingStatus ? 'Processing' : 'Place Order'}</button>
+                    watch("paymentMethod") === 'cash' && watch('foto')?.length > 0
+                        && ['jpg', 'jpeg', 'png'].includes(watch("foto")[0].name.split('.').pop().toLowerCase()) && watch("foto")[0].size < 1024 * 1024 * 5
+                        ? (
+                            <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 ? '' : 'btn-disabled'} ${loadingStatus ? 'btn-disabled skeleton' : ''}`} onClick={handleOrder}> {loadingStatus ? 'Processing' : 'Place Order'}</button>
 
-                    ) : (
-                        <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 && watch('filePaymentProve')?.length > 0 && watch('foto')?.length > 0 ? '' : 'btn-disabled'} ${loadingStatus ? 'btn-disabled skeleton' : ''}`} onClick={handleOrder} > {loadingStatus ? 'Processing' : 'Place Order'}</button>
+                        ) : (
+                            <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 && watch('filePaymentProve')?.length > 0 && watch('foto')?.length > 0
+                                && ['jpg', 'jpeg', 'png'].includes(watch("filePaymentProve")[0].name.split('.').pop().toLowerCase()) && watch("filePaymentProve")[0].size < 1024 * 1024 * 5
+                                && ['jpg', 'jpeg', 'png'].includes(watch("foto")[0].name.split('.').pop().toLowerCase()) && watch("foto")[0].size < 1024 * 1024 * 5
+                                ?
+                                '' : 'btn-disabled'} ${loadingStatus ? 'btn-disabled skeleton' : ''}`} onClick={handleOrder} > {loadingStatus ? 'Processing' : 'Place Order'}</button>
 
-                    )
+                        )
 
                 ) : (
                     watch("paymentMethod") === 'cash' ? (
                         <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 ? '' : 'btn-disabled'} ${loadingStatus ? 'btn-disabled skeleton' : ''}`} onClick={handleOrder}> {loadingStatus ? 'Processing' : 'Place Order'}</button>
 
                     ) : (
-                        <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 && watch('filePaymentProve')?.length > 0 ? '' : 'btn-disabled'} ${loadingStatus ? 'btn-disabled skeleton' : ''}`} onClick={handleOrder} > {loadingStatus ? 'Processing' : 'Place Order'}</button>
+                        <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 && watch('filePaymentProve')?.length > 0
+                            && ['jpg', 'jpeg', 'png'].includes(watch("filePaymentProve")[0].name.split('.').pop().toLowerCase()) && watch("filePaymentProve")[0].size < 1024 * 1024 * 5
+                            ? '' : 'btn-disabled'} ${loadingStatus ? 'btn-disabled skeleton' : ''}`} onClick={handleOrder} > {loadingStatus ? 'Processing' : 'Place Order'}</button>
 
                     )
 

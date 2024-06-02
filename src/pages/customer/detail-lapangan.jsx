@@ -23,6 +23,7 @@ import { FaPerson } from "react-icons/fa6";
 import { GiRank2 } from "react-icons/gi";
 import { SlNote } from "react-icons/sl";
 import { IoIosAlert } from "react-icons/io";
+import { IoPeopleOutline } from "react-icons/io5";
 
 
 export default function DetailLapangan() {
@@ -32,6 +33,7 @@ export default function DetailLapangan() {
 
     const currentUrl = window.location.href;
     const idProduct = currentUrl.split('/').pop()
+
     const navigate = useNavigate();
 
     const [valueCalendar, setValueCalendar] = useState(dayjs())
@@ -39,30 +41,30 @@ export default function DetailLapangan() {
 
     const [namaProduct, setNamaProduct] = useState(null)
     const [productPrice, setProductPrice] = useState(0);
-    const [biayaDaftarGym, setBiayaDaftarGym] = useState(null);
-    const [membershipBadminton, setMembershipBadminton] = useState(null);
 
     const [theme, setTheme] = useState(null);
 
 
     const [arrOfOrderSummary, setArrOfOrderSummary] = useState([]);
 
-    const { register, handleSubmit, watch, formState: { errors }, resetField } = useForm({
+    const { register, watch, formState: { errors }, resetField, setError, clearErrors } = useForm({
         defaultValues: {
             paymentMethod: "cash",
-            breathStatus: "normal"
+            breathStatus: "normal",
         }
     });
+
+    console.log('watch(jumlahOrang)', watch('jumlahOrang'))
+    console.log('watch(filePaymentProve)', watch('filePaymentProve'))
+    console.log('watch(note)', watch('note'))
+
     const [breathStatus, setBreathStatus] = useState(null);
-    // const theme = document.documentElement.getAttribute("data-theme");
-    console.log('theme', theme)
     const [loadingStatus, setLoadingStatus] = useState(null);
 
     const handleRadioBreathStatus = (status) => {
         setBreathStatus(status);
     };
 
-    console.log('watch("filePaymentProve").length', watch("filePaymentProve")?.length);
     const hours = [
         '6.00-7.00', '7.00-8.00', '8.00-9.00',
         '9.00-10.00', '10.00-11.00', '11.00-12.00',
@@ -259,37 +261,18 @@ export default function DetailLapangan() {
     };
 
     const handleOrder = async () => {
-        console.log('watch("filePaymentProve")', watch("filePaymentProve"))
-        // console.log('watch("filePaymentProve")', watch("filePaymentProve")[0])
-        // console.log('watch("filePaymentProve")', watch("filePaymentProve")[0].size)
-        // console.log('watch("filePaymentProve")', watch("filePaymentProve")[0].type)
-        // console.log('watch("filePaymentProve")', watch("filePaymentProve")[0].name)
-        // console.log('watch("filePaymentProve")', watch("filePaymentProve")[0].size)
         const formData = new FormData();
+        if (['6', '7', '14', '15'].includes(idProduct)) {
+            formData.append('jumlahOrang', watch("jumlahOrang"));
+        }
 
         if (watch("paymentMethod") === 'qris') {
-            const allowedExtensions = ['jpg', 'jpeg', 'png'];
-            const fileExtension = watch("filePaymentProve")[0].name.split('.').pop().toLowerCase();
-            console.log('fileExtension', fileExtension)
-            if (!allowedExtensions.includes(fileExtension)) {
-                return alert('Invalid file type. Please select a JPG, JPEG, or PNG file.');
-            }
-
-            const maxFileSize = 1024 * 1024 * 5;
-            console.log('maxFileSize', maxFileSize)
-
-            if (watch("filePaymentProve")[0].size > maxFileSize) {
-                return alert('File size exceeds limit (5 MB). Please select a smaller file.');
-            }
-
             formData.append('filePaymentProve', watch("filePaymentProve")[0]);
-
         }
 
         const dataToSend = {
             idProduct: idProduct,
             username: username,
-            price: productPrice,
             date: valueCalendar.format('YYYY-MM-DD'),
             hour: arrOfOrderSummary,
             paymentStatus:
@@ -299,7 +282,7 @@ export default function DetailLapangan() {
                             undefined,
             paymentMethod: watch("paymentMethod"),
             note: watch("note"),
-            totalPrice: (productPrice * arrOfOrderSummary.length),
+            totalPrice: ['6', '7', '14', '15'].includes(idProduct) ? (productPrice * arrOfOrderSummary.length * watch("jumlahOrang")) : (productPrice * arrOfOrderSummary.length),
             typeBreath: watch("breathStatus"),
             minuteBreath: (arrOfOrderSummary.length * 60),
             totalXp: Math.floor(productPrice * arrOfOrderSummary.length / 10000),
@@ -484,18 +467,22 @@ export default function DetailLapangan() {
                             </div>
                         </>
                     }
-
                 </div>
             </div>
 
             <div className="">
                 <Header
                     title={'Order Summary'}
-                    className={'text-center mt-5 text-xl font-semibold bg-primary-content py-2'}
+                    className={'text-center mt-5 text-xl font-semibold bg-primary-content py-2 text-neutral-content '}
                 />
                 <div className='mx-5'>
                     {arrOfOrderSummary.length === 0 ? (
-                        <p className='text-center font-semibold mt-3'>Pick the time you want easily</p>
+                        <>
+                            <p className='text-center font-semibold mt-3'>Pick the time you want easily</p>
+                            <div className='animate-bounce place-self-center mt-3 ms-3 flex justify-center '>
+                                <IoIosAlert color='red' size={25} />
+                            </div>
+                        </>
                     ) : (
                         arrOfOrderSummary.map((hour, index) => (
                             <div key={index}>
@@ -522,21 +509,25 @@ export default function DetailLapangan() {
 
                     {arrOfOrderSummary.length > 0 && (
                         <>
-                            <div className="grid grid-cols-2 gap-4 mt-2">
-                                <div className='justify-self-start'>
-                                    Subtotal
-                                </div>
-                                <div className='justify-self-end'>
-                                    <p className=''>Rp{formatNumberWithDot((productPrice * arrOfOrderSummary.length))}</p>
-                                </div>
-                            </div>
-
                             <div className="grid grid-cols-2 gap-4">
                                 <div className='justify-self-start'>
                                     Total
                                 </div>
                                 <div className='justify-self-end'>
-                                    <p className='font-bold'>Rp{formatNumberWithDot((productPrice * arrOfOrderSummary.length))}</p>
+                                    {['6', '7', '14', '15'].includes(idProduct) ? (
+                                        <>
+                                            <p className='font-bold'>
+                                                Rp{formatNumberWithDot((productPrice * arrOfOrderSummary.length *
+                                                    (watch('jumlahOrang') > 0 && watch('jumlahOrang') <= 10 ? watch('jumlahOrang') : 0)))}
+                                            </p>
+
+
+                                        </>
+                                    ) : (
+                                        <p className='font-bold'>
+                                            Rp{formatNumberWithDot((productPrice * arrOfOrderSummary.length))}
+                                        </p>
+                                    )}
                                 </div>
                             </div>
                         </>
@@ -548,7 +539,7 @@ export default function DetailLapangan() {
             <div className="">
                 <Header
                     title={'Payment Details'}
-                    className={'text-center mt-5 text-xl font-semibold bg-primary-content py-2'}
+                    className={'text-center mt-5 text-xl font-semibold bg-primary-content py-2 text-neutral-content '}
                 />
                 <div className='mx-5'>
                     <div className="form-control">
@@ -597,9 +588,6 @@ export default function DetailLapangan() {
                             <div className="collapse collapse-arrow border border-base-300 bg-neutral justify-self-center collapse-open">
                                 <input type="checkbox" />
                                 <div className="collapse-title text-xl font-medium text-neutral-content">
-                                    <div className="grid grid-cols-2 ">
-                                        {/* <div>Show QRIS</div> */}
-                                    </div>
 
 
                                 </div>
@@ -623,10 +611,16 @@ export default function DetailLapangan() {
 
                                         </div>
 
-
-
-
-
+                                        {watch('filePaymentProve')?.length > 0 && (
+                                            <>
+                                                {!['jpg', 'jpeg', 'png'].includes(watch("filePaymentProve")[0].name.split('.').pop().toLowerCase()) && (
+                                                    <p className="text-red-500 text-sm text-center">Invalid file type. Please select a JPG, JPEG, or PNG file</p>
+                                                )}
+                                                {watch("filePaymentProve")[0].size > 1024 * 1024 * 5 && (
+                                                    <p className="text-red-500 text-sm text-center">File size exceeds limit (5 MB). Please select a smaller file</p>
+                                                )}
+                                            </>
+                                        )}
                                     </div>
 
                                 </div>
@@ -649,6 +643,7 @@ export default function DetailLapangan() {
                                     type="text"
                                     className="input input-bordered w-full"
                                     placeholder="atas nama ?"
+                                    maxLength="10"
                                 />
                                 {errors.note && <p className="text-red-500 mt-2">{errors.note.message}</p>}
 
@@ -659,22 +654,69 @@ export default function DetailLapangan() {
                         )}
 
                     </div>
+
+                    {['6', '7', '14', '15'].includes(idProduct) && (
+                        <>
+                            <div className="grid grid-cols-9">
+                                <div className='self-center'>
+                                    <IoPeopleOutline
+                                        fontSize="20px"
+                                    />
+                                </div>
+                                <div className='col-span-7'>
+                                    <label className="label cursor-pointer">
+                                        <input
+                                            {...register("jumlahOrang", { required: "This field is required" })}
+                                            type="number"
+                                            className="input input-bordered w-full"
+                                            placeholder="jumlah orang ?"
+                                        />
+                                    </label>
+
+                                </div>
+
+                                {watch('jumlahOrang') == '' && (
+                                    <div className='animate-bounce place-self-center mt-3 ms-3'> <IoIosAlert color='red' size={25} /></div>
+                                )}
+
+                            </div>
+
+                            {watch('jumlahOrang') != '' && watch('jumlahOrang') < 1 && <p className="text-red-500 text-sm text-center">{'Minimum number of people 1'}</p>}
+                            {watch('jumlahOrang') > 10 && <p className="text-red-500 text-sm text-center">{'Maximal number of people 10'}</p>}
+                        </>
+                    )}
+
+
+
+
                 </div>
 
             </div >
 
+            {['6', '7', '14', '15'].includes(idProduct) ? (
+                <div className="flex justify-center  mx-5 mt-5">
+                    {watch("paymentMethod") === 'cash' && watch('note') != '' && watch('jumlahOrang') != '' && watch('jumlahOrang') > 0 && watch('jumlahOrang') <= 10 ? (
+                        <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 ? '' : 'btn-disabled'} ${loadingStatus ? 'btn-disabled skeleton' : ''}`} onClick={handleOrder}>
+                            {loadingStatus ? 'Processing' : 'Place Order'}
+                        </button>
+                    ) : (
+                        <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 && watch('filePaymentProve')?.length > 0 && ['jpg', 'jpeg', 'png'].includes(watch("filePaymentProve")[0].name.split('.').pop().toLowerCase()) && watch("filePaymentProve")[0].size < 1024 * 1024 * 5 && watch('note') != '' && watch('jumlahOrang') != '' && watch('jumlahOrang') > 0 && watch('jumlahOrang') <= 10 ? '' : 'btn-disabled'} ${loadingStatus ? 'btn-disabled skeleton' : ''}`} onClick={handleOrder} > {loadingStatus ? 'Processing' : 'Place Order'}</button>
 
-            <div className="flex justify-center  mx-5 mt-5">
-                {watch("paymentMethod") === 'cash' && watch('note') != '' ? (
-                    <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 ? '' : 'btn-disabled'} ${loadingStatus ? 'btn-disabled skeleton' : ''}`} onClick={handleOrder}>
-                        {loadingStatus ? 'Processing' : 'Place Order'}
-                    </button>
+                    )}
+                </div>
+            ) : (
+                <div className="flex justify-center  mx-5 mt-5">
+                    {watch("paymentMethod") === 'cash' && watch('note') != '' ? (
+                        <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 ? '' : 'btn-disabled'} ${loadingStatus ? 'btn-disabled skeleton' : ''}`} onClick={handleOrder}>
+                            {loadingStatus ? 'Processing' : 'Place Order'}
+                        </button>
+                    ) : (
+                        <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 && watch('filePaymentProve')?.length > 0 && ['jpg', 'jpeg', 'png'].includes(watch("filePaymentProve")[0].name.split('.').pop().toLowerCase()) && watch("filePaymentProve")[0].size < 1024 * 1024 * 5 && watch('note') != '' ? '' : 'btn-disabled'} ${loadingStatus ? 'btn-disabled skeleton' : ''}`} onClick={handleOrder} > {loadingStatus ? 'Processing' : 'Place Order'}</button>
 
-                ) : (
-                    <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 && watch('filePaymentProve')?.length > 0 && watch('note') != '' ? '' : 'btn-disabled'} ${loadingStatus ? 'btn-disabled skeleton' : ''}`} onClick={handleOrder} > {loadingStatus ? 'Processing' : 'Place Order'}</button>
+                    )}
+                </div>
 
-                )}
-            </div>
+            )}
 
             <div className="flex justify-center mt-3 mb-3">
                 <div>

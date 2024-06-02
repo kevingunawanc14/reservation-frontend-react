@@ -177,13 +177,13 @@ export default function Rate() {
                 </div>
 
             </div>
-            <div className="mx-10 mt-10 mb-10">
+            <div className="h-screen grid content-center mx-10 mt-[-50px]">
                 <div>
                     {productDetails && ratingDetail ? (
                         <>
                             <div>
                                 <div className="flex justify-center ">
-                                    <img src={productDetails.imagePath} alt="" className="rounded-full w-56 sm:w-72" />
+                                    <img src={productDetails.imagePath} alt="" className="rounded-full w-72 sm:w-72" />
                                 </div>
                             </div>
                             <div>

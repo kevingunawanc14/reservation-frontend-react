@@ -138,7 +138,10 @@ export default function Payment() {
                                             <p className="text-neutral-content">{payment.fullProductName} {payment.note ? ` - ( a.n. ${payment.note} )` : ''}</p>
                                             <div className="grid grid-cols-2">
                                                 <div className="grid content-center">
-                                                    <p className="text-neutral-content font-bold">Rp. {payment.totalPrice}</p>
+                                                    <p className="text-neutral-content font-bold">Rp. {payment.totalPrice}
+                                                        <span className="text-xs">{[6, 7, 14, 15].includes(payment.idProduct) && ` Jumlah Orang: ${payment.jumlahOrang}`}</span>
+
+                                                    </p>
                                                 </div>
                                                 <div className="grid content-center">
                                                     <div className="rounded-lg bg-neutral-content tooltip-info p-1 w-10 tooltip tooltip-right text-neutral cursor-pointer" data-tip={payment.paymentMethod === "krakataucoin" ? "Paid by krakatau coin" : ("Paid by " + payment.paymentMethod)}>
