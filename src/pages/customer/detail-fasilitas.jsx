@@ -440,7 +440,7 @@ export default function DetailFasilitas() {
                     <div className="">
                         <Header
                             title={'Foto KTP / Selfie '}
-                            className={'text-center mt-5 text-xl font-semibold bg-primary-content py-2 text-neutral-content'}
+                            className={'text-center mt-5 text-xl font-semibold py-2 bg-primary text-primary-content'}
                         />
                         <div className='mx-5'>
                             <div className="form-control">
