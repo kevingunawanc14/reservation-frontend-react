@@ -375,6 +375,7 @@ export default function DetailLapangan() {
                                     || theme === 'autumn'
                                     || theme === 'lemonade'
                                     || theme === 'nord'
+                                    || theme === 'valentine'
                                     || theme === 'winter' ? '' : '#f8fafc',
                             },
                             '& .MuiPickersDay-root.Mui-disabled': {
@@ -382,6 +383,7 @@ export default function DetailLapangan() {
                                     || theme === 'autumn'
                                     || theme === 'lemonade'
                                     || theme === 'nord'
+                                    || theme === 'valentine'
                                     || theme === 'winter' ? '' : '#94a3b8',
                             },
                             '& .MuiButtonBase-root': {
@@ -389,6 +391,7 @@ export default function DetailLapangan() {
                                     || theme === 'autumn'
                                     || theme === 'lemonade'
                                     || theme === 'nord'
+                                    || theme === 'valentine'
                                     || theme === 'winter' ? '' : '#f1f5f9',
                             },
 
@@ -473,7 +476,7 @@ export default function DetailLapangan() {
             <div className="">
                 <Header
                     title={'Order Summary'}
-                    className={'text-center mt-5 text-xl font-semibold bg-primary-content py-2 text-neutral-content '}
+                    className={'text-center mt-5 text-xl font-semibold bg-primary text-primary-content py-2  '}
                 />
                 <div className='mx-5'>
                     {arrOfOrderSummary.length === 0 ? (
@@ -539,7 +542,7 @@ export default function DetailLapangan() {
             <div className="">
                 <Header
                     title={'Payment Details'}
-                    className={'text-center mt-5 text-xl font-semibold bg-primary-content py-2 text-neutral-content '}
+                    className={'text-center mt-5 text-xl font-semibold py-2 bg-primary text-primary-content '}
                 />
                 <div className='mx-5'>
                     <div className="form-control">

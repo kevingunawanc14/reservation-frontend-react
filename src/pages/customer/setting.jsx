@@ -62,12 +62,12 @@ export default function DetailAccount() {
         { id: 2, xp: 110, icon: "🍂", title: "Autumn", status: 'non-active', preview: 'non-active', bodySend: "autumn" },
         { id: 3, xp: 120, icon: "🍋", title: "Lemonade", status: 'non-active', preview: 'non-active', bodySend: "lemonade" },
         { id: 4, xp: 130, icon: "🏂", title: "Winter", status: 'non-active', preview: 'non-active', bodySend: "winter" },
-        { id: 5, xp: 140, icon: "🌑", title: "Dark", status: 'non-active', preview: 'non-active', bodySend: "dark" },
+        { id: 5, xp: 140, icon: "🌑", title: "Dim", status: 'non-active', preview: 'non-active', bodySend: "dim" },
         { id: 6, xp: 150, icon: "🎃", title: "Halloween", status: 'non-active', preview: 'non-active', bodySend: "halloween" },
         { id: 7, xp: 160, icon: "🌲", title: "Forest", status: 'non-active', preview: 'non-active', bodySend: "forest" },
         { id: 8, xp: 170, icon: "☕", title: "Coffee", status: 'non-active', preview: 'non-active', bodySend: "coffee" },
         { id: 9, xp: 180, icon: "🦇", title: "Dracula", status: 'non-active', preview: 'non-active', bodySend: "dracula" },
-        { id: 10, xp: 190, icon: "💧", title: "Aqua", status: 'non-active', preview: 'non-active', bodySend: "aqua" },
+        { id: 10, xp: 190, icon: "🎂", title: "Valentine", status: 'non-active', preview: 'non-active', bodySend: "valentine" },
         { id: 11, xp: 200, icon: "🗻", title: "Nord", status: 'non-active', preview: 'non-active', bodySend: "nord" },
         { id: 12, xp: 210, icon: "🌇", title: "Sunset", status: 'non-active', preview: 'non-active', bodySend: "sunset" },
 
@@ -1023,7 +1023,7 @@ export default function DetailAccount() {
                                                     <span>🍋</span>
                                                 ) : userData.activeTheme === 'Winter' ? (
                                                     <span>🏂</span>
-                                                ) : userData.activeTheme === 'Dark' ? (
+                                                ) : userData.activeTheme === 'Dim' ? (
                                                     <span>🌑</span>
                                                 ) : userData.activeTheme === 'Halloween' ? (
                                                     <span>🎃</span>
@@ -1033,8 +1033,8 @@ export default function DetailAccount() {
                                                     <span>☕</span>
                                                 ) : userData.activeTheme === 'Dracula' ? (
                                                     <span>🦇</span>
-                                                ) : userData.activeTheme === 'Aqua' ? (
-                                                    <span>💧</span>
+                                                ) : userData.activeTheme === 'Valentine' ? (
+                                                    <span>🎂</span>
                                                 ) : userData.activeTheme === 'Nord' ? (
                                                     <span>🗻</span>
                                                 ) : userData.activeTheme === 'Sunset' ? (

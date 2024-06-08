@@ -288,6 +288,7 @@ export default function Leaderboard() {
                                         || theme === 'autumn'
                                         || theme === 'lemonade'
                                         || theme === 'nord'
+                                        || theme === 'valentine'
                                         || theme === 'winter' ? '' : '#94a3b8',
                                 },
                                 "& .MuiDataGrid-virtualScroller": {
@@ -295,6 +296,7 @@ export default function Leaderboard() {
                                         || theme === 'autumn'
                                         || theme === 'lemonade'
                                         || theme === 'nord'
+                                        || theme === 'valentine'
                                         || theme === 'winter' ? '' : '#f1f5f9',
                                 },
                                 "& .MuiToolbar-root": {
@@ -302,6 +304,7 @@ export default function Leaderboard() {
                                         || theme === 'autumn'
                                         || theme === 'lemonade'
                                         || theme === 'nord'
+                                        || theme === 'valentine'
                                         || theme === 'winter' ? '' : '#94a3b8',
                                 },
                                 "& .MuiButtonBase-root.Mui-disabled": {

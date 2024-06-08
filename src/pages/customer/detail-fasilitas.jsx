@@ -152,7 +152,7 @@ export default function DetailFasilitas() {
             setLoadingStatus(false)
 
 
-            localStorage.setItem('lastPage', 'order');  // Set lastPage to 'order'
+            localStorage.setItem('lastPage', 'order');
 
 
             navigate('/payment');
@@ -302,7 +302,7 @@ export default function DetailFasilitas() {
             <div className="">
                 <Header
                     title={'Order Summary'}
-                    className={'text-center mt-5 text-xl font-semibold bg-primary-content py-2 text-neutral-content'}
+                    className={'text-center mt-5 text-xl font-semibold py-2 bg-primary text-primary-content'}
                 />
 
                 <div className='mx-5'>
@@ -329,15 +329,6 @@ export default function DetailFasilitas() {
                     )}
                     {arrOfOrderSummary.length > 0 && (
                         <>
-                            <div className="grid grid-cols-2 gap-4 mt-2">
-                                <div className='justify-self-start'>
-                                    Subtotal
-                                </div>
-                                <div className='justify-self-end'>
-                                    <p className=''>Rp{formatNumberWithDot(productPrice * arrOfOrderSummary.length)}</p>
-                                </div>
-                            </div>
-
                             <div className="grid grid-cols-2 gap-4">
                                 <div className='justify-self-start'>
                                     Total
@@ -355,7 +346,7 @@ export default function DetailFasilitas() {
             <div className="">
                 <Header
                     title={'Payment Details'}
-                    className={'text-center mt-5 text-xl font-semibold bg-primary-content py-2 text-neutral-content'}
+                    className={'text-center mt-5 text-xl font-semibold py-2 bg-primary text-primary-content'}
                 />
                 <div className='mx-5'>
                     <div className="form-control">

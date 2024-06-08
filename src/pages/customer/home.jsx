@@ -494,6 +494,7 @@ export default function Home() {
                                     </div>
                                 </div>
                             </div>
+    
                             <div className="card lg:card-side bg-accent shadow-xl m-4">
                                 <div className="card-body">
                                     <h2 className="card-title ">Tantangan 6 Bulan</h2>
