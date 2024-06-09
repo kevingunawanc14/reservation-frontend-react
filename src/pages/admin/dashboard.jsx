@@ -106,7 +106,8 @@ export default function Dashboard() {
                                                 stats.arrOrderThisWeek[0][stats.arrOrderThisWeek[1][2]],
                                                 stats.arrOrderThisWeek[0][stats.arrOrderThisWeek[1][3]],
                                                 stats.arrOrderThisWeek[0][stats.arrOrderThisWeek[1][4]],
-                                                stats.arrOrderThisWeek[0][stats.arrOrderThisWeek[1][5]]],
+                                                stats.arrOrderThisWeek[0][stats.arrOrderThisWeek[1][5]],
+                                                stats.arrOrderThisWeek[0][stats.arrOrderThisWeek[1][6]]],
                                         },
                                     ]}
                                     width={500}
@@ -131,7 +132,8 @@ export default function Dashboard() {
                                                 stats.arrRevenueThisWeek[0][stats.arrRevenueThisWeek[1][2]],
                                                 stats.arrRevenueThisWeek[0][stats.arrRevenueThisWeek[1][3]],
                                                 stats.arrRevenueThisWeek[0][stats.arrRevenueThisWeek[1][4]],
-                                                stats.arrRevenueThisWeek[0][stats.arrRevenueThisWeek[1][5]]],
+                                                stats.arrRevenueThisWeek[0][stats.arrRevenueThisWeek[1][5]],
+                                                stats.arrRevenueThisWeek[0][stats.arrRevenueThisWeek[1][6]]],
                                         },
                                     ]}
                                     width={500}
