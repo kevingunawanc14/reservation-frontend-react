@@ -10,8 +10,6 @@ export default function Rate() {
     const token = localStorage.getItem('token');
     const username = localStorage.getItem('username');
 
-
-
     const navigate = useNavigate();
     const currentUrl = window.location.href;
     const idProduct = currentUrl.split('/').pop()

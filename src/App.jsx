@@ -13,6 +13,7 @@ import Leaderboard from './pages/customer/leaderboard';
 import Dashboard from './pages/admin/dashboard';
 import Report from './pages/admin/report';
 import User from './pages/admin/user';
+import Rating from './pages/admin/rating';
 
 import './index.css';
 import { Routes, Route } from "react-router-dom"
@@ -42,7 +43,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/report" element={<Report />} />
         <Route path="/user" element={<User />} />
-
+        <Route path="/rating" element={<Rating />} />
 
         <Route path="*" element={<Missing />} />/
         <Route path="/unauthorized" element={<Unauthorized />} />

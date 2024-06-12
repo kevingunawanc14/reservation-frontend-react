@@ -14,6 +14,7 @@ import {
 import { useForm } from "react-hook-form";
 import axios from '../../api/axios';
 
+
 function CustomToolbar() {
     return (
         <GridToolbarContainer>
@@ -37,7 +38,7 @@ export default function ActiveOrder() {
 
     const fetchData = async () => {
         try {
-            const response = await axios.get('/user', {
+            const response = await axios.get('/rating', {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -60,7 +61,7 @@ export default function ActiveOrder() {
 
         try {
             setLoadingStatus(true)
-            await axios.delete(`/user/${id}`, {
+            await axios.delete(`/rating/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -82,90 +83,14 @@ export default function ActiveOrder() {
         }
     };
 
-    const handleUpdateChallenge = async (data) => {
-        console.log('data', data)
-        try {
-            setLoadingStatus(true)
-
-            const dataToSend = {
-                username: data.username,
-                phoneNumber: data.phoneNumber,
-                biayaPendaftaranMembershipGym: data.membershipGym,
-                biayaPendaftaranMembershipBadminton: data.membershipBadminton,
-            };
-
-            const response = await axios.post(`/user/${data.id}/update`, dataToSend, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-
-            console.log(response);
-            setLoadingStatus(false)
-            fetchData();
-            setUpdateStatus('success');
-            setTimeout(() => {
-                setUpdateStatus(null);
-            }, 2000);
-            document.getElementById('detailChallange').close();
-        } catch (error) {
-            setUpdateStatus('error');
-            setTimeout(() => {
-                setUpdateStatus(null);
-            }, 2000);
-        }
-    }
-
-    const handleDetailChallenge = async (id) => {
-        try {
-
-            const response = await axios.get(`/user/${id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            setChallangeData(response)
-
-
-        } catch (error) {
-            console.log('error:', error);
-        }
-    }
-
     const handleDeleteModal = async (id) => {
         document.getElementById('deleteModal').showModal();
         setDeleteId(id);
     }
 
-    const form1 = useForm({
-        defaultValues: {
-            id: '',
-            username: '',
-            password: '',
-            phoneNumber: '',
-        },
-    });
-
-    const { register: register1, handleSubmit: handleSubmit1, watch: watch1, setValue: setValue1, formState: { errors: errors1 } } = form1;
-
     const handleCloseModal = async () => {
         document.getElementById('detailChallange').close();
     }
-
-    useEffect(() => {
-        if (challangeData) {
-            console.log('challangeData', challangeData)
-            setValue1("username", challangeData.data.username)
-            setValue1("phoneNumber", challangeData.data.phoneNumber)
-            setValue1("membershipGym", challangeData.data.biayaPendaftaranMembershipGym)
-            setValue1("membershipBadminton", challangeData.data.biayaPendaftaranMembershipBadminton)
-            setValue1("id", challangeData.data.id)
-
-            document.getElementById('detailChallange').showModal()
-
-        }
-    }, [challangeData]);
-
 
     useEffect(() => {
         fetchData();
@@ -180,38 +105,84 @@ export default function ActiveOrder() {
             flex: 0.5,
         },
         {
+            field: 'productName',
+            headerName: 'Product Name',
+            flex: 1,
+        },
+        {
             field: 'username',
             headerName: 'Username',
             flex: 1,
         },
         {
-            field: 'phoneNumber',
-            headerName: 'Phone Number',
+            field: 'rating',
+            headerName: 'Star Rating',
+            renderCell: (params) => (
+                <div>
+                    {params.row.rating === 1 ? (
+                        <div className="rating rating-sm">
+                            <input type="radio" name={params.row.id} className="mask mask-star-2 bg-orange-400" disabled defaultChecked />
+                            <input type="radio" name={params.row.id} className="mask mask-star-2 bg-orange-400" disabled />
+                            <input type="radio" name={params.row.id} className="mask mask-star-2 bg-orange-400" disabled />
+                            <input type="radio" name={params.row.id} className="mask mask-star-2 bg-orange-400" disabled />
+                            <input type="radio" name={params.row.id} className="mask mask-star-2 bg-orange-400" disabled />
+                        </div>
+
+                    ) : params.row.rating === 2 ? (
+                        <div className="rating rating-sm">
+                            <input type="radio" name={params.row.id} className="mask mask-star-2 bg-orange-400" disabled />
+                            <input type="radio" name={params.row.id} className="mask mask-star-2 bg-orange-400" disabled defaultChecked />
+                            <input type="radio" name={params.row.id} className="mask mask-star-2 bg-orange-400" disabled />
+                            <input type="radio" name={params.row.id} className="mask mask-star-2 bg-orange-400" disabled />
+                            <input type="radio" name={params.row.id} className="mask mask-star-2 bg-orange-400" disabled />
+                        </div>
+                    ) : params.row.rating === 3 ? (
+                        <div className="rating rating-sm">
+                            <input type="radio" name={params.row.id} className="mask mask-star-2 bg-orange-400" disabled />
+                            <input type="radio" name={params.row.id} className="mask mask-star-2 bg-orange-400" disabled />
+                            <input type="radio" name={params.row.id} className="mask mask-star-2 bg-orange-400" disabled defaultChecked />
+                            <input type="radio" name={params.row.id} className="mask mask-star-2 bg-orange-400" disabled />
+                            <input type="radio" name={params.row.id} className="mask mask-star-2 bg-orange-400" disabled />
+                        </div>
+
+                    ) : params.row.rating === 4 ? (
+                        <div className="rating rating-sm">
+                            <input type="radio" name={params.row.id} className="mask mask-star-2 bg-orange-400" disabled />
+                            <input type="radio" name={params.row.id} className="mask mask-star-2 bg-orange-400" disabled />
+                            <input type="radio" name={params.row.id} className="mask mask-star-2 bg-orange-400" disabled />
+                            <input type="radio" name={params.row.id} className="mask mask-star-2 bg-orange-400" disabled defaultChecked />
+                            <input type="radio" name={params.row.id} className="mask mask-star-2 bg-orange-400" disabled />
+                        </div>
+
+                    ) : params.row.rating === 5 ? (
+                        <div className="rating rating-sm">
+                            <input type="radio" name={params.row.id} className="mask mask-star-2 bg-orange-400" />
+                            <input type="radio" name={params.row.id} className="mask mask-star-2 bg-orange-400" />
+                            <input type="radio" name={params.row.id} className="mask mask-star-2 bg-orange-400" />
+                            <input type="radio" name={params.row.id} className="mask mask-star-2 bg-orange-400" />
+                            <input type="radio" name={params.row.id} className="mask mask-star-2 bg-orange-400" disabled defaultChecked />
+                        </div>
+                    ) : (
+                        <p>error</p>
+                    )}
+                </div>
+            ),
+            flex: 1,
+        },
+        {
+            field: 'description',
+            headerName: 'Review',
             flex: 1,
         },
         // {
-        //     field: 'biayaPendaftaranMembershipGym',
-        //     headerName: 'Biaya Pendaftaran Membership Gym',
+        //     field: 'statusAktif',
+        //     headerName: 'Status Aktif',
         //     renderCell: (params) => (
         //         <div>
-        //             {params.row.biayaPendaftaranMembershipGym === false ? (
-        //                 <p>Non Aktif</p>
+        //             {params.row.statusAktif === 1 ? (
+        //                 <p>Active</p>
         //             ) : (
-        //                 <p>Aktif</p>
-        //             )}
-        //         </div>
-        //     ),
-        //     flex: 1,
-        // },
-        // {
-        //     field: 'biayaPendaftaranMembershipBadminton',
-        //     headerName: 'Biaya Pendaftaran Membership Badminton',
-        //     renderCell: (params) => (
-        //         <div>
-        //             {params.row.biayaPendaftaranMembershipBadminton === false ? (
-        //                 <p>Non Aktif</p>
-        //             ) : (
-        //                 <p>Aktif</p>
+        //                 <p>Non-Active</p>
         //             )}
         //         </div>
         //     ),
@@ -222,9 +193,6 @@ export default function ActiveOrder() {
             headerName: 'Action',
             renderCell: (params) => (
                 <div className="flex justify-around">
-                    <button className="btn btn-primary mx-1" onClick={() => handleDetailChallenge(params.row.id)}>
-                        <MdOutlineEdit fontSize="1.5em" color='white' />
-                    </button>
 
                     <button className="btn btn-error" onClick={() => handleDeleteModal(params.row.id)}>
                         <MdDeleteOutline fontSize="1.5em" color='white' />
@@ -244,21 +212,15 @@ export default function ActiveOrder() {
 
                 <div className="grid grid-cols-2 gap-4">
                     <div>
-                        <Header title={'User'} />
+                        <Header title={'Rating'} />
                     </div>
                     <div>
                         <div className="flex justify-end">
                             {deleteStatus === 'success' && (
-                                <Alert severity="success" onClose={() => setDeleteStatus(null)}>User deleted successfully</Alert>
+                                <Alert severity="success" onClose={() => setDeleteStatus(null)}>Rating deleted successfully</Alert>
                             )}
                             {deleteStatus === 'error' && (
-                                <Alert severity="error" onClose={() => setDeleteStatus(null)}>Failed to delete user</Alert>
-                            )}
-                            {updateStatus === 'success' && (
-                                <Alert severity="success" onClose={() => setUpdateStatus(null)}>User updated successfully</Alert>
-                            )}
-                            {updateStatus === 'error' && (
-                                <Alert severity="error" onClose={() => setUpdateStatus(null)}>Failed to update user</Alert>
+                                <Alert severity="error" onClose={() => setDeleteStatus(null)}>Failed to delete rating</Alert>
                             )}
                         </div>
                     </div>

@@ -348,10 +348,6 @@ export default function Rate() {
                             </div>
                         </div>
                     )}
-
-
-
-
                 </div>
             </div >
         </>
