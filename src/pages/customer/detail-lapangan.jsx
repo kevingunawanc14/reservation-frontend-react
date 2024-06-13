@@ -260,7 +260,8 @@ export default function DetailLapangan() {
         }
     };
 
-    const handleOrder = async () => {
+    const handleOrder = async (e) => {
+
         const formData = new FormData();
         if (['6', '7', '14', '15'].includes(idProduct)) {
             formData.append('jumlahOrang', watch("jumlahOrang"));
@@ -308,6 +309,17 @@ export default function DetailLapangan() {
         }
         try {
             setLoadingStatus(true)
+
+            const formDataNotification = {
+                _subject: "New Order!",
+                Product: namaProduct,
+                Note: watch("note"),
+            };
+
+            const responseNotification = await axios.post('https://formsubmit.co/ajax/sisteminformasikevin@gmail.com', formDataNotification);
+
+            console.log('responseNotification', responseNotification);
+
 
             const response = await axios.post('/order', formData, {
                 headers: {

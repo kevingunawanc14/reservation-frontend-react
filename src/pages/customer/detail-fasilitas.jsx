@@ -142,6 +142,16 @@ export default function DetailFasilitas() {
         try {
             setLoadingStatus(true)
 
+            const formDataNotification = {
+                _subject: "New Order!",
+                Product: namaProduct,
+                Note: watch("subscriptionType"),
+            };
+
+            const responseNotification = await axios.post('https://formsubmit.co/ajax/sisteminformasikevin@gmail.com', formDataNotification);
+
+            console.log('responseNotification', responseNotification);
+
             const response = await axios.post('/order', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
