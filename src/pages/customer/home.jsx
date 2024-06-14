@@ -20,6 +20,8 @@ import aha from '../../assets/aha.png';
 import Who from '../../assets/who.png';
 
 
+
+
 export default function Home() {
 
     const token = localStorage.getItem('token');
@@ -64,7 +66,7 @@ export default function Home() {
 
             const responseData = response.data;
 
-            console.log('responseData detail user', responseData)
+            // console.log('responseData detail user', responseData)
 
             setUserData({
                 username: responseData.username,
@@ -270,7 +272,43 @@ export default function Home() {
         getDataDetailUser();
         getProgressChallangeUser();
 
+        // const pusher = new Pusher('5f32af0ccd95b9fc2649', {
+        //     cluster: 'ap1',
+        // });
+
+        // console.log('pusher', pusher)
+
+        // const channel = pusher.subscribe('admin-channel');
+        // channel.bind('user-login', (data) => {
+        //     alert(JSON.stringify(data));
+        //     //     if (Notification.permission === 'granted') {
+        //     //         new Notification('User Login', {
+        //     //             body: data.message + username,
+        //     //             icon: '/src/assets/notif_icon.png'
+        //     //         });
+        //     //     } else if (Notification.permission !== 'denied') {
+        //     //         Notification.requestPermission().then(permission => {
+        //     //             if (permission === 'granted') {
+        //     //                 new Notification('User Login', {
+        //     //                     body: data.message + username,
+        //     //                     icon: '/src/assets/notif_icon.png'
+        //     //                 });
+        //     //             }
+        //     //         });
+        //     //     }
+        // });
+
+        // console.log('channel', channel)
+
+
+        // return () => {
+        //     channel.unbind_all();
+        //     channel.unsubscribe();
+        // };
+
     }, [])
+
+
 
     return (
         <>
@@ -494,7 +532,7 @@ export default function Home() {
                                     </div>
                                 </div>
                             </div>
-    
+
                             <div className="card lg:card-side bg-accent shadow-xl m-4">
                                 <div className="card-body">
                                     <h2 className="card-title ">Tantangan 6 Bulan</h2>

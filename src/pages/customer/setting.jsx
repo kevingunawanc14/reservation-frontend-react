@@ -525,6 +525,7 @@ export default function DetailAccount() {
 
     const handleLogout = () => {
         localStorage.removeItem('token');
+        localStorage.removeItem('username');
         navigate('/login');
     };
 

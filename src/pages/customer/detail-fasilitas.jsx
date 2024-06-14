@@ -126,6 +126,7 @@ export default function DetailFasilitas() {
             totalDefense: 1,
             connectHistory: crypto.randomUUID(),
             cancelId: crypto.randomUUID(),
+            productName: namaProduct,
             createdAtDate: dayjs().format('YYYY-MM-DD'),
             createdAtDateFull: dayjs().format('YYYY-MM-DD HH:mm:ss'),
             subscriptionType: watch("subscriptionType")
@@ -142,15 +143,15 @@ export default function DetailFasilitas() {
         try {
             setLoadingStatus(true)
 
-            const formDataNotification = {
-                _subject: "New Order!",
-                Product: namaProduct,
-                Note: watch("subscriptionType"),
-            };
+            // const formDataNotification = {
+            //     _subject: "New Order!",
+            //     Product: namaProduct,
+            //     Note: watch("subscriptionType"),
+            // };
 
-            const responseNotification = await axios.post('https://formsubmit.co/ajax/sisteminformasikevin@gmail.com', formDataNotification);
+            // const responseNotification = await axios.post('https://formsubmit.co/ajax/sisteminformasikevin@gmail.com', formDataNotification);
 
-            console.log('responseNotification', responseNotification);
+            // console.log('responseNotification', responseNotification);
 
             const response = await axios.post('/order', formData, {
                 headers: {

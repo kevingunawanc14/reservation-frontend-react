@@ -260,7 +260,7 @@ export default function DetailLapangan() {
         }
     };
 
-    const handleOrder = async (e) => {
+    const handleOrder = async () => {
 
         const formData = new FormData();
         if (['6', '7', '14', '15'].includes(idProduct)) {
@@ -292,6 +292,7 @@ export default function DetailLapangan() {
             totalDefense: 1,
             connectHistory: crypto.randomUUID(),
             cancelId: crypto.randomUUID(),
+            productName: namaProduct,
             createdAtDate: dayjs().format('YYYY-MM-DD'),
             createdAtDateFull: dayjs().format('YYYY-MM-DD HH:mm:ss')
         };
@@ -310,15 +311,15 @@ export default function DetailLapangan() {
         try {
             setLoadingStatus(true)
 
-            const formDataNotification = {
-                _subject: "New Order!",
-                Product: namaProduct,
-                Note: watch("note"),
-            };
+            // const formDataNotification = {
+            //     _subject: "New Order!",
+            //     Product: namaProduct,
+            //     Note: watch("note"),
+            // };
 
-            const responseNotification = await axios.post('https://formsubmit.co/ajax/sisteminformasikevin@gmail.com', formDataNotification);
+            // const responseNotification = axios.post('https://formsubmit.co/ajax/sisteminformasikevin@gmail.com', formDataNotification);
 
-            console.log('responseNotification', responseNotification);
+            // console.log('responseNotification', responseNotification);
 
 
             const response = await axios.post('/order', formData, {

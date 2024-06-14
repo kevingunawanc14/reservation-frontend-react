@@ -11,6 +11,41 @@
 <body>
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
+  <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+  <script>
+
+    const pusher = new Pusher('5f32af0ccd95b9fc2649', {
+      cluster: 'ap1',
+    });
+
+
+    const channel = pusher.subscribe('admin-channel');
+
+    channel.bind('user-order', (data) => {
+      const username = localStorage.getItem('username');
+      console.log('username', username)
+      if (username === 'abcde') {
+        if (Notification.permission === 'granted') {
+          new Notification('New Order', {
+            body: data.message,
+            icon: '/src/assets/notif_icon.png'
+          });
+        } else if (Notification.permission !== 'denied') {
+          Notification.requestPermission().then(permission => {
+            if (permission === 'granted') {
+              new Notification('New Order', {
+                body: data.message,
+                icon: '/src/assets/notif_icon.png'
+              });
+            }
+          });
+        }
+      }
+
+    });
+
+
+  </script>
 </body>
 
 </html>
