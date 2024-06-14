@@ -41,13 +41,9 @@
             }
           });
         } else {
-          Notification.requestPermission().then(permission => {
-            if (permission === 'granted') {
-              new Notification('New Order', {
-                body: data.message,
-                icon: 'https://krakatausportcentrejombang.cloud/src/assets/product/notif_icon.png'
-              });
-            }
+          new Notification('New Order', {
+            body: data.message,
+            icon: 'https://krakatausportcentrejombang.cloud/src/assets/product/notif_icon.png'
           });
         }
       }
