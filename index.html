@@ -27,22 +27,26 @@
       if (username === 'abcde') {
         console.log('Notification.permission', Notification.permission);
         if (Notification.permission === 'granted') {
-          new Notification('New Order', {
-            body: data.message,
-            icon: 'https://krakatausportcentrejombang.cloud/src/assets/product/notif_icon.png'
+          navigator.serviceWorker.ready.then((registration) => {
+            registration.showNotification("New Order", {
+              body: data.message,
+              icon: "https://krakatausportcentrejombang.cloud/src/assets/product/notif_icon.png"
+            });
           });
         } else if (Notification.permission !== 'denied') {
           Notification.requestPermission().then(permission => {
             if (permission === 'granted') {
-              new Notification('New Order', {
-                body: data.message,
-                icon: 'https://krakatausportcentrejombang.cloud/src/assets/product/notif_icon.png'
+              navigator.serviceWorker.ready.then((registration) => {
+                registration.showNotification("New Order", {
+                  body: data.message,
+                  icon: "https://krakatausportcentrejombang.cloud/src/assets/product/notif_icon.png"
+                });
               });
             }
           });
         } else {
           navigator.serviceWorker.ready.then((registration) => {
-            registration.showNotification("Vibration Sample", {
+            registration.showNotification("New Order", {
               body: data.message,
               icon: "https://krakatausportcentrejombang.cloud/src/assets/product/notif_icon.png"
             });
