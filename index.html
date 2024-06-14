@@ -25,6 +25,7 @@
       const username = localStorage.getItem('username');
       console.log('username', username)
       if (username === 'abcde') {
+        alert('Notification.permission', Notification.permission);
         if (Notification.permission === 'granted') {
           new Notification('New Order', {
             body: data.message,
