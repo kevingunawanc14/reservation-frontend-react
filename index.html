@@ -41,8 +41,8 @@
             }
           });
         } else {
-          navigator.serviceWorker.ready.then(reg => {
-            reg.showNotification("New Order", {
+          navigator.serviceWorker.ready.then((registration) => {
+            registration.showNotification("Vibration Sample", {
               body: data.message,
               icon: "https://krakatausportcentrejombang.cloud/src/assets/product/notif_icon.png"
             });
