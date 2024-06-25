@@ -12,6 +12,7 @@ import { PiHeartbeatFill } from "react-icons/pi";
 import { RiMoneyDollarCircleFill } from "react-icons/ri";
 import { RiAccountCircleFill } from "react-icons/ri";
 import { IoTrophy } from "react-icons/io5";
+import { TbStars } from "react-icons/tb";
 
 export default function Navbar() {
     const navigate = useNavigate();

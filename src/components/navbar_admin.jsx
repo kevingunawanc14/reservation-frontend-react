@@ -15,6 +15,7 @@ import { BiTask } from "react-icons/bi";
 import { TbReportMoney } from "react-icons/tb";
 import { TbClipboardList } from "react-icons/tb";
 import { TbStarsOff } from "react-icons/tb";
+import { TbStars } from "react-icons/tb";
 
 export default function Navbar() {
     const navigate = useNavigate();
@@ -49,7 +50,7 @@ export default function Navbar() {
             </button>
 
             <button className={window.location.pathname === '/rating' ? 'active text-primary' : ''} onClick={() => handleNavigate('/rating')}>
-                <TbStarsOff rdList />
+                <TbStars rdList />
                 <span className="btm-nav-label">Rating</span>
             </button>
             {/* 

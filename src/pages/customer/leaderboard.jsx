@@ -13,6 +13,7 @@ import { MdDeleteOutline } from "react-icons/md";
 import {
     GridToolbarContainer,
     GridToolbarFilterButton,
+    GridToolbarColumnsButton,
     GridToolbarExport,
 } from '@mui/x-data-grid';
 import { useForm } from "react-hook-form";
@@ -22,11 +23,18 @@ import { GiTigerHead } from "react-icons/gi";
 import AvatarIcon from '../../components/avatar';
 import { FaQuestion } from "react-icons/fa6";
 import Alert from '@mui/material/Alert';
+import { LiaGiftsSolid } from "react-icons/lia";
+import { AiFillFire } from "react-icons/ai";
+import { AiOutlineCrown } from "react-icons/ai";
+import { IoShirtOutline } from "react-icons/io5";
+import dayjs from 'dayjs';
 
 function CustomToolbar() {
     return (
         <GridToolbarContainer>
             <GridToolbarFilterButton />
+            <GridToolbarColumnsButton />
+
         </GridToolbarContainer>
     );
 }
@@ -146,11 +154,27 @@ export default function Leaderboard() {
         }
     };
 
+    const [countdown, setCountdown] = useState('');
+
     useEffect(() => {
         fetchData();
         getDataDetailUser();
 
+        const endOfMonth = dayjs().endOf('month');
+
+        console.log('endofmonth', endOfMonth)
+
+        const diff = endOfMonth.diff(dayjs());
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+        const countdownString = `${days} day ${hours} h`;
+        console.log('countdownString', countdownString)
+
+        setCountdown(countdownString);
     }, []);
+
 
 
     const columns = [
@@ -161,19 +185,43 @@ export default function Leaderboard() {
             renderCell: (params) => (
                 <div className="">
                     {params.row.healthPoint <= 100 ?
-                        <div className="grid grid-cols-2 ">
+                        <div className="grid grid-cols-3 ">
                             <p className="flex items-center">{params.row.mostHealthPoint}</p>
                             <GiRank2 color="#eccc55" fontSize="30px" />
+                            {params.row.mostHealthPoint <= 3 &&
+                                <span className="relative flex h-3 w-3">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-error opacity-75"></span>
+
+                                    <AiFillFire color="#f97316" />
+
+                                </span>
+                            }
                         </div> :
                         params.row.healthPoint > 100 && params.row.healthPoint <= 200 ?
-                            <div className="grid grid-cols-2">
+                            <div className="grid grid-cols-3">
                                 <p className="flex items-center">{params.row.mostHealthPoint}</p>
                                 <GiRank2 color="#3ba8ba" fontSize="30px" />
+                                {params.row.mostHealthPoint <= 3 &&
+                                    <span className="relative flex h-3 w-3">
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-error opacity-75"></span>
+
+                                        <AiFillFire color="#f97316" />
+
+                                    </span>
+                                }
                             </div> :
                             params.row.healthPoint > 200 ?
-                                <div className="grid grid-cols-2">
+                                <div className="grid grid-cols-3">
                                     <p className="flex items-center">{params.row.mostHealthPoint}</p>
                                     <GiRank2 color="#a46ced" fontSize="30px" />
+                                    {params.row.mostHealthPoint <= 3 &&
+                                        <span className="relative flex h-3 w-3">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-error opacity-75"></span>
+
+                                            <AiFillFire color="#f97316" />
+
+                                        </span>
+                                    }
                                 </div> :
                                 null}
                 </div>
@@ -185,9 +233,9 @@ export default function Leaderboard() {
             renderCell: (params) => (
                 <div className="grid grid-cols-4 place-items-center w-full">
                     <div className=" ">
-                        <div className="bg-neutral rounded-full grid grid-cols-1 content-center">
+                        <div className={`bg-neutral rounded-full grid grid-cols-1 content-center ${params.row.mostHealthPoint <= 3 ? 'hover:animate-bounce cursor-pointer' : ''} `}>
                             <div className="justify-self-center">
-                                <AvatarIcon avatar={params.row.activeAvatar} fontSize={"32px"} className="text-neutral-content p-1" />
+                                <AvatarIcon avatar={params.row.activeAvatar} fontSize={"32px"} className={`text-neutral-content p-1 ${params.row.mostHealthPoint <= 3 ? 'hover:animate-spin cursor-pointer' : ''}`} />
                             </div>
                         </div>
                     </div>
@@ -199,7 +247,7 @@ export default function Leaderboard() {
                     </div>
                     <div className=" ">
                         <div className="">
-                            <BiSolidShieldAlt2 color="#c2cccd" fontSize="22px" className="" />
+                            <BiSolidShieldAlt2 color="#22d3ee" fontSize="22px" className="" />
                         </div>
                         <div className="text-center font-bold">{params.row.defensePoint}</div>
                     </div>
@@ -214,7 +262,7 @@ export default function Leaderboard() {
         },
         {
             field: 'Action',
-            renderHeader: () => <LuSwords fontSize="20px" />,
+            renderHeader: () => <AiOutlineCrown fontSize="20px" />,
             renderCell: (params) => (
                 <div className="flex justify-around ">
                     <div>
@@ -224,6 +272,20 @@ export default function Leaderboard() {
                             <LuSword fontSize="20px" className="hover:animate-bounce" />
                         </button>
                     </div>
+                    {params.row.mostHealthPoint <= 3 && (
+                        <div className="mx-3 tooltip tooltip-right" data-tip="Receive Gift"  >
+                            <button
+                                className={`btn btn-success btn-sm sm:btn`}
+                            >
+                                <div>
+                                    <LiaGiftsSolid fontSize="25px" />
+
+                                </div>
+                            </button>
+                        </div>
+                    )}
+
+
                 </div >
             ),
             flex: 0.5,
@@ -256,12 +318,17 @@ export default function Leaderboard() {
                             <FaQuestion />
                         </button>
                     </div>
-                    <div className="col-span-2 mt-4">
+                    <div className="mt-4">
                         {userData && (
                             <>
                                 <p className="font-medium text-sm">Attack remaining ⚔️ {userData.attackAttempt} </p>
                             </>
                         )}
+
+                    </div>
+                    <div className="mt-4">
+                        <p className="font-medium text-sm ">The Top 3 Users receive a gift (shirt or hat or glass)</p>
+                        <p className="font-medium text-sm">Challanges ends in {countdown}</p>
 
                     </div>
                 </div>
@@ -313,16 +380,17 @@ export default function Leaderboard() {
                                         || theme === 'lemonade'
                                         || theme === 'nord'
                                         || theme === 'winter' ? '' : '#94a3b8',
-                                }
+                                },
                             }}
                         />
                     </>
                 ) : (
                     <div className="flex justify-center items-center h-screen  ">
                         <div>
-                            <p className="text-base font-mono">Loading...</p>
+                            <span className="loading loading-dots loading-lg"></span>
                         </div>
                     </div>
+
                 )}
 
 

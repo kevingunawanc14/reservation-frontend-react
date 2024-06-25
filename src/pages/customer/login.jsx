@@ -202,10 +202,7 @@ export default function Login() {
                                     className="input input-bordered w-full max-w-xs"
                                     {...register("phoneNumber",
                                         {
-                                            required: 'Phone number is required',
-                                            minLength: { value: 12, message: 'Phone number must be at least 12 characters' },
-                                            maxLength: { value: 12, message: 'Phone number cannot exceed 12 characters' },
-
+                                            required: 'Phone number is required'
                                         }
                                     )}
                                 />

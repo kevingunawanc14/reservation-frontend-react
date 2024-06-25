@@ -179,7 +179,7 @@ export default function ListGor() {
                 ) : (
                     <div className="flex justify-center items-center h-screen  ">
                         <div>
-                            <p className="text-base font-mono">Loading...</p>
+                            <span className="loading loading-dots loading-lg"></span>
                         </div>
                     </div>
                 )}

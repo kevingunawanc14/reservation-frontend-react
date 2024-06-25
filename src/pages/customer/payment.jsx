@@ -139,7 +139,7 @@ export default function Payment() {
                                             <div className="grid grid-cols-2">
                                                 <div className="grid content-center">
                                                     <p className="text-neutral-content font-bold">Rp. {payment.totalPrice}
-                                                        <span className="text-xs">{[6, 7, 14, 15].includes(payment.idProduct) && ` Jumlah Orang: ${payment.jumlahOrang}`}</span>
+                                                        <span className="text-xs">{[6, 7, 14, 15, 16, 17, 20].includes(payment.idProduct) && ` Jumlah Orang: ${payment.jumlahOrang}`}</span>
 
                                                     </p>
                                                 </div>
@@ -194,7 +194,7 @@ export default function Payment() {
                 ) : (
                     <div className="flex justify-center items-center h-screen  ">
                         <div>
-                            <p className="text-base font-mono">Loading...</p>
+                            <span className="loading loading-dots loading-lg"></span>
                         </div>
                     </div>
                 )}

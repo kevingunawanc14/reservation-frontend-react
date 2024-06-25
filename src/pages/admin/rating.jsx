@@ -250,7 +250,8 @@ export default function ActiveOrder() {
             ) : (
                 <div className="flex justify-center items-center h-screen  ">
                     <div>
-                        <p className="text-base font-mono">Loading...</p>
+                        <span className="loading loading-dots loading-lg"></span>
+
                     </div>
                 </div>
             )}
@@ -284,10 +285,7 @@ export default function ActiveOrder() {
                                 className="input input-bordered w-full"
                                 {...register1("phoneNumber",
                                     {
-                                        required: 'Phone number is required',
-                                        minLength: { value: 12, message: 'Phone number must be at least 12 characters' },
-                                        maxLength: { value: 12, message: 'Phone number cannot exceed 12 characters' },
-
+                                        required: 'Phone number is required'
                                     }
                                 )}
                             />

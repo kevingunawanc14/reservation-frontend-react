@@ -205,7 +205,7 @@ export default function DetailLapangan() {
             return true;
         }
 
-        if (selectedDate > new Date(today.getTime() + 13 * 24 * 60 * 60 * 1000)) {
+        if (selectedDate > new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000)) {
             return true;
         }
 

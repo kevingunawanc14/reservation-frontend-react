@@ -18,6 +18,7 @@ import { GiRank2 } from "react-icons/gi";
 import { TbUpload } from "react-icons/tb";
 import { IoIosAlert } from "react-icons/io";
 import qris from '../../assets/QRIS_KRAKATAU.png';
+import { IoPeopleOutline } from "react-icons/io5";
 
 
 export default function DetailFasilitas() {
@@ -94,6 +95,10 @@ export default function DetailFasilitas() {
 
         const formData = new FormData();
 
+        if (['16', '17', '20'].includes(idProduct)) {
+            formData.append('jumlahOrang', watch("jumlahOrang"));
+        }
+
         if (watch("paymentMethod") === 'qris') {
             formData.append('filePaymentProve', watch("filePaymentProve")[0]);
         }
@@ -117,7 +122,7 @@ export default function DetailFasilitas() {
                             undefined,
             paymentMethod: watch("paymentMethod"),
             note: "",
-            totalPrice: (productPrice * arrOfOrderSummary.length),
+            totalPrice: ['16', '17', '20'].includes(idProduct) ? (productPrice * arrOfOrderSummary.length * watch("jumlahOrang")) : (productPrice * arrOfOrderSummary.length),
             typeBreath: watch("breathStatus"),
             minuteBreath: (arrOfOrderSummary.length * 60),
             totalXp: Math.floor(productPrice * arrOfOrderSummary.length / 10000),
@@ -226,7 +231,7 @@ export default function DetailFasilitas() {
                 endDate: `${dayjs().format('YYYY-MM-DD')}`,
                 name: 'Gym'
             };
-            setProductPrice(30000)
+            setProductPrice(35000)
 
             setArrOfOrderSummary(prevState => [...prevState, newOrderSummary]);
 
@@ -263,6 +268,7 @@ export default function DetailFasilitas() {
         getDataDetailUser();
 
     }, [valueCalendar]);
+
 
     return (
         <>
@@ -318,7 +324,7 @@ export default function DetailFasilitas() {
 
                 <div className='mx-5'>
                     {arrOfOrderSummary.length === 0 ? (
-                        <p className='text-center font-semibold mt-3'>Loading...</p>
+                        <span className="loading loading-dots loading-lg"></span>
                     ) : (
                         arrOfOrderSummary.map((orderSummary, index) => (
                             <div key={index}>
@@ -345,7 +351,20 @@ export default function DetailFasilitas() {
                                     Total
                                 </div>
                                 <div className='justify-self-end'>
-                                    <p className='font-bold'>Rp{formatNumberWithDot((productPrice * arrOfOrderSummary.length))}</p>
+                                    {['16', '17', '20'].includes(idProduct) ? (
+                                        <>
+                                            <p className='font-bold'>
+                                                Rp{formatNumberWithDot((productPrice * arrOfOrderSummary.length *
+                                                    (watch('jumlahOrang') > 0 && watch('jumlahOrang') <= 10 ? watch('jumlahOrang') : 0)))}
+                                            </p>
+
+
+                                        </>
+                                    ) : (
+                                        <p className='font-bold'>
+                                            Rp{formatNumberWithDot((productPrice * arrOfOrderSummary.length))}
+                                        </p>
+                                    )}
                                 </div>
                             </div>
                         </>
@@ -442,9 +461,41 @@ export default function DetailFasilitas() {
                         </div>
 
                     )}
+                    {['16', '17', '20'].includes(idProduct) && (
+                        <>
+                            <div className="grid grid-cols-9">
+                                <div className='self-center'>
+                                    <IoPeopleOutline
+                                        fontSize="20px"
+                                    />
+                                </div>
+                                <div className='col-span-7'>
+                                    <label className="label cursor-pointer">
+                                        <input
+                                            {...register("jumlahOrang", { required: "This field is required" })}
+                                            type="number"
+                                            className="input input-bordered w-full"
+                                            placeholder="jumlah orang ?"
+                                        />
+                                    </label>
+
+                                </div>
+
+                                {watch('jumlahOrang') == '' && (
+                                    <div className='animate-bounce place-self-center mt-3 ms-3'> <IoIosAlert color='red' size={25} /></div>
+                                )}
+
+                            </div>
+
+                            {watch('jumlahOrang') != '' && watch('jumlahOrang') < 1 && <p className="text-red-500 text-sm text-center">{'Minimum number of people 1'}</p>}
+                            {watch('jumlahOrang') > 10 && <p className="text-red-500 text-sm text-center">{'Maximal number of people 10'}</p>}
+                        </>
+                    )}
                 </div>
 
             </div>
+
+
 
             {watch("subscriptionType") === 'membership' && (
                 <>
@@ -511,19 +562,16 @@ export default function DetailFasilitas() {
                         )
 
                 ) : (
-                    watch("paymentMethod") === 'cash' ? (
+                    watch("paymentMethod") === 'cash' && watch('jumlahOrang') != '' && watch('jumlahOrang') > 0 && watch('jumlahOrang') <= 10 ? (
                         <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 ? '' : 'btn-disabled'} ${loadingStatus ? 'btn-disabled skeleton' : ''}`} onClick={handleOrder}> {loadingStatus ? 'Processing' : 'Place Order'}</button>
 
                     ) : (
                         <button className={`btn btn-primary btn-block ${arrOfOrderSummary.length > 0 && watch('filePaymentProve')?.length > 0
-                            && ['jpg', 'jpeg', 'png'].includes(watch("filePaymentProve")[0].name.split('.').pop().toLowerCase()) && watch("filePaymentProve")[0].size < 1024 * 1024 * 5
+                            && ['jpg', 'jpeg', 'png'].includes(watch("filePaymentProve")[0].name.split('.').pop().toLowerCase()) && watch("filePaymentProve")[0].size < 1024 * 1024 * 5 && watch('jumlahOrang') != '' && watch('jumlahOrang') > 0 && watch('jumlahOrang') <= 10
                             ? '' : 'btn-disabled'} ${loadingStatus ? 'btn-disabled skeleton' : ''}`} onClick={handleOrder} > {loadingStatus ? 'Processing' : 'Place Order'}</button>
 
                     )
-
                 )}
-
-
             </div>
 
             <div className="flex justify-center mt-3 mb-3">

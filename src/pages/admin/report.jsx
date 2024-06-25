@@ -16,6 +16,7 @@ import { TbListDetails } from "react-icons/tb";
 import { GiTakeMyMoney } from "react-icons/gi";
 import { BsQrCodeScan } from "react-icons/bs";
 import dayjs from 'dayjs';
+import Datepicker from "react-tailwindcss-datepicker";
 
 function CustomToolbar() {
     return (
@@ -38,11 +39,28 @@ export default function ActiveOrder() {
     const [addStatus, setAddStatus] = useState(null);
     const navigate = useNavigate();
 
+    const [value, setValue] = useState({
+        startDate: dayjs().subtract(7, 'days').format('YYYY-MM-DD'),
+        endDate: dayjs().format('YYYY-MM-DD')
+    });
+
+    const handleValueChange = (newValue) => {
+        console.log("newValue:", newValue);
+        setValue(newValue);
+    }
+
+    useEffect(() => {
+        fetchData();
+    }, [value]);
 
     const fetchData = async () => {
         try {
 
             const response = await axios.get('/order', {
+                params: {
+                    startDate: value.startDate,
+                    endDate: value.endDate
+                },
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -121,7 +139,7 @@ export default function ActiveOrder() {
             console.log('error:', error);
         }
     }
-    
+
     const form1 = useForm({
         defaultValues: {
             id: '',
@@ -294,6 +312,69 @@ export default function ActiveOrder() {
             </div>
             {tableData ? (
                 <>
+                    <div className="mx-10 mt-5">
+                        <Datepicker
+                            value={value}
+                            onChange={handleValueChange}
+                            showShortcuts={true}
+                            showFooter={true}
+                            readOnly={true}
+                            i18n={"id"}
+                            configs={{
+                                shortcuts: {
+                                    today: `Today`,
+                                    yesterday: `Yesterday`,
+                                    next7Days: {
+                                        text: 'Next 7 Days',
+                                        period: {
+                                            start: dayjs().format('YYYY-MM-DD'),
+                                            end: dayjs().add(7, 'days').format('YYYY-MM-DD')
+                                        },
+                                    },
+                                    next14Days: {
+                                        text: 'Next 14 Days',
+                                        period: {
+                                            start: dayjs().format('YYYY-MM-DD'),
+                                            end: dayjs().add(14, 'days').format('YYYY-MM-DD')
+                                        },
+                                    },
+                                    past: (period) => `Last ${period} days`,
+                                    thisWeek: {
+                                        text: 'This Week',
+                                        period: {
+                                            start: dayjs().startOf('week').format('YYYY-MM-DD'),
+                                            end: dayjs().endOf('week').format('YYYY-MM-DD')
+                                        },
+                                    },
+                                    currentMonth: `This month`,
+                                    pastMonth: `Last month`,
+                                    thisYear: {
+                                        text: 'This Year',
+                                        period: {
+                                            start: dayjs().startOf('year').format('YYYY-MM-DD'),
+                                            end: dayjs().endOf('year').format('YYYY-MM-DD')
+                                        },
+                                    },
+                                    lastYear: {
+                                        text: 'Last Year',
+                                        period: {
+                                            start: dayjs().subtract(1, 'year').startOf('year').format('YYYY-MM-DD'),
+                                            end: dayjs().subtract(1, 'year').endOf('year').format('YYYY-MM-DD')
+                                        },
+                                    },
+                                    allTime: {
+                                        text: 'All Time',
+                                        period: {
+                                            start: dayjs('2019-01-01').format('YYYY-MM-DD'),  // Example start date, adjust as needed
+                                            end: dayjs().format('YYYY-MM-DD')
+                                        },
+                                    },
+
+                                }
+                            }}
+                        />
+                    </div>
+
                     <div className="mx-10 mt-5 mb-20">
                         <DataGrid
                             rows={tableData}
@@ -314,7 +395,7 @@ export default function ActiveOrder() {
             ) : (
                 <div className="flex justify-center items-center h-screen  ">
                     <div>
-                        <p className="text-base font-mono">Loading...</p>
+                        <span className="loading loading-dots loading-lg"></span>
                     </div>
                 </div>
             )}
