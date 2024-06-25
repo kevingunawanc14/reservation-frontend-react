@@ -365,7 +365,7 @@ export default function ActiveOrder() {
                                     allTime: {
                                         text: 'All Time',
                                         period: {
-                                            start: dayjs('2019-01-01').format('YYYY-MM-DD'),  // Example start date, adjust as needed
+                                            start: dayjs('2019-01-01').format('YYYY-MM-DD'), 
                                             end: dayjs().format('YYYY-MM-DD')
                                         },
                                     },

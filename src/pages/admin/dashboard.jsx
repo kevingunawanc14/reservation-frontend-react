@@ -27,7 +27,7 @@ export default function Dashboard() {
 
     useEffect(() => {
         fetchData();
-    }, [value]); 
+    }, [value]);
 
     const fetchData = async () => {
         console.log('value.startDate', value.startDate)
@@ -123,7 +123,7 @@ export default function Dashboard() {
                                     allTime: {
                                         text: 'All Time',
                                         period: {
-                                            start: dayjs('2019-01-01').format('YYYY-MM-DD'),  // Example start date, adjust as needed
+                                            start: dayjs('2019-01-01').format('YYYY-MM-DD'),
                                             end: dayjs().format('YYYY-MM-DD')
                                         },
                                     },
@@ -201,7 +201,7 @@ export default function Dashboard() {
                                     series={[
                                         {
                                             data:
-                                                Object.values(stats.arrOrderThisWeek[0]),
+                                                Object.values(stats.arrRevenueThisWeek[0]),
 
                                         },
                                     ]}
